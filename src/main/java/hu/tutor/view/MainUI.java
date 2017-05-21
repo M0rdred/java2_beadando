@@ -10,7 +10,7 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
-@SpringUI(path = "/")
+@SpringUI
 @Widgetset("hu.tutor.view.TutorWidgetSet")
 public class MainUI extends UI {
 
@@ -21,7 +21,7 @@ public class MainUI extends UI {
 	protected void init(VaadinRequest request) {
 		Navigator navigator = new Navigator(this, this);
 		navigator.addProvider(viewProvider);
-
+		navigator.navigateTo(LoginView.LOGIN_VIEW_NAME);
 	}
 
 }
