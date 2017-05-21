@@ -3,6 +3,7 @@ package hu.tutor.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -25,17 +26,22 @@ public class UserDaoHibernateImpl implements UserDao {
 	public User findUser(Integer id) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.eq("id", id));
-		List<User> users = criteria.list();
+		// Criteria criteria = session.createCriteria(User.class);
+		// criteria.add(Restrictions.eq("id", id));
+		Query query = session.createQuery("from User where id = :ID");
+		query.setInteger("ID", id);
+		List<User> users = query.list();
 		transaction.commit();
 
 		if (users.size() > 1) {
-			throw new RuntimeException("Database inconsistent. More than one user with id: " + id);
+			throw new RuntimeException("Database inconsistency. More than one user with id: " + id);
 		}
 
-		return users.get(0);
-
+		if (users.size() < 1) {
+			return new User();
+		} else {
+			return users.get(0);
+		}
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class MainUI extends UI {
 	protected void init(VaadinRequest request) {
 		Navigator navigator = new Navigator(this, this);
 		navigator.addProvider(viewProvider);
-		navigator.navigateTo(LoginView.LOGIN_VIEW_NAME);
+		navigator.navigateTo(MainView.MAIN_VIEW_NAME);
 	}
 
 }

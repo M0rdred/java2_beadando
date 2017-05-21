@@ -26,5 +26,4 @@ public class LoginView extends VerticalLayout implements View {
 		label.setValue("Hello World!");
 		addComponent(label);
 	}
-
 }
