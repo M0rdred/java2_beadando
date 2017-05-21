@@ -3,7 +3,6 @@ package hu.tutor.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -47,6 +46,23 @@ public class UserDaoHibernateImpl implements UserDao {
 		List<User> users = criteria.list();
 		transaction.commit();
 		return users;
+	}
+
+	@Override
+	public User updateUser(User user) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		User tmpUser = session.load(User.class, user.getId());
+
+		tmpUser.setFirstName(user.getFirstName());
+		tmpUser.setLastName(user.getLastName());
+		tmpUser.setAdmin(user.isAdmin());
+		tmpUser.setTeacher(user.isTeacher());
+
+		session.persist(tmpUser);
+		transaction.commit();
+
+		return this.findUser(user.getId());
 	}
 
 	@Override
