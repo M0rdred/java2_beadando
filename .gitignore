@@ -1,0 +1,20 @@
+!.mvn/wrapper/maven-wrapper.jar
+
+.settings
+.classpath
+.project
+.tern-project
+
+target/
+widgetsets
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+wrapper
+/mvnw
+/mvnw.cmd
