@@ -12,6 +12,6 @@ public interface UserDao {
 
 	public User saveUser(User user);
 
-	public void deleteUser(User user);
+	public void deleteUser(Integer id);
 
 }

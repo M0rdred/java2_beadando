@@ -16,8 +16,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> listUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userDao.getAllUsers();
 	}
 
 	@Override
@@ -27,20 +26,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User saveUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userDao.saveUser(user);
 	}
 
 	@Override
 	public User updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userDao.saveUser(user);
 	}
 
 	@Override
-	public void deleteUser(User user) {
-		// TODO Auto-generated method stub
-
+	public void deleteUser(Integer id) {
+		this.userDao.deleteUser(id);
 	}
 
 }
