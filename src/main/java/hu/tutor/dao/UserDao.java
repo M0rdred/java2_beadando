@@ -2,6 +2,7 @@ package hu.tutor.dao;
 
 import java.util.List;
 
+import hu.tutor.model.Subject;
 import hu.tutor.model.User;
 
 public interface UserDao {
@@ -15,5 +16,7 @@ public interface UserDao {
 	public User updateUser(User user);
 
 	public void deleteUser(Integer id);
+
+	public List<Subject> getSubjectsOfTeacher(Integer teacherId);
 
 }

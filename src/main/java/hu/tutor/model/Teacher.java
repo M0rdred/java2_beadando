@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @DiscriminatorValue("teacher")
 public class Teacher extends User {
 
-	@JoinTable(name = "teached_subjects", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+	//@JoinTable(name = "teached_subjects", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	@OneToMany
 	private List<Subject> teachedSubjects;
 

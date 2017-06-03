@@ -1,7 +1,5 @@
 package hu.tutor.view;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -12,8 +10,8 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
+import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
-import hu.tutor.model.User;
 import hu.tutor.service.UserService;
 
 @SuppressWarnings({ "serial", "unchecked" })
@@ -35,12 +33,13 @@ public class MainView extends HorizontalLayout implements View {
 	public void enter(ViewChangeEvent event) {
 		label = new Label();
 
-		Teacher teacher = new Teacher();
-		User user = userService.getUserById(new Integer(1));
-		if (user instanceof Teacher) {
-			teacher = (Teacher) user;
-		}
-		label.setValue(teacher.getTeachedSubjects().get(0).getName());
+		Teacher user = (Teacher) userService.getUserById(new Integer(1));
+		Subject subject = new Subject();
+		subject.setId(2);
+		user.getTeachedSubjects().add(subject);
+		//userService.updateUser(user);
+
+		label.setValue(user.getTeachedSubjects().get(0).getName());
 		// user.setFirstName("a");
 		// user.setLastName("b");
 		// user.setEmail("a");
