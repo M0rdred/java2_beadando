@@ -6,9 +6,11 @@ import org.springframework.context.ApplicationContext;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
@@ -31,13 +33,15 @@ public class MainView extends HorizontalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+		Link registerLink = new Link("Regisztráció", new ExternalResource("#!register"));
+		
 		label = new Label();
 
 		Teacher user = (Teacher) userService.getUserById(new Integer(1));
 		Subject subject = new Subject();
 		subject.setId(2);
 		user.getTeachedSubjects().add(subject);
-		//userService.updateUser(user);
+		// userService.updateUser(user);
 
 		label.setValue(user.getTeachedSubjects().get(0).getName());
 		// user.setFirstName("a");
@@ -47,6 +51,7 @@ public class MainView extends HorizontalLayout implements View {
 		// user.setPassword("a");
 		// userService.saveUser(user);
 		addComponent(label);
+		addComponent(registerLink);
 	}
 
 }
