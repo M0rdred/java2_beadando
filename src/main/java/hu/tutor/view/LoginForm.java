@@ -3,7 +3,7 @@ package hu.tutor.view;
 import org.vaadin.risto.formsender.FormSender;
 import org.vaadin.risto.formsender.widgetset.client.shared.Method;
 
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -26,10 +26,10 @@ public class LoginForm extends VerticalLayout {
 		Button loginButton = new Button("Belépés");
 
 		userNameField.setWidth("200px");
-		userNameField.setIcon(FontAwesome.USER);
+		userNameField.setIcon(VaadinIcons.USER);
 
 		passwordField.setWidth("200px");
-		passwordField.setIcon(FontAwesome.KEY);
+		passwordField.setIcon(VaadinIcons.KEY);
 
 		this.errorLabel = new Label(
 				String.format("<div style='color:red;'>%s</div>", "Hibás felhasználónév vagy jelszó"),

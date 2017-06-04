@@ -22,6 +22,7 @@ public class MainUI extends UI {
 		Navigator navigator = new Navigator(this, this);
 		navigator.addProvider(viewProvider);
 		navigator.navigateTo(MainView.MAIN_VIEW_NAME);
+		navigator.addView(AccountView.ACCOUNT_VIEW_NAME, new AccountView());
 	}
 
 }

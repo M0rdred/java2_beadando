@@ -18,5 +18,7 @@ public interface UserDao {
 	public void deleteUser(Integer id);
 
 	public List<Subject> getSubjectsOfTeacher(Integer teacherId);
+	
+	public User getUserByUserName(String userName);
 
 }

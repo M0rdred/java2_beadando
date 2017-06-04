@@ -8,6 +8,8 @@ public interface UserService {
 	public List<User> listUsers();
 
 	public User getUserById(Integer id);
+	
+	public User getUserByUserName(String userName);
 
 	public User saveUser(User user);
 

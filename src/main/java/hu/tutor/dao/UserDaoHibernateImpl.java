@@ -133,4 +133,33 @@ public class UserDaoHibernateImpl implements UserDao {
 		}
 		return subjects;
 	}
+
+	@Override
+	public User getUserByUserName(String userName) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		// Criteria criteria = session.createCriteria(User.class);
+		// criteria.add(Restrictions.eq("id", id));
+		Query query = session.createQuery("from User where user_name = :userName");
+		query.setString("userName", userName);
+		List<User> users = query.list();
+		transaction.commit();
+		session.close();
+
+		if (users.size() > 1) {
+			throw new RuntimeException("Database inconsistency. More than one user with user name: " + userName);
+		}
+
+		if (users.size() < 1) {
+			return null;
+		} else {
+			User user = users.get(0);
+			if (user.getClass().equals(Teacher.class)) {
+				Teacher teacher = (Teacher) user;
+				teacher.setTeachedSubjects(this.getSubjectsOfTeacher(teacher.getId()));
+				return teacher;
+			}
+			return user;
+		}
+	}
 }

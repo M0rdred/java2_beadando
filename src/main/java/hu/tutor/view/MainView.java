@@ -34,6 +34,7 @@ public class MainView extends HorizontalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		Link registerLink = new Link("Regisztráció", new ExternalResource("#!register"));
+		Link loginLink = new Link("Bejelentkezés", new ExternalResource("#!login"));
 		
 		label = new Label();
 
@@ -50,8 +51,9 @@ public class MainView extends HorizontalLayout implements View {
 		// user.setUserName("b");
 		// user.setPassword("a");
 		// userService.saveUser(user);
-		addComponent(label);
+		//addComponent(label);
 		addComponent(registerLink);
+		addComponent(loginLink);
 	}
 
 }
