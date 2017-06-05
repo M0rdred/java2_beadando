@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 
+import com.vaadin.data.Binder;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
@@ -22,7 +23,7 @@ import hu.tutor.service.UserService;
 @Scope(scopeName = "prototype")
 public class UserAccountForm extends VerticalLayout {
 
-	private User user = new User();
+	private User user;
 
 	@Autowired
 	@Qualifier("userServiceImpl")
@@ -39,7 +40,6 @@ public class UserAccountForm extends VerticalLayout {
 
 		dataGrid.setCaption("Személyes adatok");
 
-		// new Label("Személyes adatok"), 0, 0, 1, 0);
 		Label userNameLabel = new Label("Felhasználónév:");
 		TextField userNameField = new TextField();
 		userNameField.setReadOnly(true);
@@ -60,54 +60,45 @@ public class UserAccountForm extends VerticalLayout {
 		Label introductionLabel = new Label("Bemutatkozás:");
 		TextArea introductionField = new TextArea();
 
+		Binder<User> dataBinder = new Binder<>();
+		dataBinder.forField(userNameField).bind(User::getUserName, User::setUserName);
+		dataBinder.forField(lastNameField).bind(User::getLastName, User::setLastName);
+		dataBinder.forField(firstNameField).bind(User::getFirstName, User::setFirstName);
+		dataBinder.forField(emailField).bind(User::getEmail, User::setEmail);
+		dataBinder.forField(phoneField).bind(User::getPhone, User::setPhone);
+		dataBinder.forField(addressField).bind(User::getAddress, User::setAddress);
+		dataBinder.forField(cityField).bind(User::getCity, User::setCity);
+		dataBinder.forField(zipField).bind(User::getZip, User::setZip);
+		dataBinder.forField(introductionField).bind(User::getIntroduction, User::setIntroduction);
+
+		dataBinder.setBean(user);
 		/*
-		 * Binder<User> dataBinder = new Binder<>();
-		 * dataBinder.forField(userNameField).bind(User::getUserName,
-		 * User::setUserName);
-		 * dataBinder.forField(lastNameField).bind(User::getLastName,
-		 * User::setLastName);
-		 * dataBinder.forField(firstNameField).bind(User::getFirstName,
-		 * User::setFirstName);
-		 * dataBinder.forField(emailField).bind(User::getEmail, User::setEmail);
-		 * dataBinder.forField(phoneField).bind(User::getPhone, User::setPhone);
-		 * dataBinder.forField(addressField).bind(User::getAddress,
-		 * User::setAddress); dataBinder.forField(cityField).bind(User::getCity,
-		 * User::setCity); dataBinder.forField(zipField).bind(User::getZip,
-		 * User::setZip);
-		 * dataBinder.forField(introductionField).bind(User::getIntroduction,
-		 * User::setIntroduction);
-		 * 
-		 * dataBinder.setBean(user);
+		 * userNameField.setValue(user.getUserName());
+		 * lastNameField.setValue(user.getLastName());
+		 * firstNameField.setValue(user.getFirstName());
+		 * emailField.setValue(user.getEmail());
+		 * phoneField.setValue(user.getPhone());
+		 * addressField.setValue(user.getAddress());
+		 * cityField.setValue(user.getCity()); zipField.setValue(user.getZip());
+		 * introductionField.setValue(user.getIntroduction());
 		 */
-
-		userNameField.setValue(user.getUserName());
-		lastNameField.setValue(user.getLastName());
-		firstNameField.setValue(user.getFirstName());
-		emailField.setValue(user.getEmail());
-		phoneField.setValue(user.getPhone());
-		addressField.setValue(user.getAddress());
-		cityField.setValue(user.getCity());
-		zipField.setValue(user.getZip());
-		introductionField.setValue(user.getIntroduction());
-
 		Button saveButton = new Button();
 		saveButton.setCaption("Mentés");
 		saveButton.addClickListener(new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-
-				User tmpUser = new User();
-
-				user.setFirstName(firstNameField.getValue());
-				user.setLastName(lastNameField.getValue());
-				user.setEmail(emailField.getValue());
-				user.setPhone(phoneField.getValue());
-				user.setAddress(addressField.getValue());
-				user.setCity(cityField.getValue());
-				user.setZip(zipField.getValue());
-				user.setIntroduction(introductionField.getValue());
-
+				/*
+				 * user.setFirstName(firstNameField.getValue());
+				 * user.setLastName(lastNameField.getValue());
+				 * user.setEmail(emailField.getValue());
+				 * user.setPhone(phoneField.getValue());
+				 * user.setAddress(addressField.getValue());
+				 * user.setCity(cityField.getValue());
+				 * user.setZip(zipField.getValue());
+				 * user.setIntroduction(introductionField.getValue());
+				 */
+				user = dataBinder.getBean();
 				userService.updateUser(user);
 			}
 		});
