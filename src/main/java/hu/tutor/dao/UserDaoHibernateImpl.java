@@ -75,18 +75,7 @@ public class UserDaoHibernateImpl implements UserDao {
 	public User updateUser(User user) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		/*
-		 * User tmpUser = session.load(user.getClass(), user.getId());
-		 * 
-		 * tmpUser.setFirstName(user.getFirstName());
-		 * tmpUser.setLastName(user.getLastName());
-		 * tmpUser.setAdmin(user.isAdmin());
-		 * tmpUser.setTeacher(user.isTeacher());
-		 * 
-		 * if (tmpUser instanceof Teacher && user instanceof Teacher) {
-		 * ((Teacher) tmpUser).setTeachedSubjects(((Teacher)
-		 * user).getTeachedSubjects()); }
-		 */
+
 		session.merge(user);
 
 		transaction.commit();
@@ -140,8 +129,7 @@ public class UserDaoHibernateImpl implements UserDao {
 	public User getUserByUserName(String userName) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		// Criteria criteria = session.createCriteria(User.class);
-		// criteria.add(Restrictions.eq("id", id));
+
 		Query query = session.createQuery("from User where user_name = :userName");
 		query.setString("userName", userName);
 		List<User> users = query.list();
@@ -163,5 +151,42 @@ public class UserDaoHibernateImpl implements UserDao {
 			}
 			return user;
 		}
+	}
+
+	@Override
+	public void saveSubjectOfTeacher(Subject subject) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void saveNewSubjectForTeacher(Integer teacherId, Integer subjectId) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		Query query = session
+				.createSQLQuery("insert into teached_subjects (teacher_id, subject_id) select :t_id, :s_id");
+		query.setInteger("t_id", teacherId);
+		query.setInteger("s_id", subjectId);
+
+		query.executeUpdate();
+
+		transaction.commit();
+		session.close();
+	}
+
+	@Override
+	public void deleteSubjectFromTeacher(Integer teacherId, Integer subjectId) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		Query query = session
+				.createSQLQuery("delete from teached_subjects where teacher_id = :t_id and subject_id = :s_id");
+		query.setInteger("t_id", teacherId);
+		query.setInteger("s_id", subjectId);
+
+		query.executeUpdate();
+
+		transaction.commit();
+		session.close();
 	}
 }
