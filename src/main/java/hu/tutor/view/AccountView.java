@@ -1,5 +1,7 @@
 package hu.tutor.view;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
@@ -19,6 +21,13 @@ public class AccountView extends VerticalLayout implements View {
 	protected static final String ACCOUNT_VIEW_NAME = "account";
 	private User user;
 
+	@Autowired
+	private UserAccountForm userAccountForm;
+	@Autowired
+	private TeacherAccountForm teacherAccountForm;
+	@Autowired
+	private AdminAccountForm adminAccountForm;
+
 	@Override
 	public void enter(ViewChangeEvent event) {
 
@@ -30,14 +39,14 @@ public class AccountView extends VerticalLayout implements View {
 
 		TabSheet tabSheet = new TabSheet();
 
-		tabSheet.addTab(new UserAccountForm(), "Fiók");
+		tabSheet.addTab(userAccountForm, "Fiók");
 
 		if (user.getClass() == Teacher.class) {
-			tabSheet.addTab(new TeacherAccountForm(), "Tanár");
+			tabSheet.addTab(teacherAccountForm, "Tanár");
 		}
 
 		if (user.getClass() == Administrator.class) {
-			tabSheet.addTab(new AdminAccountForm(), "Adminisztrátor");
+			tabSheet.addTab(adminAccountForm, "Adminisztrátor");
 		}
 
 		addComponent(logoutLink);

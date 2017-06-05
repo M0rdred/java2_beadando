@@ -1,11 +1,11 @@
 package hu.tutor.view;
 
-import static org.assertj.core.api.Assertions.in;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 
-import com.vaadin.data.Binder;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -16,14 +16,17 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.model.User;
-import hu.tutor.service.UserServiceImpl;
+import hu.tutor.service.UserService;
 
+@SpringComponent
+@Scope(scopeName = "prototype")
 public class UserAccountForm extends VerticalLayout {
 
-	private User user;
+	private User user = new User();
 
 	@Autowired
-	private UserServiceImpl userService;
+	@Qualifier("userServiceImpl")
+	private UserService userService;
 
 	public UserAccountForm() {
 
@@ -96,16 +99,16 @@ public class UserAccountForm extends VerticalLayout {
 
 				User tmpUser = new User();
 
-				tmpUser.setFirstName(firstNameField.getValue());
-				tmpUser.setLastName(lastNameField.getValue());
-				tmpUser.setEmail(emailField.getValue());
-				tmpUser.setPhone(phoneField.getValue());
-				tmpUser.setAddress(addressField.getValue());
-				tmpUser.setCity(cityField.getValue());
-				tmpUser.setZip(zipField.getValue());
-				tmpUser.setIntroduction(introductionField.getValue());
+				user.setFirstName(firstNameField.getValue());
+				user.setLastName(lastNameField.getValue());
+				user.setEmail(emailField.getValue());
+				user.setPhone(phoneField.getValue());
+				user.setAddress(addressField.getValue());
+				user.setCity(cityField.getValue());
+				user.setZip(zipField.getValue());
+				user.setIntroduction(introductionField.getValue());
 
-				userService.updateUser(tmpUser);
+				userService.updateUser(user);
 			}
 		});
 

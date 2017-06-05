@@ -75,18 +75,20 @@ public class UserDaoHibernateImpl implements UserDao {
 	public User updateUser(User user) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		User tmpUser = session.load(user.getClass(), user.getId());
+		/*
+		 * User tmpUser = session.load(user.getClass(), user.getId());
+		 * 
+		 * tmpUser.setFirstName(user.getFirstName());
+		 * tmpUser.setLastName(user.getLastName());
+		 * tmpUser.setAdmin(user.isAdmin());
+		 * tmpUser.setTeacher(user.isTeacher());
+		 * 
+		 * if (tmpUser instanceof Teacher && user instanceof Teacher) {
+		 * ((Teacher) tmpUser).setTeachedSubjects(((Teacher)
+		 * user).getTeachedSubjects()); }
+		 */
+		session.merge(user);
 
-		tmpUser.setFirstName(user.getFirstName());
-		tmpUser.setLastName(user.getLastName());
-		tmpUser.setAdmin(user.isAdmin());
-		tmpUser.setTeacher(user.isTeacher());
-
-		if (tmpUser instanceof Teacher && user instanceof Teacher) {
-			((Teacher) tmpUser).setTeachedSubjects(((Teacher) user).getTeachedSubjects());
-		}
-
-		session.merge(tmpUser);
 		transaction.commit();
 		session.close();
 
