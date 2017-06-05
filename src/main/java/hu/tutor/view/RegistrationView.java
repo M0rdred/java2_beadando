@@ -58,11 +58,13 @@ public class RegistrationView extends FormLayout implements View {
 				.bind(User::getPassword, User::setPassword);
 		binder.forField(emailField).withValidator(new EmailValidator("Nem helyes email cim.")).bind(User::getEmail,
 				User::setEmail);
-		binder.forField(firstNameField).withValidator(
-				new StringLengthValidator("A keresztnévnek legalább 3 karakteresnek kell lennie.", 3, 100))
+		binder.forField(firstNameField)
+				.withValidator(
+						new StringLengthValidator("A keresztnévnek legalább 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getFirstName, User::setFirstName);
-		binder.forField(lastNameField).withValidator(
-				new StringLengthValidator("A vezetéknévnek legalább 3 karakteresnek kell lennie.", 3, 100))
+		binder.forField(lastNameField)
+				.withValidator(
+						new StringLengthValidator("A vezetéknévnek legalább 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getLastName, User::setLastName);
 
 		Button registerButton = new Button("Regisztráció");
@@ -125,6 +127,8 @@ public class RegistrationView extends FormLayout implements View {
 					user.setEmail(emailField.getValue());
 
 					userService.saveUser(user);
+					getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
+					Notification.show("Sikeres regisztráció", Notification.TYPE_HUMANIZED_MESSAGE);
 				} else {
 					Notification.show("Regisztrációs hiba", "Kérem ellenőrizze az adatokat.",
 							Notification.TYPE_ERROR_MESSAGE);

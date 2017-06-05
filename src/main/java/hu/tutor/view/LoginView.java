@@ -3,18 +3,18 @@ package hu.tutor.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.vaadin.risto.formsender.FormSender;
-import org.vaadin.risto.formsender.widgetset.client.shared.Method;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -22,12 +22,8 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import hu.tutor.model.User;
 import hu.tutor.security.AuthService;
 import hu.tutor.service.UserService;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 @SuppressWarnings({ "serial", "unchecked" })
 @SpringView(name = LoginView.LOGIN_VIEW_NAME)
@@ -54,7 +50,9 @@ public class LoginView extends VerticalLayout implements View {
 
 		final TextField userNameField = new TextField("Felhasználónév: ");
 		final PasswordField passwordField = new PasswordField("Jelszó:");
+
 		Button loginButton = new Button("Belépés");
+		Button cancelButton = new Button("Mégse");
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
@@ -70,9 +68,14 @@ public class LoginView extends VerticalLayout implements View {
 		VerticalLayout loginLayout = new VerticalLayout();
 		loginLayout.setSpacing(true);
 		loginLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-		loginLayout.addComponents(this.errorLabel, userNameField, passwordField, loginButton);
+		loginLayout.addComponents(this.errorLabel, userNameField, passwordField,
+				new HorizontalLayout(loginButton, cancelButton));
 		loginLayout.setSpacing(true);
 		loginLayout.setMargin(true);
+
+		if (authService.checkIfUserLoggedIn()) {
+			getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
+		}
 
 		loginButton.addClickListener(new ClickListener() {
 
@@ -91,15 +94,24 @@ public class LoginView extends VerticalLayout implements View {
 				 */
 
 				login(userNameField.getValue(), passwordField.getValue());
+
 			}
 
 			private void login(String userName, String password) {
 				if (authService.isAuthenticUser(userName, password)) {
-					VaadinSession.getCurrent().setAttribute("user", userService.getUserByUserName(userName));
 					getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
 				} else {
 					Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
 				}
+			}
+		});
+		loginButton.setClickShortcut(KeyCode.ENTER);
+
+		cancelButton.addClickListener(new ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
 			}
 		});
 
