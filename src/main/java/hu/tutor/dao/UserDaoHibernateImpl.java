@@ -189,4 +189,19 @@ public class UserDaoHibernateImpl implements UserDao {
 		transaction.commit();
 		session.close();
 	}
+
+	@Override
+	public void becomeTeacher(Integer userId) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		Query query = session.createQuery("update User set role = :role where id = :u_id");
+		query.setInteger("u_id", userId);
+		query.setString("role", "teacher");
+
+		query.executeUpdate();
+
+		transaction.commit();
+		session.close();
+	}
 }

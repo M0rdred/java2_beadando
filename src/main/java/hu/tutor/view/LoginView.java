@@ -48,11 +48,11 @@ public class LoginView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 
-		final TextField userNameField = new TextField("Felhaszn√°l√≥n√©v: ");
-		final PasswordField passwordField = new PasswordField("Jelsz√≥:");
+		final TextField userNameField = new TextField("Felhaszn·lÛnÈv: ");
+		final PasswordField passwordField = new PasswordField("JelszÛ:");
 
-		Button loginButton = new Button("Bel√©p√©s");
-		Button cancelButton = new Button("M√©gse");
+		Button loginButton = new Button("BelÈpÈs");
+		Button cancelButton = new Button("MÈgse");
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
@@ -61,7 +61,7 @@ public class LoginView extends VerticalLayout implements View {
 		passwordField.setIcon(VaadinIcons.KEY);
 
 		this.errorLabel = new Label(
-				String.format("<div style='color:red;'>%s</div>", "Hib√°s felhaszn√°l√≥n√©v vagy jelsz√≥"),
+				String.format("<div style='color:red;'>%s</div>", "Hib·s felhaszn·lÛnÈv vagy jelszÛ"),
 				ContentMode.HTML);
 		this.errorLabel.setVisible(false);
 		this.errorLabel.setSizeUndefined();
@@ -101,7 +101,7 @@ public class LoginView extends VerticalLayout implements View {
 				if (authService.isAuthenticUser(userName, password)) {
 					getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
 				} else {
-					Notification.show("Bejelenkez√©si hiba", "Rossz felhaszn√°l√≥n√©v vagy jelsz√≥", Type.ERROR_MESSAGE);
+					Notification.show("BejelenkezÈsi hiba", "Rossz felhaszn·lÛnÈv vagy jelszÛ", Type.ERROR_MESSAGE);
 				}
 			}
 		});

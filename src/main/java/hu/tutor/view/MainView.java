@@ -33,8 +33,8 @@ public class MainView extends HorizontalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		Link registerLink = new Link("Regisztr√°ci√≥", new ExternalResource("#!register"));
-		Link loginLink = new Link("Bejelentkez√©s", new ExternalResource("#!login"));
+		Link registerLink = new Link("Regisztr·ciÛ", new ExternalResource("#!register"));
+		Link loginLink = new Link("BejelentkezÈs", new ExternalResource("#!login"));
 
 		label = new Label();
 

@@ -31,7 +31,7 @@ public class AccountView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 
-		Link logoutLink = new Link("Kijelentkez√©s", new ExternalResource("#!logout"));
+		Link logoutLink = new Link("KijelentkezÈs", new ExternalResource("#!logout"));
 
 		user = (User) VaadinSession.getCurrent().getAttribute("user");
 		// Label label = new Label(user.getFirstName());
@@ -39,14 +39,17 @@ public class AccountView extends VerticalLayout implements View {
 
 		TabSheet tabSheet = new TabSheet();
 
-		tabSheet.addTab(userAccountForm, "Fi√≥k");
+		tabSheet.addTab(userAccountForm, "FiÛk");
+		userAccountForm.setUser(user);
 
 		if (user.getClass() == Teacher.class) {
-			tabSheet.addTab(teacherAccountForm, "Tan√°r");
+			tabSheet.addTab(teacherAccountForm, "Tan·r");
+			teacherAccountForm.setTeacher((Teacher) user);
+			teacherAccountForm.initView();
 		}
 
 		if (user.getClass() == Administrator.class) {
-			tabSheet.addTab(adminAccountForm, "Adminisztr√°tor");
+			tabSheet.addTab(adminAccountForm, "Adminisztr·tor");
 		}
 
 		addComponent(logoutLink);

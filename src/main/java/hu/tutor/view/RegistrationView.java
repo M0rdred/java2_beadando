@@ -41,34 +41,34 @@ public class RegistrationView extends FormLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		final TextField userNameField = new TextField("Felhaszn√°l√≥n√©v: ");
-		final PasswordField passwordField = new PasswordField("Jelsz√≥: ");
-		final PasswordField passwordAgainField = new PasswordField("Jelsz√≥ ism√©t: ");
+		final TextField userNameField = new TextField("Felhaszn·lÛnÈv: ");
+		final PasswordField passwordField = new PasswordField("JelszÛ: ");
+		final PasswordField passwordAgainField = new PasswordField("JelszÛ ismÈt: ");
 		final TextField emailField = new TextField("Email: ");
-		final TextField firstNameField = new TextField("Keresztn√©v: ");
-		final TextField lastNameField = new TextField("Vezet√©kn√©v: ");
-		final CheckBox teacherCheckBox = new CheckBox("Tan√°r: ");
+		final TextField firstNameField = new TextField("KeresztnÈv: ");
+		final TextField lastNameField = new TextField("VezetÈknÈv: ");
+		final CheckBox teacherCheckBox = new CheckBox("Tan·r: ");
 
 		Binder<User> binder = new Binder<>();
 		binder.forField(userNameField).withValidator(
-				new StringLengthValidator("A felhaszn√°l√≥i n√©vnek legal√°bb 3 karakteresnek kell lennie.", 3, 100))
+				new StringLengthValidator("A felhaszn·lÛi nÈvnek legal·bb 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getUserName, User::setUserName);
 		binder.forField(passwordField)
-				.withValidator(new StringLengthValidator("A jelsz√≥ legal√°bb 6 karakteres kell legyen.", 6, 100))
+				.withValidator(new StringLengthValidator("A jelszÛ legal·bb 6 karakteres kell legyen.", 6, 100))
 				.bind(User::getPassword, User::setPassword);
 		binder.forField(emailField).withValidator(new EmailValidator("Nem helyes email cim.")).bind(User::getEmail,
 				User::setEmail);
 		binder.forField(firstNameField)
 				.withValidator(
-						new StringLengthValidator("A keresztn√©vnek legal√°bb 3 karakteresnek kell lennie.", 3, 100))
+						new StringLengthValidator("A keresztnÈvnek legal·bb 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getFirstName, User::setFirstName);
 		binder.forField(lastNameField)
 				.withValidator(
-						new StringLengthValidator("A vezet√©kn√©vnek legal√°bb 3 karakteresnek kell lennie.", 3, 100))
+						new StringLengthValidator("A vezetÈknÈvnek legal·bb 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getLastName, User::setLastName);
 
-		Button registerButton = new Button("Regisztr√°ci√≥");
-		Button cancelButton = new Button("M√©gse");
+		Button registerButton = new Button("Regisztr·ciÛ");
+		Button cancelButton = new Button("MÈgse");
 
 		userNameField.setWidth(defaultWidth);
 		userNameField.setRequiredIndicatorVisible(true);
@@ -92,7 +92,7 @@ public class RegistrationView extends FormLayout implements View {
 		lastNameField.setRequiredIndicatorVisible(true);
 
 		this.errorLabel = new Label(
-				String.format("<div style='color:red;'>%s</div>", "Hib√°s felhaszn√°l√≥n√©v vagy jelsz√≥"),
+				String.format("<div style='color:red;'>%s</div>", "Hib·s felhaszn·lÛnÈv vagy jelszÛ"),
 				ContentMode.HTML);
 		this.errorLabel.setVisible(false);
 		this.errorLabel.setSizeUndefined();
@@ -128,9 +128,9 @@ public class RegistrationView extends FormLayout implements View {
 
 					userService.saveUser(user);
 					getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
-					Notification.show("Sikeres regisztr√°ci√≥", Notification.TYPE_HUMANIZED_MESSAGE);
+					Notification.show("Sikeres regisztr·ciÛ", Notification.TYPE_HUMANIZED_MESSAGE);
 				} else {
-					Notification.show("Regisztr√°ci√≥s hiba", "K√©rem ellen≈ërizze az adatokat.",
+					Notification.show("Regisztr·ciÛs hiba", "KÈrem ellenırizze az adatokat.",
 							Notification.TYPE_ERROR_MESSAGE);
 				}
 			}

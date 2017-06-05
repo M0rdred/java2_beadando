@@ -21,9 +21,9 @@ public class LoginForm extends VerticalLayout {
 	private Label errorLabel;
 
 	public LoginForm() {
-		final TextField userNameField = new TextField("Felhaszn√°l√≥n√©v: ");
-		final PasswordField passwordField = new PasswordField("Jelsz√≥:");
-		Button loginButton = new Button("Bel√©p√©s");
+		final TextField userNameField = new TextField("Felhaszn·lÛnÈv: ");
+		final PasswordField passwordField = new PasswordField("JelszÛ:");
+		Button loginButton = new Button("BelÈpÈs");
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
@@ -32,7 +32,7 @@ public class LoginForm extends VerticalLayout {
 		passwordField.setIcon(VaadinIcons.KEY);
 
 		this.errorLabel = new Label(
-				String.format("<div style='color:red;'>%s</div>", "Hib√°s felhaszn√°l√≥n√©v vagy jelsz√≥"),
+				String.format("<div style='color:red;'>%s</div>", "Hib·s felhaszn·lÛnÈv vagy jelszÛ"),
 				ContentMode.HTML);
 		this.errorLabel.setVisible(false);
 		this.errorLabel.setSizeUndefined();

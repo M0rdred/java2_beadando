@@ -60,4 +60,9 @@ public class UserServiceImpl implements UserService {
 		userDao.deleteSubjectFromTeacher(teacherId, subjectId);
 	}
 
+	@Override
+	public void becomeTeacher(Integer userId) {
+		userDao.becomeTeacher(userId);
+	}
+
 }

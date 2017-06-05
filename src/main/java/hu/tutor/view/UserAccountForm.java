@@ -11,6 +11,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -21,7 +22,7 @@ import hu.tutor.service.UserService;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
-public class UserAccountForm extends VerticalLayout {
+public class UserAccountForm extends HorizontalLayout {
 
 	private User user;
 
@@ -38,26 +39,26 @@ public class UserAccountForm extends VerticalLayout {
 		dataGrid.setColumns(2);
 		dataGrid.setRows(9);
 
-		dataGrid.setCaption("Szem√©lyes adatok");
+		dataGrid.setCaption("SzemÈlyes adatok");
 
-		Label userNameLabel = new Label("Felhaszn√°l√≥n√©v:");
+		Label userNameLabel = new Label("Felhaszn·lÛnÈv:");
 		TextField userNameField = new TextField();
 		userNameField.setReadOnly(true);
-		Label lastNameLabel = new Label("Vezet√©kn√©v:");
+		Label lastNameLabel = new Label("VezetÈknÈv:");
 		TextField lastNameField = new TextField();
-		Label firstNameLabel = new Label("Keresztn√©v:");
+		Label firstNameLabel = new Label("KeresztnÈv:");
 		TextField firstNameField = new TextField();
 		Label emailLabel = new Label("Email:");
 		TextField emailField = new TextField();
 		Label phoneLabel = new Label("Telefon:");
 		TextField phoneField = new TextField();
-		Label addressLabel = new Label("C√≠m:");
+		Label addressLabel = new Label("CÌm:");
 		TextField addressField = new TextField();
-		Label cityLabel = new Label("V√°ros:");
+		Label cityLabel = new Label("V·ros:");
 		TextField cityField = new TextField();
-		Label zipLabel = new Label("Ir√°ny√≠t√≥sz√°m:");
+		Label zipLabel = new Label("Ir·nyÌtÛsz·m:");
 		TextField zipField = new TextField();
-		Label introductionLabel = new Label("Bemutatkoz√°s:");
+		Label introductionLabel = new Label("Bemutatkoz·s:");
 		TextArea introductionField = new TextArea();
 
 		Binder<User> dataBinder = new Binder<>();
@@ -83,7 +84,7 @@ public class UserAccountForm extends VerticalLayout {
 		 * introductionField.setValue(user.getIntroduction());
 		 */
 		Button saveButton = new Button();
-		saveButton.setCaption("Ment√©s");
+		saveButton.setCaption("MentÈs");
 		saveButton.addClickListener(new ClickListener() {
 
 			@Override
@@ -122,8 +123,24 @@ public class UserAccountForm extends VerticalLayout {
 		dataGrid.addComponent(introductionLabel);
 		dataGrid.addComponent(introductionField);
 
-		addComponent(dataGrid);
-		addComponent(saveButton);
+		addComponent(new VerticalLayout(dataGrid, saveButton));
+		
+		if (user.getClass() == User.class) {
+			Button btnBecomeTeacher = new Button();
+			btnBecomeTeacher.setCaption("Tan·r szeretnÈk lenni");
+			btnBecomeTeacher.addClickListener(new ClickListener() {
 
+				@Override
+				public void buttonClick(ClickEvent event) {
+					userService.becomeTeacher(user.getId());
+				}
+			});
+			addComponent(btnBecomeTeacher);
+		}
+
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

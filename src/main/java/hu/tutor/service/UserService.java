@@ -23,4 +23,6 @@ public interface UserService {
 	public void saveNewSubjectForTeacher(Integer teacherId, Integer subjectId);
 
 	public void deleteSubjectFromTeacher(Integer teacherId, Integer subjectId);
+
+	public void becomeTeacher(Integer userId);
 }
