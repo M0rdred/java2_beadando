@@ -4,6 +4,9 @@
 .classpath
 .project
 .tern-project
+.metadata
+
+*~sql
 
 target/
 widgetsets
