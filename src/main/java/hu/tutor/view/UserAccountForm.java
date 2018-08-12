@@ -8,8 +8,6 @@ import com.vaadin.data.Binder;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -23,6 +21,8 @@ import hu.tutor.service.UserService;
 @SpringComponent
 @Scope(scopeName = "prototype")
 public class UserAccountForm extends HorizontalLayout {
+
+	private static final long serialVersionUID = 7214911148324254712L;
 
 	private User user;
 
@@ -39,26 +39,26 @@ public class UserAccountForm extends HorizontalLayout {
 		dataGrid.setColumns(2);
 		dataGrid.setRows(9);
 
-		dataGrid.setCaption("SzemÈlyes adatok");
+		dataGrid.setCaption("Szem√©lyes adatok");
 
-		Label userNameLabel = new Label("Felhaszn·lÛnÈv:");
+		Label userNameLabel = new Label("Felhaszn√°l√≥n√©v:");
 		TextField userNameField = new TextField();
 		userNameField.setReadOnly(true);
-		Label lastNameLabel = new Label("VezetÈknÈv:");
+		Label lastNameLabel = new Label("Vezet√©kn√©v:");
 		TextField lastNameField = new TextField();
-		Label firstNameLabel = new Label("KeresztnÈv:");
+		Label firstNameLabel = new Label("Keresztn√©v:");
 		TextField firstNameField = new TextField();
 		Label emailLabel = new Label("Email:");
 		TextField emailField = new TextField();
 		Label phoneLabel = new Label("Telefon:");
 		TextField phoneField = new TextField();
-		Label addressLabel = new Label("CÌm:");
+		Label addressLabel = new Label("C√≠m:");
 		TextField addressField = new TextField();
-		Label cityLabel = new Label("V·ros:");
+		Label cityLabel = new Label("V√°ros:");
 		TextField cityField = new TextField();
-		Label zipLabel = new Label("Ir·nyÌtÛsz·m:");
+		Label zipLabel = new Label("Ir√°ny√≠t√≥sz√°m:");
 		TextField zipField = new TextField();
-		Label introductionLabel = new Label("Bemutatkoz·s:");
+		Label introductionLabel = new Label("Bemutatkoz√°s:");
 		TextArea introductionField = new TextArea();
 
 		Binder<User> dataBinder = new Binder<>();
@@ -77,31 +77,24 @@ public class UserAccountForm extends HorizontalLayout {
 		 * userNameField.setValue(user.getUserName());
 		 * lastNameField.setValue(user.getLastName());
 		 * firstNameField.setValue(user.getFirstName());
-		 * emailField.setValue(user.getEmail());
-		 * phoneField.setValue(user.getPhone());
-		 * addressField.setValue(user.getAddress());
-		 * cityField.setValue(user.getCity()); zipField.setValue(user.getZip());
+		 * emailField.setValue(user.getEmail()); phoneField.setValue(user.getPhone());
+		 * addressField.setValue(user.getAddress()); cityField.setValue(user.getCity());
+		 * zipField.setValue(user.getZip());
 		 * introductionField.setValue(user.getIntroduction());
 		 */
 		Button saveButton = new Button();
-		saveButton.setCaption("MentÈs");
-		saveButton.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				/*
-				 * user.setFirstName(firstNameField.getValue());
-				 * user.setLastName(lastNameField.getValue());
-				 * user.setEmail(emailField.getValue());
-				 * user.setPhone(phoneField.getValue());
-				 * user.setAddress(addressField.getValue());
-				 * user.setCity(cityField.getValue());
-				 * user.setZip(zipField.getValue());
-				 * user.setIntroduction(introductionField.getValue());
-				 */
-				user = dataBinder.getBean();
-				userService.updateUser(user);
-			}
+		saveButton.setCaption("MentÔøΩs");
+		saveButton.addClickListener(event -> {
+			/*
+			 * user.setFirstName(firstNameField.getValue());
+			 * user.setLastName(lastNameField.getValue());
+			 * user.setEmail(emailField.getValue()); user.setPhone(phoneField.getValue());
+			 * user.setAddress(addressField.getValue()); user.setCity(cityField.getValue());
+			 * user.setZip(zipField.getValue());
+			 * user.setIntroduction(introductionField.getValue());
+			 */
+			user = dataBinder.getBean();
+			userService.updateUser(user);
 		});
 
 		dataGrid.addComponent(userNameLabel);
@@ -124,17 +117,11 @@ public class UserAccountForm extends HorizontalLayout {
 		dataGrid.addComponent(introductionField);
 
 		addComponent(new VerticalLayout(dataGrid, saveButton));
-		
+
 		if (user.getClass() == User.class) {
 			Button btnBecomeTeacher = new Button();
-			btnBecomeTeacher.setCaption("Tan·r szeretnÈk lenni");
-			btnBecomeTeacher.addClickListener(new ClickListener() {
-
-				@Override
-				public void buttonClick(ClickEvent event) {
-					userService.becomeTeacher(user.getId());
-				}
-			});
+			btnBecomeTeacher.setCaption("Tan√°r szeretn√©k lenni");
+			btnBecomeTeacher.addClickListener(event -> userService.becomeTeacher(user.getId()));
 			addComponent(btnBecomeTeacher);
 		}
 

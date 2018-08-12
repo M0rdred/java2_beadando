@@ -18,6 +18,7 @@ import hu.tutor.model.User;
 @SpringView(name = AccountView.ACCOUNT_VIEW_NAME)
 public class AccountView extends VerticalLayout implements View {
 
+	private static final long serialVersionUID = -259083151677613427L;
 	protected static final String ACCOUNT_VIEW_NAME = "account";
 	private User user;
 
@@ -31,7 +32,7 @@ public class AccountView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 
-		Link logoutLink = new Link("KijelentkezÈs", new ExternalResource("#!logout"));
+		Link logoutLink = new Link("Kijelentkez√©s", new ExternalResource("#!logout"));
 
 		user = (User) VaadinSession.getCurrent().getAttribute("user");
 		// Label label = new Label(user.getFirstName());
@@ -39,17 +40,17 @@ public class AccountView extends VerticalLayout implements View {
 
 		TabSheet tabSheet = new TabSheet();
 
-		tabSheet.addTab(userAccountForm, "FiÛk");
+		tabSheet.addTab(userAccountForm, "Fi√≥k");
 		userAccountForm.setUser(user);
 
 		if (user.getClass() == Teacher.class) {
-			tabSheet.addTab(teacherAccountForm, "Tan·r");
+			tabSheet.addTab(teacherAccountForm, "Tan√°r");
 			teacherAccountForm.setTeacher((Teacher) user);
 			teacherAccountForm.initView();
 		}
 
 		if (user.getClass() == Administrator.class) {
-			tabSheet.addTab(adminAccountForm, "Adminisztr·tor");
+			tabSheet.addTab(adminAccountForm, "Adminisztr√°tor");
 		}
 
 		addComponent(logoutLink);

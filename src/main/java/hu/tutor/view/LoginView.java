@@ -25,9 +25,10 @@ import com.vaadin.ui.VerticalLayout;
 import hu.tutor.security.AuthService;
 import hu.tutor.service.UserService;
 
-@SuppressWarnings({ "serial", "unchecked" })
 @SpringView(name = LoginView.LOGIN_VIEW_NAME)
 public class LoginView extends VerticalLayout implements View {
+
+	private static final long serialVersionUID = -9159887005598675973L;
 
 	@Autowired
 	@Qualifier("userServiceImpl")
@@ -48,11 +49,11 @@ public class LoginView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 
-		final TextField userNameField = new TextField("Felhasználónév: ");
-		final PasswordField passwordField = new PasswordField("Jelszó:");
+		final TextField userNameField = new TextField("FelhasznÃ¡lÃ³nÃ©v: ");
+		final PasswordField passwordField = new PasswordField("JelszÃ³:");
 
-		Button loginButton = new Button("Belépés");
-		Button cancelButton = new Button("Mégse");
+		Button loginButton = new Button("BelÃ©pÃ©s");
+		Button cancelButton = new Button("Mï¿½gse");
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
@@ -61,7 +62,7 @@ public class LoginView extends VerticalLayout implements View {
 		passwordField.setIcon(VaadinIcons.KEY);
 
 		this.errorLabel = new Label(
-				String.format("<div style='color:red;'>%s</div>", "Hibás felhasználónév vagy jelszó"),
+				String.format("<div style='color:red;'>%s</div>", "HibÃ¡s felhasznÃ¡lÃ³nÃ©v vagy jelszÃ³"),
 				ContentMode.HTML);
 		this.errorLabel.setVisible(false);
 		this.errorLabel.setSizeUndefined();
@@ -82,11 +83,9 @@ public class LoginView extends VerticalLayout implements View {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				/*
-				 * FormSender formSender = new FormSender();
-				 * formSender.setFormAction(
-				 * VaadinServlet.getCurrent().getServletContext().getContextPath
-				 * () + "/j_spring_security_check");
-				 * formSender.setFormMethod(Method.POST);
+				 * FormSender formSender = new FormSender(); formSender.setFormAction(
+				 * VaadinServlet.getCurrent().getServletContext().getContextPath () +
+				 * "/j_spring_security_check"); formSender.setFormMethod(Method.POST);
 				 * formSender.addValue("username", userNameField.getValue());
 				 * formSender.addValue("password", passwordField.getValue());
 				 * formSender.setFormTarget("_top"); formSender.extend(getUI());
@@ -101,19 +100,14 @@ public class LoginView extends VerticalLayout implements View {
 				if (authService.isAuthenticUser(userName, password)) {
 					getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
 				} else {
-					Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
+					Notification.show("BejelenkezÃ©si hiba", "Rossz felhasznÃ¡lÃ³nÃ©v vagy jelszÃ³", Type.ERROR_MESSAGE);
 				}
 			}
 		});
+
 		loginButton.setClickShortcut(KeyCode.ENTER);
 
-		cancelButton.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
-			}
-		});
+		cancelButton.addClickListener(e -> getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
 
 		addComponent(loginLayout);
 		setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);

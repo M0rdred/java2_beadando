@@ -8,6 +8,9 @@ import com.vaadin.ui.VerticalLayout;
 
 @SpringView(name = LogoutView.LOGOUT_VIEW_NAME)
 public class LogoutView extends VerticalLayout implements View {
+
+	private static final long serialVersionUID = 2511920132230388749L;
+
 	protected static final String LOGOUT_VIEW_NAME = "logout";
 
 	@Override

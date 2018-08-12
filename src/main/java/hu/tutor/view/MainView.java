@@ -16,9 +16,10 @@ import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
 import hu.tutor.service.UserService;
 
-@SuppressWarnings({ "serial", "unchecked" })
 @SpringView(name = MainView.MAIN_VIEW_NAME)
 public class MainView extends HorizontalLayout implements View {
+
+	private static final long serialVersionUID = -891813713655196146L;
 
 	protected static final String MAIN_VIEW_NAME = "main";
 
@@ -33,8 +34,8 @@ public class MainView extends HorizontalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		Link registerLink = new Link("Regisztr·ciÛ", new ExternalResource("#!register"));
-		Link loginLink = new Link("BejelentkezÈs", new ExternalResource("#!login"));
+		Link registerLink = new Link("Regisztr√°ci√≥", new ExternalResource("#!register"));
+		Link loginLink = new Link("Bejelentkez√©s", new ExternalResource("#!login"));
 
 		label = new Label();
 
