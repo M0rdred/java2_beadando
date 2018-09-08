@@ -4,12 +4,11 @@ import java.util.List;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "users")
+@Table(name = "person")
 @DiscriminatorValue("teacher")
 public class Teacher extends User {
 

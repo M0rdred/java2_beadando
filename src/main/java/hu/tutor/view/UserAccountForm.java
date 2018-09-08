@@ -32,7 +32,7 @@ public class UserAccountForm extends HorizontalLayout {
 
 	public UserAccountForm() {
 
-		user = (User) VaadinSession.getCurrent().getAttribute("user");
+		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 
 		GridLayout dataGrid = new GridLayout();
 
@@ -72,7 +72,7 @@ public class UserAccountForm extends HorizontalLayout {
 		dataBinder.forField(zipField).bind(User::getZip, User::setZip);
 		dataBinder.forField(introductionField).bind(User::getIntroduction, User::setIntroduction);
 
-		dataBinder.setBean(user);
+		dataBinder.setBean(this.user);
 		/*
 		 * userNameField.setValue(user.getUserName());
 		 * lastNameField.setValue(user.getLastName());
@@ -93,8 +93,8 @@ public class UserAccountForm extends HorizontalLayout {
 			 * user.setZip(zipField.getValue());
 			 * user.setIntroduction(introductionField.getValue());
 			 */
-			user = dataBinder.getBean();
-			userService.updateUser(user);
+			this.user = dataBinder.getBean();
+			this.userService.updateUser(this.user);
 		});
 
 		dataGrid.addComponent(userNameLabel);
@@ -116,13 +116,13 @@ public class UserAccountForm extends HorizontalLayout {
 		dataGrid.addComponent(introductionLabel);
 		dataGrid.addComponent(introductionField);
 
-		addComponent(new VerticalLayout(dataGrid, saveButton));
+		this.addComponent(new VerticalLayout(dataGrid, saveButton));
 
-		if (user.getClass() == User.class) {
+		if (this.user.getClass() == User.class) {
 			Button btnBecomeTeacher = new Button();
 			btnBecomeTeacher.setCaption("Tanár szeretnék lenni");
-			btnBecomeTeacher.addClickListener(event -> userService.becomeTeacher(user.getId()));
-			addComponent(btnBecomeTeacher);
+			btnBecomeTeacher.addClickListener(event -> this.userService.becomeTeacher(this.user.getId()));
+			this.addComponent(btnBecomeTeacher);
 		}
 
 	}

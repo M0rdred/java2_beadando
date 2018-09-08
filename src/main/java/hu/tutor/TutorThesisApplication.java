@@ -10,9 +10,9 @@ import org.springframework.context.annotation.ComponentScan;
 @ServletComponentScan
 @ComponentScan
 @SpringBootApplication
-public class Java2BeadandoApplication {
+public class TutorThesisApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Java2BeadandoApplication.class, args);
+		SpringApplication.run(TutorThesisApplication.class, args);
 	}
 }

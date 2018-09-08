@@ -23,6 +23,7 @@ import hu.tutor.util.HibernateUtil;
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
 @NamedQuery(name = "getSubjectsOfTeacher", query = "call get_subjects_of_teacher(:t_id)")
+@SuppressWarnings("unchecked")
 public class UserDaoHibernateImpl implements UserDao {
 
 	@Autowired

@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.tutor.model.Subject;
-import hu.tutor.model.User;
 import hu.tutor.util.HibernateUtil;
 
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
+@SuppressWarnings("unchecked")
 public class SubjectDaoImpl implements SubjectDao {
 
 	@Autowired
@@ -44,6 +44,7 @@ public class SubjectDaoImpl implements SubjectDao {
 		}
 	}
 
+	@Override
 	public List<Subject> getAllSubjects() {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();

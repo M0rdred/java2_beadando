@@ -24,11 +24,7 @@ public class AuthService {
 	}
 
 	public boolean checkIfUserLoggedIn() {
-		if (VaadinSession.getCurrent().getAttribute("user") != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return VaadinSession.getCurrent().getAttribute("user") != null;
 	}
 
 }
