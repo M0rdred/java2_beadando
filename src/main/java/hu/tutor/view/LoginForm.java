@@ -50,16 +50,16 @@ public class LoginForm extends VerticalLayout {
 			formSender.addValue("username", userNameField.getValue());
 			formSender.addValue("password", passwordField.getValue());
 			formSender.setFormTarget("_top");
-			formSender.extend(getUI());
+			formSender.extend(this.getUI());
 			formSender.submit();
 		});
 
-		addComponent(loginLayout);
-		setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		this.addComponent(loginLayout);
+		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 	}
 
 	public void setVisibleErrorLabel(boolean b) {
-		errorLabel.setVisible(b);
+		this.errorLabel.setVisible(b);
 	}
 
 }

@@ -15,8 +15,10 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import hu.tutor.model.Address;
 import hu.tutor.model.User;
 import hu.tutor.service.UserService;
+import hu.tutor.view.component.PhoneField;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
@@ -25,6 +27,10 @@ public class UserAccountForm extends HorizontalLayout {
 	private static final long serialVersionUID = 7214911148324254712L;
 
 	private User user;
+	private Address address;
+
+	private Binder<User> userBinder;
+	private Binder<Address> addressBinder;
 
 	@Autowired
 	@Qualifier("userServiceImpl")
@@ -33,6 +39,7 @@ public class UserAccountForm extends HorizontalLayout {
 	public UserAccountForm() {
 
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
+		this.address = this.user.getAddress();
 
 		GridLayout dataGrid = new GridLayout();
 
@@ -51,7 +58,7 @@ public class UserAccountForm extends HorizontalLayout {
 		Label emailLabel = new Label("Email:");
 		TextField emailField = new TextField();
 		Label phoneLabel = new Label("Telefon:");
-		TextField phoneField = new TextField();
+		PhoneField phoneField = new PhoneField();
 		Label addressLabel = new Label("Cím:");
 		TextField addressField = new TextField();
 		Label cityLabel = new Label("Város:");
@@ -61,18 +68,23 @@ public class UserAccountForm extends HorizontalLayout {
 		Label introductionLabel = new Label("Bemutatkozás:");
 		TextArea introductionField = new TextArea();
 
-		Binder<User> dataBinder = new Binder<>();
-		dataBinder.forField(userNameField).bind(User::getUserName, User::setUserName);
-		dataBinder.forField(lastNameField).bind(User::getLastName, User::setLastName);
-		dataBinder.forField(firstNameField).bind(User::getFirstName, User::setFirstName);
-		dataBinder.forField(emailField).bind(User::getEmail, User::setEmail);
-		dataBinder.forField(phoneField).bind(User::getPhone, User::setPhone);
-		dataBinder.forField(addressField).bind(User::getAddress, User::setAddress);
-		dataBinder.forField(cityField).bind(User::getCity, User::setCity);
-		dataBinder.forField(zipField).bind(User::getZip, User::setZip);
-		dataBinder.forField(introductionField).bind(User::getIntroduction, User::setIntroduction);
+		this.userBinder = new Binder<>();
+		this.addressBinder = new Binder<>();
 
-		dataBinder.setBean(this.user);
+		this.userBinder.bind(userNameField, User::getUserName, User::setUserName);
+		this.userBinder.bind(lastNameField, User::getLastName, User::setLastName);
+		this.userBinder.bind(firstNameField, User::getFirstName, User::setFirstName);
+		this.userBinder.bind(emailField, User::getEmail, User::setEmail);
+		this.userBinder.bind(phoneField, User::getPhone, User::setPhone);
+		this.userBinder.bind(introductionField, User::getIntroduction, User::setIntroduction);
+
+		this.addressBinder.bind(addressField, Address::getStreet, Address::setStreet);
+		this.addressBinder.bind(cityField, Address::getCity, Address::setCity);
+		this.addressBinder.bind(zipField, Address::getZip, Address::setZip);
+		this.addressBinder.bind(addressField, Address::getStreet, Address::setStreet);
+
+		this.userBinder.setBean(this.user);
+		this.addressBinder.setBean(this.address);
 		/*
 		 * userNameField.setValue(user.getUserName());
 		 * lastNameField.setValue(user.getLastName());
@@ -83,7 +95,7 @@ public class UserAccountForm extends HorizontalLayout {
 		 * introductionField.setValue(user.getIntroduction());
 		 */
 		Button saveButton = new Button();
-		saveButton.setCaption("Ment�s");
+		saveButton.setCaption("Mentés");
 		saveButton.addClickListener(event -> {
 			/*
 			 * user.setFirstName(firstNameField.getValue());
@@ -93,7 +105,7 @@ public class UserAccountForm extends HorizontalLayout {
 			 * user.setZip(zipField.getValue());
 			 * user.setIntroduction(introductionField.getValue());
 			 */
-			this.user = dataBinder.getBean();
+			this.user = this.userBinder.getBean();
 			this.userService.updateUser(this.user);
 		});
 
@@ -116,9 +128,11 @@ public class UserAccountForm extends HorizontalLayout {
 		dataGrid.addComponent(introductionLabel);
 		dataGrid.addComponent(introductionField);
 
+		dataGrid.setSpacing(true);
+
 		this.addComponent(new VerticalLayout(dataGrid, saveButton));
 
-		if (this.user.getClass() == User.class) {
+		if (!this.user.isTeacher()) {
 			Button btnBecomeTeacher = new Button();
 			btnBecomeTeacher.setCaption("Tanár szeretnék lenni");
 			btnBecomeTeacher.addClickListener(event -> this.userService.becomeTeacher(this.user.getId()));

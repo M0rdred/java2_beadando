@@ -53,7 +53,7 @@ public class LoginView extends VerticalLayout implements View {
 		final PasswordField passwordField = new PasswordField("Jelszó:");
 
 		Button loginButton = new Button("Belépés");
-		Button cancelButton = new Button("M�gse");
+		Button cancelButton = new Button("Mégse");
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
@@ -74,8 +74,8 @@ public class LoginView extends VerticalLayout implements View {
 		loginLayout.setSpacing(true);
 		loginLayout.setMargin(true);
 
-		if (authService.checkIfUserLoggedIn()) {
-			getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
+		if (this.authService.checkIfUserLoggedIn()) {
+			this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
 		}
 
 		loginButton.addClickListener(new ClickListener() {
@@ -92,13 +92,13 @@ public class LoginView extends VerticalLayout implements View {
 				 * formSender.submit();
 				 */
 
-				login(userNameField.getValue(), passwordField.getValue());
+				this.login(userNameField.getValue(), passwordField.getValue());
 
 			}
 
 			private void login(String userName, String password) {
-				if (authService.isAuthenticUser(userName, password)) {
-					getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
+				if (LoginView.this.authService.isAuthenticUser(userName, password)) {
+					LoginView.this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
 				} else {
 					Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
 				}
@@ -107,10 +107,10 @@ public class LoginView extends VerticalLayout implements View {
 
 		loginButton.setClickShortcut(KeyCode.ENTER);
 
-		cancelButton.addClickListener(e -> getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
+		cancelButton.addClickListener(e -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
 
-		addComponent(loginLayout);
-		setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		this.addComponent(loginLayout);
+		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 
 	}
 }
