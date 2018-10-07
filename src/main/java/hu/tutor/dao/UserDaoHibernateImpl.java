@@ -7,8 +7,10 @@ import javax.persistence.NamedQuery;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,7 +36,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public User findUser(Integer id) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		// Criteria criteria = session.createCriteria(User.class);
 		// criteria.add(Restrictions.eq("id", id));
@@ -63,7 +65,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public List<User> getAllUsers() {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		Criteria criteria = session.createCriteria(User.class);
 		List<User> users = criteria.list();
@@ -74,7 +76,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public User updateUser(User user) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		session.merge(user);
@@ -87,7 +89,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public User saveUser(User user) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		session.persist(user);
 		transaction.commit();
@@ -98,7 +100,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public void deleteUser(Integer id) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		User user = session.load(User.class, id);
 		session.delete(user);
@@ -108,19 +110,21 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public List<Subject> getSubjectsOfTeacher(Integer teacherId) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Query query = session
-				.createSQLQuery("select ts.subject_id from teached_subjects as ts where ts.teacher_id = :t_id")
-				.setParameter("t_id", teacherId);
+		SQLQuery query = session.createSQLQuery(
+				"select ts.subject_id as subject_id from teached_subjects ts where ts.teacher_id = :t_id");
+		query.addScalar("subject_id", new IntegerType());
+		query.setInteger("t_id", teacherId);
 
 		List<Integer> subjectIds = query.list();
+		transaction.commit();
 
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject;
 		for (Integer id : subjectIds) {
-			subject = subjectService.getSubjectById(id);
+			subject = this.subjectService.getSubjectById(id);
 			subjects.add(subject);
 		}
 		return subjects;
@@ -128,7 +132,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public User getUserByUserName(String userName) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session.createQuery("from User where user_name = :userName");
@@ -161,7 +165,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public void saveNewSubjectForTeacher(Integer teacherId, Integer subjectId) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session
@@ -177,7 +181,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public void deleteSubjectFromTeacher(Integer teacherId, Integer subjectId) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session
@@ -193,7 +197,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
 	@Override
 	public void becomeTeacher(Integer userId) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session.createQuery("update User set role = :role where id = :u_id");
