@@ -200,7 +200,7 @@ public class UserDaoHibernateImpl implements UserDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Query query = session.createQuery("update User set role = :role where id = :u_id");
+		Query query = session.createQuery("update User set role = :role, is_teacher = 1 where id = :u_id");
 		query.setInteger("u_id", userId);
 		query.setString("role", "teacher");
 
