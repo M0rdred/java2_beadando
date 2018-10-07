@@ -11,7 +11,6 @@ import com.vaadin.ui.Link;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
-import hu.tutor.model.Administrator;
 import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 
@@ -34,27 +33,27 @@ public class AccountView extends VerticalLayout implements View {
 
 		Link logoutLink = new Link("Kijelentkezés", new ExternalResource("#!logout"));
 
-		user = (User) VaadinSession.getCurrent().getAttribute("user");
+		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 		// Label label = new Label(user.getFirstName());
 		// addComponent(label);
 
 		TabSheet tabSheet = new TabSheet();
 
-		tabSheet.addTab(userAccountForm, "Fiók");
-		userAccountForm.setUser(user);
+		tabSheet.addTab(this.userAccountForm, "Fiók");
+		this.userAccountForm.setUser(this.user);
 
-		if (user.getClass() == Teacher.class) {
-			tabSheet.addTab(teacherAccountForm, "Tanár");
-			teacherAccountForm.setTeacher((Teacher) user);
-			teacherAccountForm.initView();
+		if (this.user.isTeacher()) {
+			tabSheet.addTab(this.teacherAccountForm, "Tanár");
+			this.teacherAccountForm.setTeacher((Teacher) this.user);
+			this.teacherAccountForm.initView();
 		}
 
-		if (user.getClass() == Administrator.class) {
-			tabSheet.addTab(adminAccountForm, "Adminisztrátor");
+		if (this.user.isAdmin()) {
+			tabSheet.addTab(this.adminAccountForm, "Adminisztrátor");
 		}
 
-		addComponent(logoutLink);
-		addComponent(tabSheet);
+		this.addComponent(logoutLink);
+		this.addComponent(tabSheet);
 
 	}
 
