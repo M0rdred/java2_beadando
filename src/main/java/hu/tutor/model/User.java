@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,8 +21,8 @@ import javax.persistence.Table;
 public class User {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name = "first_name")
@@ -39,14 +40,8 @@ public class User {
 	@Column(name = "phone")
 	private String phone;
 
-	@Column(name = "address")
-	private String address;
-
-	@Column(name = "city")
-	private String city;
-
-	@Column(name = "zip")
-	private String zip;
+	@ManyToOne
+	private Address address;
 
 	@Column(name = "introduction")
 	private String introduction;
@@ -61,7 +56,7 @@ public class User {
 	private boolean isTeacher;
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {
@@ -69,7 +64,7 @@ public class User {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -77,7 +72,7 @@ public class User {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -85,7 +80,7 @@ public class User {
 	}
 
 	public String getUserName() {
-		return userName;
+		return this.userName;
 	}
 
 	public void setUserName(String userName) {
@@ -93,7 +88,7 @@ public class User {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
@@ -101,39 +96,23 @@ public class User {
 	}
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
-	public String getAddress() {
-		return address;
+	public Address getAddress() {
+		return this.address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getZip() {
-		return zip;
-	}
-
-	public void setZip(String zip) {
-		this.zip = zip;
-	}
-
 	public String getIntroduction() {
-		return introduction;
+		return this.introduction;
 	}
 
 	public void setIntroduction(String introduction) {
@@ -141,7 +120,7 @@ public class User {
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -149,7 +128,7 @@ public class User {
 	}
 
 	public boolean isAdmin() {
-		return isAdmin;
+		return this.isAdmin;
 	}
 
 	public void setAdmin(boolean isAdmin) {
@@ -157,7 +136,7 @@ public class User {
 	}
 
 	public boolean isTeacher() {
-		return isTeacher;
+		return this.isTeacher;
 	}
 
 	public void setTeacher(boolean isTeacher) {
