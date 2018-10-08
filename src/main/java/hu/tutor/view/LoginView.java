@@ -57,6 +57,7 @@ public class LoginView extends VerticalLayout implements View {
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
+		userNameField.focus();
 
 		passwordField.setWidth("200px");
 		passwordField.setIcon(VaadinIcons.KEY);
