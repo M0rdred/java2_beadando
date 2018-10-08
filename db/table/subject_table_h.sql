@@ -1,0 +1,6 @@
+CREATE TABLE SUBJECT_HISTORY 
+       AS (
+   SELECT * FROM SUBJECT 
+   WHERE 1 = 2
+);
+/

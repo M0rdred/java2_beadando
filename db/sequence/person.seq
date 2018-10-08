@@ -1,0 +1,2 @@
+CREATE SEQUENCE person_sq START WITH 100;
+/

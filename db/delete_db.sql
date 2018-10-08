@@ -1,7 +1,7 @@
 Prompt Deleting Database
 
-DROP TRIGGER adress_hist_trg;
-DROP TRIGGER adress_trg;
+DROP TRIGGER address_hist_trg;
+DROP TRIGGER address_trg;
 DROP TRIGGER language_hist_trg;
 DROP TRIGGER language_trg;
 DROP TRIGGER person_hist_trg;
@@ -13,13 +13,13 @@ DROP TRIGGER teached_subject_trg;
 DROP TRIGGER translation_hist_trg;
 DROP TRIGGER translation_trg;
 
-DROP SEQUENCE adress_sq;
+DROP SEQUENCE address_sq;
 DROP SEQUENCE language_sq;
 DROP SEQUENCE person_sq;
 DROP SEQUENCE subject_sq;
 DROP SEQUENCE translation_sq;
 
-DROP PACKAGE adress_pkg;
+DROP PACKAGE address_pkg;
 DROP PACKAGE distance_pkg;
 DROP PACKAGE person_pkg;
 DROP PACKAGE search_pkg;
@@ -28,8 +28,8 @@ DROP PACKAGE teached_subject_pkg;
 
 DROP VIEW subjects_waiting_validation_vw;
 
-DROP TABLE adress;
-DROP TABLE adress_history;
+DROP TABLE address;
+DROP TABLE address_history;
 DROP TABLE city_distance;
 DROP TABLE language;
 DROP TABLE language_history;

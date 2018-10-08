@@ -1,0 +1,2 @@
+CREATE SEQUENCE subject_sq START WITH 100;
+/

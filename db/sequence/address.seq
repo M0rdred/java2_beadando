@@ -1,0 +1,2 @@
+CREATE SEQUENCE address_sq START WITH 100;
+/
