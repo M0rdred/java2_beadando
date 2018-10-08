@@ -8,6 +8,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -32,11 +33,27 @@ public class UserAccountForm extends HorizontalLayout {
 	private Binder<User> userBinder;
 	private Binder<Address> addressBinder;
 
+	private TextField userNameField;
+	private TextField lastNameField;
+	private TextField firstNameField;
+	private TextField emailField;
+	private PhoneField phoneField;
+	private TextField addressField;
+	private TextField cityField;
+	private TextField zipField;
+	private TextArea introductionField;
+
 	@Autowired
 	@Qualifier("userServiceImpl")
 	private UserService userService;
 
-	public UserAccountForm() {
+	public void init(User user) {
+		this.user = user;
+
+		this.addComponent(this.getFormLayout());
+	}
+
+	private Component getFormLayout() {
 
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 		this.address = this.user.getAddress();
@@ -49,42 +66,27 @@ public class UserAccountForm extends HorizontalLayout {
 		dataGrid.setCaption("Személyes adatok");
 
 		Label userNameLabel = new Label("Felhasználónév:");
-		TextField userNameField = new TextField();
-		userNameField.setReadOnly(true);
+		this.userNameField = new TextField();
+		this.userNameField.setReadOnly(true);
 		Label lastNameLabel = new Label("Vezetéknév:");
-		TextField lastNameField = new TextField();
+		this.lastNameField = new TextField();
 		Label firstNameLabel = new Label("Keresztnév:");
-		TextField firstNameField = new TextField();
+		this.firstNameField = new TextField();
 		Label emailLabel = new Label("Email:");
-		TextField emailField = new TextField();
+		this.emailField = new TextField();
 		Label phoneLabel = new Label("Telefon:");
-		PhoneField phoneField = new PhoneField();
+		this.phoneField = new PhoneField();
 		Label addressLabel = new Label("Cím:");
-		TextField addressField = new TextField();
+		this.addressField = new TextField();
 		Label cityLabel = new Label("Város:");
-		TextField cityField = new TextField();
+		this.cityField = new TextField();
 		Label zipLabel = new Label("Irányítószám:");
-		TextField zipField = new TextField();
+		this.zipField = new TextField();
 		Label introductionLabel = new Label("Bemutatkozás:");
-		TextArea introductionField = new TextArea();
+		this.introductionField = new TextArea();
 
-		this.userBinder = new Binder<>();
-		this.addressBinder = new Binder<>();
-
-		this.userBinder.bind(userNameField, User::getUserName, User::setUserName);
-		this.userBinder.bind(lastNameField, User::getLastName, User::setLastName);
-		this.userBinder.bind(firstNameField, User::getFirstName, User::setFirstName);
-		this.userBinder.bind(emailField, User::getEmail, User::setEmail);
-		this.userBinder.bind(phoneField, User::getPhone, User::setPhone);
-		this.userBinder.bind(introductionField, User::getIntroduction, User::setIntroduction);
-
-		this.addressBinder.bind(addressField, Address::getStreet, Address::setStreet);
-		this.addressBinder.bind(cityField, Address::getCity, Address::setCity);
-		this.addressBinder.bind(zipField, Address::getZip, Address::setZip);
-		this.addressBinder.bind(addressField, Address::getStreet, Address::setStreet);
-
-		this.userBinder.setBean(this.user);
-		this.addressBinder.setBean(this.address);
+		this.setUserBinder();
+		this.setAddressBinder();
 		/*
 		 * userNameField.setValue(user.getUserName());
 		 * lastNameField.setValue(user.getLastName());
@@ -106,31 +108,31 @@ public class UserAccountForm extends HorizontalLayout {
 			 * user.setIntroduction(introductionField.getValue());
 			 */
 			this.user = this.userBinder.getBean();
+			this.user.setAddress(this.addressBinder.getBean());
+
 			this.userService.updateUser(this.user);
 		});
 
 		dataGrid.addComponent(userNameLabel);
-		dataGrid.addComponent(userNameField);
+		dataGrid.addComponent(this.userNameField);
 		dataGrid.addComponent(lastNameLabel);
-		dataGrid.addComponent(lastNameField);
+		dataGrid.addComponent(this.lastNameField);
 		dataGrid.addComponent(firstNameLabel);
-		dataGrid.addComponent(firstNameField);
+		dataGrid.addComponent(this.firstNameField);
 		dataGrid.addComponent(emailLabel);
-		dataGrid.addComponent(emailField);
+		dataGrid.addComponent(this.emailField);
 		dataGrid.addComponent(phoneLabel);
-		dataGrid.addComponent(phoneField);
+		dataGrid.addComponent(this.phoneField);
 		dataGrid.addComponent(addressLabel);
-		dataGrid.addComponent(addressField);
+		dataGrid.addComponent(this.addressField);
 		dataGrid.addComponent(cityLabel);
-		dataGrid.addComponent(cityField);
+		dataGrid.addComponent(this.cityField);
 		dataGrid.addComponent(zipLabel);
-		dataGrid.addComponent(zipField);
+		dataGrid.addComponent(this.zipField);
 		dataGrid.addComponent(introductionLabel);
-		dataGrid.addComponent(introductionField);
+		dataGrid.addComponent(this.introductionField);
 
 		dataGrid.setSpacing(true);
-
-		this.addComponent(new VerticalLayout(dataGrid, saveButton));
 
 		if (!this.user.isTeacher()) {
 			Button btnBecomeTeacher = new Button();
@@ -139,9 +141,33 @@ public class UserAccountForm extends HorizontalLayout {
 			this.addComponent(btnBecomeTeacher);
 		}
 
+		return new VerticalLayout(dataGrid, saveButton);
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	private void setAddressBinder() {
+		this.addressBinder = new Binder<>();
+
+		this.addressBinder.bind(this.addressField, Address::getStreet, Address::setStreet);
+		this.addressBinder.bind(this.cityField, Address::getCity, Address::setCity);
+		this.addressBinder.bind(this.zipField, Address::getZip, Address::setZip);
+
+		if (this.address == null) {
+			this.addressBinder.setBean(new Address());
+		} else {
+			this.addressBinder.setBean(this.address);
+		}
+	}
+
+	private void setUserBinder() {
+		this.userBinder = new Binder<>();
+
+		this.userBinder.bind(this.userNameField, User::getUserName, User::setUserName);
+		this.userBinder.bind(this.lastNameField, User::getLastName, User::setLastName);
+		this.userBinder.bind(this.firstNameField, User::getFirstName, User::setFirstName);
+		this.userBinder.bind(this.emailField, User::getEmail, User::setEmail);
+		this.userBinder.bind(this.phoneField, User::getPhone, User::setPhone);
+		this.userBinder.bind(this.introductionField, User::getIntroduction, User::setIntroduction);
+
+		this.userBinder.setBean(this.user);
 	}
 }
