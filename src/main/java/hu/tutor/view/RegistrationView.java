@@ -30,7 +30,7 @@ import hu.tutor.service.UserService;
 @SpringView(name = RegistrationView.REGISTER_VIEW_NAME)
 public class RegistrationView extends FormLayout implements View {
 
-	protected static final String REGISTER_VIEW_NAME = "register";
+	protected static final String REGISTER_VIEW_NAME = "registration";
 
 	private Label errorLabel;
 
@@ -70,25 +70,25 @@ public class RegistrationView extends FormLayout implements View {
 		Button registerButton = new Button("Regisztráció");
 		Button cancelButton = new Button("Mégse");
 
-		userNameField.setWidth(defaultWidth);
+		userNameField.setWidth(this.defaultWidth);
 		userNameField.setRequiredIndicatorVisible(true);
 		userNameField.setIcon(VaadinIcons.USER);
 
-		passwordField.setWidth(defaultWidth);
+		passwordField.setWidth(this.defaultWidth);
 		passwordField.setRequiredIndicatorVisible(true);
 		passwordField.setIcon(VaadinIcons.KEY);
 
-		passwordAgainField.setWidth(defaultWidth);
+		passwordAgainField.setWidth(this.defaultWidth);
 		passwordAgainField.setRequiredIndicatorVisible(true);
 		passwordAgainField.setIcon(VaadinIcons.KEY);
 
-		emailField.setWidth(defaultWidth);
+		emailField.setWidth(this.defaultWidth);
 		emailField.setRequiredIndicatorVisible(true);
 
-		firstNameField.setWidth(defaultWidth);
+		firstNameField.setWidth(this.defaultWidth);
 		firstNameField.setRequiredIndicatorVisible(true);
 
-		lastNameField.setWidth(defaultWidth);
+		lastNameField.setWidth(this.defaultWidth);
 		lastNameField.setRequiredIndicatorVisible(true);
 
 		this.errorLabel = new Label(
@@ -113,7 +113,7 @@ public class RegistrationView extends FormLayout implements View {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (validateData()) {
+				if (this.validateData()) {
 					User user;
 					if (teacherCheckBox.getValue()) {
 						user = new Teacher();
@@ -126,8 +126,8 @@ public class RegistrationView extends FormLayout implements View {
 					user.setPassword(passwordField.getValue());
 					user.setEmail(emailField.getValue());
 
-					userService.saveUser(user);
-					getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
+					RegistrationView.this.userService.saveUser(user);
+					RegistrationView.this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
 					Notification.show("Sikeres regisztráció", Notification.Type.HUMANIZED_MESSAGE);
 				} else {
 					Notification.show("Regisztrációs hiba", "Kérem ellenőrizze az adatokat.",
@@ -145,14 +145,14 @@ public class RegistrationView extends FormLayout implements View {
 
 		});
 
-		cancelButton.addClickListener(event1 -> getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
+		cancelButton.addClickListener(event1 -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
 
-		addComponent(loginLayout);
-		setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		this.addComponent(loginLayout);
+		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 	}
 
 	public void setVisibleErrorLabel(boolean b) {
-		errorLabel.setVisible(b);
+		this.errorLabel.setVisible(b);
 	}
 
 }

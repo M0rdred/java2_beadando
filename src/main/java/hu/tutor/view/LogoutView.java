@@ -15,12 +15,11 @@ public class LogoutView extends VerticalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
-		invalidateSession();
+		this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
+		this.invalidateSession();
 	}
 
 	private void invalidateSession() {
-		// VaadinSession.getCurrent().close();
 		VaadinSession.getCurrent().setAttribute("user", null);
 	}
 

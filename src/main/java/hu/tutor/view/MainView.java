@@ -29,10 +29,9 @@ public class MainView extends HorizontalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		Link registerLink = new Link("Regisztráció", new ExternalResource("#!register"));
-		Link loginLink = new Link("Bejelentkezés", new ExternalResource("#!login"));
+		Link registerLink = new Link("Regisztráció", new ExternalResource("#!" + RegistrationView.REGISTER_VIEW_NAME));
+		Link loginLink = new Link("Bejelentkezés", new ExternalResource("#!" + LoginView.LOGIN_VIEW_NAME));
 
-		addComponent(registerLink);
-		addComponent(loginLink);
+		this.addComponents(registerLink, loginLink);
 	}
 }

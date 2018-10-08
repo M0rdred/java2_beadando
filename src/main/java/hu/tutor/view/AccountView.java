@@ -31,7 +31,7 @@ public class AccountView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 
-		Link logoutLink = new Link("Kijelentkezés", new ExternalResource("#!logout"));
+		Link logoutLink = new Link("Kijelentkezés", new ExternalResource("#!" + LogoutView.LOGOUT_VIEW_NAME));
 
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 		// Label label = new Label(user.getFirstName());
@@ -40,7 +40,7 @@ public class AccountView extends VerticalLayout implements View {
 		TabSheet tabSheet = new TabSheet();
 
 		tabSheet.addTab(this.userAccountForm, "Fiók");
-		this.userAccountForm.setUser(this.user);
+		this.userAccountForm.init(this.user);
 
 		if (this.user.isTeacher()) {
 			tabSheet.addTab(this.teacherAccountForm, "Tanár");
