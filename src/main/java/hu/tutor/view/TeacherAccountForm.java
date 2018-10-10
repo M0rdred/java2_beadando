@@ -150,6 +150,9 @@ public class TeacherAccountForm extends VerticalLayout {
 		});
 
 		FormLayout formLayout = new FormLayout();
+
+		formLayout.setSpacing(true);
+
 		formLayout.addComponent(txtNewSubjectName);
 		formLayout.addComponent(txtNewSubjectDescription);
 		formLayout.addComponent(btnSaveNewSubject);
