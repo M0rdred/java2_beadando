@@ -12,11 +12,12 @@ public class HibernateUtil {
 
 	@Autowired
 	public HibernateUtil(EntityManagerFactory factory) {
-		if (factory.unwrap(SessionFactory.class) == null) {
+		SessionFactory sessionFactory = factory.unwrap(SessionFactory.class);
+		if (sessionFactory == null) {
 			throw new RuntimeException("Not Hibernate SessionFactory");
+		} else {
+			this.sessionFactory = sessionFactory;
 		}
-		
-		this.sessionFactory = factory.unwrap(SessionFactory.class);
 	}
 
 	public SessionFactory getSessionFactory() {

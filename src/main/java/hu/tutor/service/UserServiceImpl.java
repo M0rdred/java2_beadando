@@ -47,22 +47,27 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void saveSubjectOfTeacher(Subject subject) {
-		userDao.saveSubjectOfTeacher(subject);
+		this.userDao.saveSubjectOfTeacher(subject);
 	}
 
 	@Override
 	public void saveNewSubjectForTeacher(Integer teacherId, Integer subjectId) {
-		userDao.saveNewSubjectForTeacher(teacherId, subjectId);
+		this.userDao.saveNewSubjectForTeacher(teacherId, subjectId);
 	}
 
 	@Override
 	public void deleteSubjectFromTeacher(Integer teacherId, Integer subjectId) {
-		userDao.deleteSubjectFromTeacher(teacherId, subjectId);
+		this.userDao.deleteSubjectFromTeacher(teacherId, subjectId);
 	}
 
 	@Override
 	public void becomeTeacher(Integer userId) {
-		userDao.becomeTeacher(userId);
+		this.userDao.becomeTeacher(userId);
+	}
+
+	@Override
+	public void endTeaching(Integer teacherId) {
+		this.userDao.endTeaching(teacherId);
 	}
 
 }

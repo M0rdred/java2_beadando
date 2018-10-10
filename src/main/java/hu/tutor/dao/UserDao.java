@@ -28,4 +28,6 @@ public interface UserDao {
 	public void deleteSubjectFromTeacher(Integer teacherId, Integer subjectId);
 
 	public void becomeTeacher(Integer userId);
+
+	public void endTeaching(Integer teacherId);
 }

@@ -1,5 +1,7 @@
 package hu.tutor.view;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -7,11 +9,13 @@ import org.springframework.context.annotation.Scope;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -37,14 +41,20 @@ public class TeacherAccountForm extends VerticalLayout {
 	private SubjectService subjectService;
 
 	public void initView() {
-		createAllSubjectsUI();
-		createOwnSubjectsUI();
-		createNewSubjectUI();
+		this.addComponents(this.createEndTeachingButton(), this.createAllSubjectsPanel(), this.createOwnSubjectsPanel(),
+				this.createNewSubjectPanel());
 	}
 
-	private void createAllSubjectsUI() {
+	private Component createEndTeachingButton() {
+		Button endTeachingButton = new Button("Oktatás befejezése");
+		endTeachingButton.addClickListener(e -> this.userService.endTeaching(this.teacher.getId()));
 
-		Label lblNewSubject = new Label("Új tárgy felvétele");
+		return endTeachingButton;
+	}
+
+	private Component createAllSubjectsPanel() {
+
+		Panel allSubjectsPanel = new Panel("Új tárgy felvétele");
 
 		ComboBox<Subject> lstAllSubjects = new ComboBox<>();
 
@@ -52,24 +62,27 @@ public class TeacherAccountForm extends VerticalLayout {
 		btnTeachSubject.setCaption("Tárgy tanítása");
 		btnTeachSubject.setEnabled(false);
 		btnTeachSubject.addClickListener(event -> {
-			if (teacher.getTeachedSubjects().contains(lstAllSubjects.getSelectedItem().get())) {
+			if (this.teacher.getTeachedSubjects().contains(lstAllSubjects.getSelectedItem().get())) {
 				Notification.show("Már tanítod ezt a tantárgyat", Type.ERROR_MESSAGE);
 			} else {
-				userService.saveNewSubjectForTeacher(teacher.getId(), lstAllSubjects.getSelectedItem().get().getId());
-
+				this.userService.saveNewSubjectForTeacher(this.teacher.getId(),
+						lstAllSubjects.getSelectedItem().get().getId());
 			}
 		});
 
-		lstAllSubjects.setItems(subjectService.getAllSubjects());
+		lstAllSubjects.setItems(this.subjectService.getAllSubjects());
 		lstAllSubjects.setItemCaptionGenerator(Subject::getName);
 		lstAllSubjects.addValueChangeListener(event -> btnTeachSubject.setEnabled(true));
 
-		addComponent(new VerticalLayout(lblNewSubject, lstAllSubjects, btnTeachSubject));
+		allSubjectsPanel.setContent(new VerticalLayout(lstAllSubjects, btnTeachSubject));
+
+		return allSubjectsPanel;
 	}
 
-	private void createOwnSubjectsUI() {
+	private Component createOwnSubjectsPanel() {
 
-		Label lblOwnSubjects = new Label("Saját tantárgyaim:");
+		Panel ownSubjectsPanel = new Panel("Saját tantárgyaim");
+
 		Label lblSubjectDescription = new Label("Tantárgy leírása");
 
 		ComboBox<Subject> lstTeachedSubjects = new ComboBox<>();
@@ -83,57 +96,67 @@ public class TeacherAccountForm extends VerticalLayout {
 		btnDeleteSubject.setCaption("Tárgy tanításának befejezése");
 		btnDeleteSubject.setEnabled(false);
 
-		lstTeachedSubjects.setItems(teacher.getTeachedSubjects());
+		lstTeachedSubjects.setItems(this.teacher.getTeachedSubjects());
 		lstTeachedSubjects.setItemCaptionGenerator(Subject::getName);
 		lstTeachedSubjects.addSelectionListener(event -> {
-			if (event.getSelectedItem().get() != null) {
-				txtDescriptionArea.setValue(event.getSelectedItem().get().getDescription());
-				btnModifyOwnSubject.setEnabled(false);
-				btnDeleteSubject.setEnabled(true);
+			Optional<Subject> optionalSelectedSubject = event.getSelectedItem();
+			if (optionalSelectedSubject.isPresent()) {
+				txtDescriptionArea.setValue(optionalSelectedSubject.get().getDescription());
 			} else {
 				txtDescriptionArea.setValue("");
-				btnModifyOwnSubject.setEnabled(false);
-				btnDeleteSubject.setEnabled(false);
 			}
+
+			btnDeleteSubject.setEnabled(optionalSelectedSubject.isPresent());
+			btnModifyOwnSubject.setEnabled(false);
 		});
 
 		txtDescriptionArea.addValueChangeListener(event -> btnModifyOwnSubject.setEnabled(true));
 
 		btnModifyOwnSubject.addClickListener(event -> {
-			// TODO saj�t tant�rgy le�r�sa
+			// TODO saját tantárgy leírása
 		});
 
-		btnDeleteSubject.addClickListener(event -> userService.deleteSubjectFromTeacher(teacher.getId(),
+		btnDeleteSubject.addClickListener(event -> this.userService.deleteSubjectFromTeacher(this.teacher.getId(),
 				lstTeachedSubjects.getSelectedItem().get().getId()));
 
-		addComponent(new VerticalLayout(new HorizontalLayout(lblOwnSubjects, lstTeachedSubjects),
-				new HorizontalLayout(lblSubjectDescription, txtDescriptionArea),
-				new HorizontalLayout(btnModifyOwnSubject, btnDeleteSubject)));
+		// @formatter:off
+		ownSubjectsPanel.setContent(
+				new VerticalLayout(
+						lstTeachedSubjects,
+						new HorizontalLayout(lblSubjectDescription, txtDescriptionArea),
+						new HorizontalLayout(btnModifyOwnSubject, btnDeleteSubject)
+						)
+				);
+		// @formatter:on
+
+		return ownSubjectsPanel;
 	}
 
-	private void createNewSubjectUI() {
-		Label lblNewSubjectName = new Label("Új tantárgy neve:");
-		TextField txtNewSubjectName = new TextField();
+	private Component createNewSubjectPanel() {
+		Panel newSubjectPanel = new Panel("Új tantárgy regisztrálása");
 
-		Label lblNewSubjectDescription = new Label("Új tantárgy leírása:");
-		TextArea txtNewSubjectDescription = new TextArea();
+		TextField txtNewSubjectName = new TextField("Új tantárgy neve:");
+
+		TextArea txtNewSubjectDescription = new TextArea("Új tantárgy leírása:");
 
 		Button btnSaveNewSubject = new Button();
+
 		btnSaveNewSubject.setCaption("Új tantárgy mentése");
 		btnSaveNewSubject.addClickListener(event -> {
 			Subject subject = new Subject();
 			subject.setName(txtNewSubjectName.getValue());
 			subject.setDescription(txtNewSubjectDescription.getValue());
-			subjectService.saveNewSubject(subject);
+			this.subjectService.saveNewSubject(subject);
 		});
 
-		GridLayout grid = new GridLayout(2, 3);
-		grid.addComponent(lblNewSubjectName);
-		grid.addComponent(txtNewSubjectName);
-		grid.addComponent(lblNewSubjectDescription);
-		grid.addComponent(txtNewSubjectDescription);
-		grid.addComponent(btnSaveNewSubject);
-		addComponent(grid);
+		FormLayout formLayout = new FormLayout();
+		formLayout.addComponent(txtNewSubjectName);
+		formLayout.addComponent(txtNewSubjectDescription);
+		formLayout.addComponent(btnSaveNewSubject);
+
+		newSubjectPanel.setContent(formLayout);
+
+		return newSubjectPanel;
 	}
 
 	public void setTeacher(Teacher teacher) {

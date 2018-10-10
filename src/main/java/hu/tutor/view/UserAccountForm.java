@@ -87,26 +87,10 @@ public class UserAccountForm extends HorizontalLayout {
 
 		this.setUserBinder();
 		this.setAddressBinder();
-		/*
-		 * userNameField.setValue(user.getUserName());
-		 * lastNameField.setValue(user.getLastName());
-		 * firstNameField.setValue(user.getFirstName());
-		 * emailField.setValue(user.getEmail()); phoneField.setValue(user.getPhone());
-		 * addressField.setValue(user.getAddress()); cityField.setValue(user.getCity());
-		 * zipField.setValue(user.getZip());
-		 * introductionField.setValue(user.getIntroduction());
-		 */
+
 		Button saveButton = new Button();
 		saveButton.setCaption("Mentés");
 		saveButton.addClickListener(event -> {
-			/*
-			 * user.setFirstName(firstNameField.getValue());
-			 * user.setLastName(lastNameField.getValue());
-			 * user.setEmail(emailField.getValue()); user.setPhone(phoneField.getValue());
-			 * user.setAddress(addressField.getValue()); user.setCity(cityField.getValue());
-			 * user.setZip(zipField.getValue());
-			 * user.setIntroduction(introductionField.getValue());
-			 */
 			this.user = this.userBinder.getBean();
 			this.user.setAddress(this.addressBinder.getBean());
 
