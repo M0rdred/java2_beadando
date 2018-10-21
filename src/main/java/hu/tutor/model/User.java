@@ -1,10 +1,12 @@
 package hu.tutor.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +42,7 @@ public class User {
 	@Column(name = "phone")
 	private String phone;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Address address;
 
 	@Column(name = "introduction")
@@ -54,6 +56,10 @@ public class User {
 
 	@Column(name = "is_teacher")
 	private boolean isTeacher;
+
+	public String getFullName() {
+		return this.lastName + " " + this.firstName;
+	}
 
 	public int getId() {
 		return this.id;
