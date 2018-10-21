@@ -40,7 +40,7 @@ public class TeacherAccountForm extends VerticalLayout {
 	@Qualifier("subjectServiceImpl")
 	private SubjectService subjectService;
 
-	public void initView() {
+	public void init() {
 		this.addComponents(this.createEndTeachingButton(), this.createAllSubjectsPanel(), this.createOwnSubjectsPanel(),
 				this.createNewSubjectPanel());
 	}

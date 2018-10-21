@@ -9,9 +9,8 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -23,7 +22,7 @@ import hu.tutor.view.component.PhoneField;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
-public class UserAccountForm extends HorizontalLayout {
+public class UserAccountForm extends VerticalLayout {
 
 	private static final long serialVersionUID = 7214911148324254712L;
 
@@ -58,32 +57,18 @@ public class UserAccountForm extends HorizontalLayout {
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 		this.address = this.user.getAddress();
 
-		GridLayout dataGrid = new GridLayout();
+		FormLayout formLayout = new FormLayout();
 
-		dataGrid.setColumns(2);
-		dataGrid.setRows(9);
-
-		dataGrid.setCaption("Személyes adatok");
-
-		Label userNameLabel = new Label("Felhasználónév:");
-		this.userNameField = new TextField();
+		this.userNameField = new TextField("Felhasználónév:");
 		this.userNameField.setReadOnly(true);
-		Label lastNameLabel = new Label("Vezetéknév:");
-		this.lastNameField = new TextField();
-		Label firstNameLabel = new Label("Keresztnév:");
-		this.firstNameField = new TextField();
-		Label emailLabel = new Label("Email:");
-		this.emailField = new TextField();
-		Label phoneLabel = new Label("Telefon:");
-		this.phoneField = new PhoneField();
-		Label addressLabel = new Label("Cím:");
-		this.addressField = new TextField();
-		Label cityLabel = new Label("Város:");
-		this.cityField = new TextField();
-		Label zipLabel = new Label("Irányítószám:");
-		this.zipField = new TextField();
-		Label introductionLabel = new Label("Bemutatkozás:");
-		this.introductionField = new TextArea();
+		this.lastNameField = new TextField("Vezetéknév:");
+		this.firstNameField = new TextField("Keresztnév:");
+		this.emailField = new TextField("Email:");
+		this.phoneField = new PhoneField("Telefon:");
+		this.addressField = new TextField("Cím:");
+		this.cityField = new TextField("Város:");
+		this.zipField = new TextField("Irányítószám:");
+		this.introductionField = new TextArea("Bemutatkozás:");
 
 		this.setUserBinder();
 		this.setAddressBinder();
@@ -97,26 +82,18 @@ public class UserAccountForm extends HorizontalLayout {
 			this.userService.updateUser(this.user);
 		});
 
-		dataGrid.addComponent(userNameLabel);
-		dataGrid.addComponent(this.userNameField);
-		dataGrid.addComponent(lastNameLabel);
-		dataGrid.addComponent(this.lastNameField);
-		dataGrid.addComponent(firstNameLabel);
-		dataGrid.addComponent(this.firstNameField);
-		dataGrid.addComponent(emailLabel);
-		dataGrid.addComponent(this.emailField);
-		dataGrid.addComponent(phoneLabel);
-		dataGrid.addComponent(this.phoneField);
-		dataGrid.addComponent(addressLabel);
-		dataGrid.addComponent(this.addressField);
-		dataGrid.addComponent(cityLabel);
-		dataGrid.addComponent(this.cityField);
-		dataGrid.addComponent(zipLabel);
-		dataGrid.addComponent(this.zipField);
-		dataGrid.addComponent(introductionLabel);
-		dataGrid.addComponent(this.introductionField);
+		formLayout.addComponent(this.userNameField);
+		formLayout.addComponent(this.lastNameField);
+		formLayout.addComponent(this.firstNameField);
+		formLayout.addComponent(this.emailField);
+		formLayout.addComponent(this.phoneField);
+		formLayout.addComponent(this.addressField);
+		formLayout.addComponent(this.cityField);
+		formLayout.addComponent(this.zipField);
+		formLayout.addComponent(this.introductionField);
 
-		dataGrid.setSpacing(true);
+		formLayout.setSpacing(true);
+		formLayout.setMargin(true);
 
 		if (!this.user.isTeacher()) {
 			Button btnBecomeTeacher = new Button();
@@ -125,7 +102,14 @@ public class UserAccountForm extends HorizontalLayout {
 			this.addComponent(btnBecomeTeacher);
 		}
 
-		return new VerticalLayout(dataGrid, saveButton);
+		Panel formPanel = new Panel("Személyes adatok");
+		formPanel.setContent(formLayout);
+
+		VerticalLayout vertical = new VerticalLayout(formPanel, saveButton);
+
+		this.setSizeFull();
+
+		return vertical;
 	}
 
 	private void setAddressBinder() {
