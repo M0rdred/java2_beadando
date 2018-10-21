@@ -28,6 +28,31 @@ public class Address {
 	@Column(name = "zip")
 	private String zip;
 
+	public String getFullAddress() {
+		StringBuilder builder = new StringBuilder();
+
+		if (this.componentIsPresent(this.zip)) {
+			builder.append(this.zip);
+			builder.append(", ");
+		}
+
+		if (this.componentIsPresent(this.city)) {
+			builder.append(this.city);
+			builder.append(" ");
+		}
+
+		if (this.componentIsPresent(this.street)) {
+			builder.append(this.street);
+			builder.append(" ");
+		}
+
+		if (this.componentIsPresent(this.houseNumber)) {
+			builder.append(this.houseNumber);
+		}
+
+		return builder.toString();
+	}
+
 	public int getId() {
 		return this.id;
 	}
@@ -66,6 +91,10 @@ public class Address {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+
+	private boolean componentIsPresent(String addressComponent) {
+		return addressComponent != null && !addressComponent.trim().isEmpty();
 	}
 
 }
