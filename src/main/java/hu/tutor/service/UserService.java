@@ -3,6 +3,7 @@ package hu.tutor.service;
 import java.util.List;
 
 import hu.tutor.model.Subject;
+import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 
 public interface UserService {
@@ -10,7 +11,7 @@ public interface UserService {
 
 	public User getUserById(Integer id);
 
-	public User getUserByUserName(String userName);
+	public User loadUserByUserName(String userName);
 
 	public User saveUser(User user);
 
@@ -27,4 +28,6 @@ public interface UserService {
 	public void becomeTeacher(Integer userId);
 
 	public void endTeaching(Integer teacherId);
+
+	public List<Subject> getSubjectsOfTeacher(Teacher teacher);
 }

@@ -3,10 +3,12 @@ package hu.tutor.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import hu.tutor.dao.UserDaoHibernateImpl;
 import hu.tutor.model.Subject;
+import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 
 @Service("userServiceImpl")
@@ -14,6 +16,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDaoHibernateImpl userDao;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 
 	@Override
 	public List<User> listUsers() {
@@ -27,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User saveUser(User user) {
+		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
 		return this.userDao.saveUser(user);
 	}
 
@@ -41,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUserByUserName(String userName) {
+	public User loadUserByUserName(String userName) {
 		return this.userDao.getUserByUserName(userName);
 	}
 
@@ -68,6 +75,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void endTeaching(Integer teacherId) {
 		this.userDao.endTeaching(teacherId);
+	}
+
+	@Override
+	public List<Subject> getSubjectsOfTeacher(Teacher teacher) {
+		return this.userDao.getSubjectsOfTeacher(teacher.getId());
 	}
 
 }
