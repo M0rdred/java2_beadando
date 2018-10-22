@@ -2,8 +2,10 @@ package hu.tutor.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -14,9 +16,8 @@ import javax.persistence.Table;
 @DiscriminatorValue("teacher")
 public class Teacher extends User {
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "teached_subjects", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
-//	@Transient
 	private List<Subject> teachedSubjects;
 
 	public List<Subject> getTeachedSubjects() {
