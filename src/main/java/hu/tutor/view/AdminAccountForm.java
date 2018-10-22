@@ -1,7 +1,5 @@
 package hu.tutor.view;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -20,6 +18,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.Editor;
 
 import hu.tutor.model.Teacher;
+import hu.tutor.service.AdminService;
 import hu.tutor.service.UserService;
 
 @SpringComponent
@@ -31,6 +30,11 @@ public class AdminAccountForm extends VerticalLayout {
 	@Autowired
 	@Qualifier("userServiceImpl")
 	private UserService userService;
+
+	@Autowired
+	private AdminService adminService;
+
+	private Grid<Teacher> teacherGrid;
 
 	public void init() {
 		this.addComponent(this.getViewLayout());
@@ -47,11 +51,11 @@ public class AdminAccountForm extends VerticalLayout {
 	}
 
 	private Component createAwaitingTeachersLayout() {
-		Grid<Teacher> teacherGrid = new Grid<>();
+		this.teacherGrid = new Grid<>();
 
 		TextField introductionEditorField = new TextField();
 
-		Editor<Teacher> teacherEditor = teacherGrid.getEditor();
+		Editor<Teacher> teacherEditor = this.teacherGrid.getEditor();
 		teacherEditor.setEnabled(true);
 		teacherEditor.setBuffered(true);
 		teacherEditor.setSaveCaption("Mentés");
@@ -63,30 +67,36 @@ public class AdminAccountForm extends VerticalLayout {
 
 		Binder<Teacher> editorBinder = teacherEditor.getBinder();
 
-		teacherGrid.addComponentColumn(this::createEnableTeacherButton);
-		teacherGrid.addColumn(Teacher::getFullName).setCaption("Név");
-		teacherGrid.addColumn(Teacher::getIntroduction).setCaption("Bemutatkozás").setEditorBinding(
+		this.teacherGrid.addComponentColumn(this::createEnableTeacherButton);
+		this.teacherGrid.addColumn(Teacher::getFullName).setCaption("Név");
+		this.teacherGrid.addColumn(Teacher::getIntroduction).setCaption("Bemutatkozás").setEditorBinding(
 				editorBinder.bind(introductionEditorField, Teacher::getIntroduction, Teacher::setIntroduction));
-		teacherGrid.addColumn(Teacher::getUserName).setCaption("Felhasználónév");
-		teacherGrid.addColumn(t -> t.getAddress().getFullAddress()).setCaption("Cím");
-		teacherGrid.addColumn(Teacher::getPhone).setCaption("Telefonszám");
-		teacherGrid.addColumn(Teacher::getEmail).setCaption("Email cím");
-		teacherGrid.addColumn(Teacher::getTeachedSubjects).setCaption("Oktatott tárgyak");
+		this.teacherGrid.addColumn(Teacher::getUserName).setCaption("Felhasználónév");
+		this.teacherGrid.addColumn(t -> t.getAddress().getFullAddress()).setCaption("Cím");
+		this.teacherGrid.addColumn(Teacher::getPhone).setCaption("Telefonszám");
+		this.teacherGrid.addColumn(Teacher::getEmail).setCaption("Email cím");
+		this.teacherGrid.addColumn(Teacher::getTeachedSubjects).setCaption("Oktatott tárgyak");
 
-		teacherGrid.setSizeFull();
+		this.teacherGrid.setSizeFull();
 
-		Teacher teacher = (Teacher) this.userService.getUserById(1);
-		teacherGrid.setItems(Arrays.asList(teacher));
+		this.refreshTeacherGrid();
 
-		return teacherGrid;
+		return this.teacherGrid;
 	}
 
 	private Button createEnableTeacherButton(Teacher teacher) {
 		Button enableButton = new Button();
 		enableButton.setIcon(VaadinIcons.CHECK_SQUARE_O);
 
-		enableButton.addClickListener(e -> Notification.show("Not yet implemented", Type.WARNING_MESSAGE));
+		enableButton.addClickListener(e -> {
+			this.adminService.enableTeacher(teacher);
+			this.refreshTeacherGrid();
+		});
 
 		return enableButton;
+	}
+
+	private void refreshTeacherGrid() {
+		this.teacherGrid.setItems(this.adminService.getTeachersAwaitingValidation());
 	}
 }
