@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.tutor.model.Subject;
+import hu.tutor.model.Teacher;
 import hu.tutor.util.HibernateUtil;
 
 @Repository
@@ -24,7 +25,7 @@ public class SubjectDaoImpl implements SubjectDao {
 
 	@Override
 	public Subject getSubject(Integer subjectId) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session.createQuery("from Subject where id = :ID");
@@ -46,7 +47,7 @@ public class SubjectDaoImpl implements SubjectDao {
 
 	@Override
 	public List<Subject> getAllSubjects() {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		Criteria criteria = session.createCriteria(Subject.class);
@@ -60,11 +61,22 @@ public class SubjectDaoImpl implements SubjectDao {
 
 	@Override
 	public void saveNewSubject(Subject subject) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		session.persist(subject);
 		transaction.commit();
 		session.close();
+	}
+
+	@Override
+	public List<Subject> getSubjectsOfTeacher(Teacher teacher) {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		Query query = session.createQuery(
+				"select * from subject s where s.id IN (select * from teached_subject ts where ts.teached_id = :t_id)");
+		query.setInteger("t_id", teacher.getId());
+		return null;
 	}
 
 }

@@ -1,8 +1,11 @@
 package hu.tutor.view;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.validator.DateRangeValidator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.icons.VaadinIcons;
@@ -15,6 +18,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -22,7 +26,6 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 import hu.tutor.service.UserService;
 
@@ -47,6 +50,7 @@ public class RegistrationView extends FormLayout implements View {
 		final TextField emailField = new TextField("Email: ");
 		final TextField firstNameField = new TextField("Keresztnév: ");
 		final TextField lastNameField = new TextField("Vezetéknév: ");
+		final DateField birthDateField = new DateField("Születési idő");
 		final CheckBox teacherCheckBox = new CheckBox("Tanár: ");
 
 		Binder<User> binder = new Binder<>();
@@ -56,7 +60,7 @@ public class RegistrationView extends FormLayout implements View {
 		binder.forField(passwordField)
 				.withValidator(new StringLengthValidator("A jelszó legalább 6 karakteres kell legyen.", 6, 100))
 				.bind(User::getPassword, User::setPassword);
-		binder.forField(emailField).withValidator(new EmailValidator("Nem helyes email cim.")).bind(User::getEmail,
+		binder.forField(emailField).withValidator(new EmailValidator("Nem helyes email cím.")).bind(User::getEmail,
 				User::setEmail);
 		binder.forField(firstNameField)
 				.withValidator(
@@ -66,6 +70,11 @@ public class RegistrationView extends FormLayout implements View {
 				.withValidator(
 						new StringLengthValidator("A vezetéknévnek legalább 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getLastName, User::setLastName);
+		binder.forField(birthDateField)
+				.withValidator(new DateRangeValidator("A minimum korhatár 8 év", null, LocalDate.now().minusYears(8)))
+				.bind(User::getBirthDate, User::setBirthDate);
+
+		binder.setBean(new User());
 
 		Button registerButton = new Button("Regisztráció");
 		Button cancelButton = new Button("Mégse");
@@ -91,6 +100,9 @@ public class RegistrationView extends FormLayout implements View {
 		lastNameField.setWidth(this.defaultWidth);
 		lastNameField.setRequiredIndicatorVisible(true);
 
+		birthDateField.setWidth(this.defaultWidth);
+		birthDateField.setRequiredIndicatorVisible(true);
+
 		this.errorLabel = new Label(
 				String.format("<div style='color:red;'>%s</div>", "Hibás felhasználónév vagy jelszó"),
 				ContentMode.HTML);
@@ -105,7 +117,7 @@ public class RegistrationView extends FormLayout implements View {
 		loginLayout.setSpacing(true);
 		loginLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 		loginLayout.addComponents(this.errorLabel, userNameField, passwordField, passwordAgainField, emailField,
-				firstNameField, lastNameField, teacherCheckBox, registerButton, cancelButton);
+				firstNameField, lastNameField, birthDateField, teacherCheckBox, registerButton, cancelButton);
 		loginLayout.setSpacing(true);
 		loginLayout.setMargin(true);
 
@@ -114,19 +126,14 @@ public class RegistrationView extends FormLayout implements View {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (this.validateData()) {
-					User user;
-					if (teacherCheckBox.getValue()) {
-						user = new Teacher();
-					} else {
-						user = new User();
-					}
-					user.setUserName(userNameField.getValue());
-					user.setFirstName(firstNameField.getValue());
-					user.setLastName(lastNameField.getValue());
-					user.setPassword(passwordField.getValue());
-					user.setEmail(emailField.getValue());
+					User user = binder.getBean();
 
 					RegistrationView.this.userService.saveUser(user);
+
+					if (teacherCheckBox.getValue()) {
+						RegistrationView.this.userService.becomeTeacher(user.getId());
+					}
+
 					RegistrationView.this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);
 					Notification.show("Sikeres regisztráció", Notification.Type.HUMANIZED_MESSAGE);
 				} else {
@@ -149,6 +156,7 @@ public class RegistrationView extends FormLayout implements View {
 
 		this.addComponent(loginLayout);
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		this.addStyleName("tutor-background");
 	}
 
 	public void setVisibleErrorLabel(boolean b) {

@@ -3,7 +3,7 @@ CREATE OR REPLACE TRIGGER address_trg
   FOR EACH ROW
 BEGIN
   IF inserting THEN
-    IF :new.id IS NULL OR :new.id = 0 THEN
+    IF :new.id IS NULL THEN
       :new.id := address_sq.nextval;
     END IF;
   

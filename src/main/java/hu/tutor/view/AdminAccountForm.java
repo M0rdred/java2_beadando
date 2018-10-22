@@ -72,7 +72,7 @@ public class AdminAccountForm extends VerticalLayout {
 		this.teacherGrid.addColumn(Teacher::getIntroduction).setCaption("Bemutatkozás").setEditorBinding(
 				editorBinder.bind(introductionEditorField, Teacher::getIntroduction, Teacher::setIntroduction));
 		this.teacherGrid.addColumn(Teacher::getUserName).setCaption("Felhasználónév");
-		this.teacherGrid.addColumn(t -> t.getAddress().getFullAddress()).setCaption("Cím");
+		this.teacherGrid.addColumn(Teacher::getFullAddress).setCaption("Cím");
 		this.teacherGrid.addColumn(Teacher::getPhone).setCaption("Telefonszám");
 		this.teacherGrid.addColumn(Teacher::getEmail).setCaption("Email cím");
 		this.teacherGrid.addColumn(Teacher::getTeachedSubjects).setCaption("Oktatott tárgyak");

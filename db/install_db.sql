@@ -39,6 +39,7 @@ Prompt Initializing Database
 @./type/ty_search_result_table.tps
 
 @./view/subjects_waiting_validation_vw.sql
+@./view/teachers_waiting_validation_vw.sql
 
 @./package/address_pkg.pks
 @./package/distance_pkg.pks

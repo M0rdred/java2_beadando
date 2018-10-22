@@ -1,5 +1,6 @@
 CREATE TABLE address (
   id           NUMBER NOT NULL,
+  zip		       NUMBER NOT NULL,
   country      VARCHAR2(100) NOT NULL,
   city         VARCHAR2(100) NOT NULL,
   street       VARCHAR2(200) NOT NULL,

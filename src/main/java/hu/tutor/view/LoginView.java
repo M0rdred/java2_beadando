@@ -112,6 +112,7 @@ public class LoginView extends VerticalLayout implements View {
 
 		this.addComponent(loginLayout);
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		this.addStyleName("tutor-background");
 
 	}
 }

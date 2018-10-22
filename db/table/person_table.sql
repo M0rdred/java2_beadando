@@ -3,7 +3,7 @@ CREATE TABLE PERSON (
   first_name   VARCHAR2(40) NOT NULL,
   last_name    VARCHAR2(40) NOT NULL,
   birth_date   DATE NOT NULL,
-  address_id   NUMBER NOT NULL,
+  address_id   NUMBER,
   is_teacher   VARCHAR2(1) default 'N',
   is_admin     VARCHAR2(1) default 'N',
   is_active    VARCHAR2(1) default 'N',

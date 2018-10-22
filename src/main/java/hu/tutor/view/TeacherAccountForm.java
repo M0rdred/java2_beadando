@@ -12,7 +12,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
@@ -40,6 +39,9 @@ public class TeacherAccountForm extends VerticalLayout {
 	@Qualifier("subjectServiceImpl")
 	private SubjectService subjectService;
 
+	private ComboBox<Subject> lstAllSubjects;
+	private ComboBox<Subject> lstOwnSubjects;
+
 	public void init() {
 		this.addComponents(this.createEndTeachingButton(), this.createAllSubjectsPanel(), this.createOwnSubjectsPanel(),
 				this.createNewSubjectPanel());
@@ -56,25 +58,30 @@ public class TeacherAccountForm extends VerticalLayout {
 
 		Panel allSubjectsPanel = new Panel("Új tárgy felvétele");
 
-		ComboBox<Subject> lstAllSubjects = new ComboBox<>();
+		this.lstAllSubjects = new ComboBox<>();
 
 		Button btnTeachSubject = new Button();
 		btnTeachSubject.setCaption("Tárgy tanítása");
 		btnTeachSubject.setEnabled(false);
 		btnTeachSubject.addClickListener(event -> {
-			if (this.teacher.getTeachedSubjects().contains(lstAllSubjects.getSelectedItem().get())) {
+			if (this.teacher.getTeachedSubjects().contains(this.lstAllSubjects.getSelectedItem().get())) {
 				Notification.show("Már tanítod ezt a tantárgyat", Type.ERROR_MESSAGE);
 			} else {
 				this.userService.saveNewSubjectForTeacher(this.teacher.getId(),
-						lstAllSubjects.getSelectedItem().get().getId());
+						this.lstAllSubjects.getSelectedItem().get().getId());
+				this.refreshOwnSubjectsList();
+
+				Notification.show("Tantárgy tanítása megkezdve");
 			}
 		});
 
-		lstAllSubjects.setItems(this.subjectService.getAllSubjects());
-		lstAllSubjects.setItemCaptionGenerator(Subject::getName);
-		lstAllSubjects.addValueChangeListener(event -> btnTeachSubject.setEnabled(true));
+		this.lstAllSubjects.setItemCaptionGenerator(Subject::getName);
+		this.lstAllSubjects
+				.addSelectionListener(event -> btnTeachSubject.setEnabled(event.getSelectedItem().isPresent()));
 
-		allSubjectsPanel.setContent(new VerticalLayout(lstAllSubjects, btnTeachSubject));
+		this.refreshAllSubjectsList();
+
+		allSubjectsPanel.setContent(new VerticalLayout(this.lstAllSubjects, btnTeachSubject));
 
 		return allSubjectsPanel;
 	}
@@ -83,10 +90,11 @@ public class TeacherAccountForm extends VerticalLayout {
 
 		Panel ownSubjectsPanel = new Panel("Saját tantárgyaim");
 
-		Label lblSubjectDescription = new Label("Tantárgy leírása");
-
-		ComboBox<Subject> lstTeachedSubjects = new ComboBox<>();
-		TextArea txtDescriptionArea = new TextArea();
+		this.lstOwnSubjects = new ComboBox<>();
+		TextArea txtDescriptionArea = new TextArea("Tantárgy leírása");
+		TextArea txtOwnDescriptionArea = new TextArea("Tantárgy saját leírása");
+		txtDescriptionArea.setSizeFull();
+		txtOwnDescriptionArea.setSizeFull();
 
 		Button btnModifyOwnSubject = new Button();
 		btnModifyOwnSubject.setCaption("Leírás mentése");
@@ -96,9 +104,9 @@ public class TeacherAccountForm extends VerticalLayout {
 		btnDeleteSubject.setCaption("Tárgy tanításának befejezése");
 		btnDeleteSubject.setEnabled(false);
 
-		lstTeachedSubjects.setItems(this.teacher.getTeachedSubjects());
-		lstTeachedSubjects.setItemCaptionGenerator(Subject::getName);
-		lstTeachedSubjects.addSelectionListener(event -> {
+		this.refreshOwnSubjectsList();
+		this.lstOwnSubjects.setItemCaptionGenerator(Subject::getName);
+		this.lstOwnSubjects.addSelectionListener(event -> {
 			Optional<Subject> optionalSelectedSubject = event.getSelectedItem();
 			if (optionalSelectedSubject.isPresent()) {
 				txtDescriptionArea.setValue(optionalSelectedSubject.get().getDescription());
@@ -110,20 +118,30 @@ public class TeacherAccountForm extends VerticalLayout {
 			btnModifyOwnSubject.setEnabled(false);
 		});
 
-		txtDescriptionArea.addValueChangeListener(event -> btnModifyOwnSubject.setEnabled(true));
+		txtDescriptionArea.setReadOnly(true);
+		txtOwnDescriptionArea.addValueChangeListener(event -> btnModifyOwnSubject.setEnabled(true));
 
 		btnModifyOwnSubject.addClickListener(event -> {
 			// TODO saját tantárgy leírása
 		});
 
-		btnDeleteSubject.addClickListener(event -> this.userService.deleteSubjectFromTeacher(this.teacher.getId(),
-				lstTeachedSubjects.getSelectedItem().get().getId()));
+		btnDeleteSubject.addClickListener(event -> {
+			this.userService.deleteSubjectFromTeacher(this.teacher.getId(),
+					this.lstOwnSubjects.getSelectedItem().get().getId());
+			this.refreshOwnSubjectsList();
+			this.lstOwnSubjects.setValue(null);
+
+			Notification.show("Tantárgy oktatása befejezve");
+		});
+
+		HorizontalLayout descriptionLayout = new HorizontalLayout(txtDescriptionArea, txtOwnDescriptionArea);
+		descriptionLayout.setSizeFull();
 
 		// @formatter:off
 		ownSubjectsPanel.setContent(
 				new VerticalLayout(
-						lstTeachedSubjects,
-						new HorizontalLayout(lblSubjectDescription, txtDescriptionArea),
+						this.lstOwnSubjects,
+						descriptionLayout,
 						new HorizontalLayout(btnModifyOwnSubject, btnDeleteSubject)
 						)
 				);
@@ -147,6 +165,9 @@ public class TeacherAccountForm extends VerticalLayout {
 			subject.setName(txtNewSubjectName.getValue());
 			subject.setDescription(txtNewSubjectDescription.getValue());
 			this.subjectService.saveNewSubject(subject);
+
+			this.refreshAllSubjectsList();
+			Notification.show("Új tantárgy sikeresen regisztrálva");
 		});
 
 		FormLayout formLayout = new FormLayout();
@@ -164,6 +185,15 @@ public class TeacherAccountForm extends VerticalLayout {
 
 	public void setTeacher(Teacher teacher) {
 		this.teacher = teacher;
+	}
+
+	private void refreshAllSubjectsList() {
+		this.lstAllSubjects.setItems(this.subjectService.getAllSubjects());
+	}
+
+	private void refreshOwnSubjectsList() {
+		this.teacher.setTeachedSubjects(this.userService.getSubjectsOfTeacher(this.teacher));
+		this.lstOwnSubjects.setItems(this.userService.getSubjectsOfTeacher(this.teacher));
 	}
 
 }

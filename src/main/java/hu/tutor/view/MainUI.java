@@ -10,6 +10,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
 
+import hu.tutor.view.error.ErrorViewProvider;
+
 @SuppressWarnings("serial")
 @SpringUI
 @Widgetset("hu.tutor.view.TutorWidgetSet")

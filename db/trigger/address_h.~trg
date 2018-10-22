@@ -6,7 +6,7 @@ BEGIN
     INSERT INTO address_history
       (id,
        country,
-	     zip,
+	   zip,
        city,
        street,
        house_number,
@@ -31,7 +31,7 @@ BEGIN
     INSERT INTO address_history
       (id,
        country,
-	     zip,
+	   zip,
        city,
        street,
        house_number,
@@ -43,7 +43,7 @@ BEGIN
     VALUES
       (:new.id,
        :new.country,
-	     :new.zip,
+	   :new.zip,
        :new.city,
        :new.street,
        :new.house_number,

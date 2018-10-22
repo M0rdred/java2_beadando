@@ -5,16 +5,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "address")
 public class Address {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_sequence")
+	@SequenceGenerator(name = "address_sequence", sequenceName = "address_sq")
 	@Column(name = "id")
 	private int id;
+
+	@Column(name = "country")
+	private String country;
 
 	@Column(name = "street")
 	private String street;
@@ -30,6 +38,11 @@ public class Address {
 
 	public String getFullAddress() {
 		StringBuilder builder = new StringBuilder();
+
+		if (this.componentIsPresent(this.country)) {
+			builder.append(this.country);
+			builder.append(" ");
+		}
 
 		if (this.componentIsPresent(this.zip)) {
 			builder.append(this.zip);
@@ -51,46 +64,6 @@ public class Address {
 		}
 
 		return builder.toString();
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getStreet() {
-		return this.street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
-	public String getHouseNumber() {
-		return this.houseNumber;
-	}
-
-	public void setHouseNumber(String houseNumber) {
-		this.houseNumber = houseNumber;
-	}
-
-	public String getCity() {
-		return this.city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getZip() {
-		return this.zip;
-	}
-
-	public void setZip(String zip) {
-		this.zip = zip;
 	}
 
 	private boolean componentIsPresent(String addressComponent) {

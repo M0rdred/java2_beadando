@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class Teacher extends User {
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "teached_subjects", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+	@JoinTable(name = "teached_subject", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	private List<Subject> teachedSubjects;
 
 	public List<Subject> getTeachedSubjects() {

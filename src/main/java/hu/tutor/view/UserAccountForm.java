@@ -5,11 +5,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -37,9 +42,11 @@ public class UserAccountForm extends VerticalLayout {
 	private TextField firstNameField;
 	private TextField emailField;
 	private PhoneField phoneField;
-	private TextField addressField;
-	private TextField cityField;
+	private TextField countryField;
 	private TextField zipField;
+	private TextField cityField;
+	private TextField streetField;
+	private TextField houseNumberField;
 	private TextArea introductionField;
 
 	@Autowired
@@ -65,9 +72,11 @@ public class UserAccountForm extends VerticalLayout {
 		this.firstNameField = new TextField("Keresztnév:");
 		this.emailField = new TextField("Email:");
 		this.phoneField = new PhoneField("Telefon:");
-		this.addressField = new TextField("Cím:");
-		this.cityField = new TextField("Város:");
+		this.countryField = new TextField("Ország:");
 		this.zipField = new TextField("Irányítószám:");
+		this.cityField = new TextField("Város:");
+		this.streetField = new TextField("Cím:");
+		this.houseNumberField = new TextField("Házszám:");
 		this.introductionField = new TextArea("Bemutatkozás:");
 
 		this.setUserBinder();
@@ -76,10 +85,16 @@ public class UserAccountForm extends VerticalLayout {
 		Button saveButton = new Button();
 		saveButton.setCaption("Mentés");
 		saveButton.addClickListener(event -> {
-			this.user = this.userBinder.getBean();
-			this.user.setAddress(this.addressBinder.getBean());
+			BinderValidationStatus<User> userValidation = this.userBinder.validate();
+			BinderValidationStatus<Address> addressValidation = this.addressBinder.validate();
 
-			this.userService.updateUser(this.user);
+			if (userValidation.isOk() && addressValidation.isOk()) {
+				this.user = this.userBinder.getBean();
+				this.user.setAddress(this.addressBinder.getBean());
+
+				this.userService.updateUser(this.user);
+				Notification.show("Adatok sikeresen mentve");
+			}
 		});
 
 		formLayout.addComponent(this.userNameField);
@@ -87,9 +102,11 @@ public class UserAccountForm extends VerticalLayout {
 		formLayout.addComponent(this.firstNameField);
 		formLayout.addComponent(this.emailField);
 		formLayout.addComponent(this.phoneField);
-		formLayout.addComponent(this.addressField);
-		formLayout.addComponent(this.cityField);
+		formLayout.addComponent(this.countryField);
 		formLayout.addComponent(this.zipField);
+		formLayout.addComponent(this.cityField);
+		formLayout.addComponent(this.streetField);
+		formLayout.addComponent(this.houseNumberField);
 		formLayout.addComponent(this.introductionField);
 
 		formLayout.setSpacing(true);
@@ -115,9 +132,22 @@ public class UserAccountForm extends VerticalLayout {
 	private void setAddressBinder() {
 		this.addressBinder = new Binder<>();
 
-		this.addressBinder.bind(this.addressField, Address::getStreet, Address::setStreet);
-		this.addressBinder.bind(this.cityField, Address::getCity, Address::setCity);
-		this.addressBinder.bind(this.zipField, Address::getZip, Address::setZip);
+		this.addressBinder.forField(this.countryField)
+				.withValidator(
+						new StringLengthValidator("Az ország nevének legalább 3 karakteresnek kell lennie", 3, 100))
+				.bind(Address::getCountry, Address::setCountry);
+		this.addressBinder.forField(this.houseNumberField)
+				.withValidator(new StringLengthValidator("A házszám nem lehet üres", 1, 100))
+				.bind(Address::getHouseNumber, Address::setHouseNumber);
+		this.addressBinder.forField(this.streetField)
+				.withValidator(new StringLengthValidator("Az utcanév nem lehet üres", 1, 100))
+				.bind(Address::getStreet, Address::setStreet);
+		this.addressBinder.forField(this.cityField)
+				.withValidator(new StringLengthValidator("A város neve nem lehet üres", 1, 100))
+				.bind(Address::getCity, Address::setCity);
+		this.addressBinder.forField(this.zipField)
+				.withValidator(new RegexpValidator("Nem megfelelő irányítószám", "[1-9]\\d{3}", true))
+				.bind(Address::getZip, Address::setZip);
 
 		if (this.address == null) {
 			this.addressBinder.setBean(new Address());
@@ -130,11 +160,20 @@ public class UserAccountForm extends VerticalLayout {
 		this.userBinder = new Binder<>();
 
 		this.userBinder.bind(this.userNameField, User::getUserName, User::setUserName);
-		this.userBinder.bind(this.lastNameField, User::getLastName, User::setLastName);
-		this.userBinder.bind(this.firstNameField, User::getFirstName, User::setFirstName);
-		this.userBinder.bind(this.emailField, User::getEmail, User::setEmail);
-		this.userBinder.bind(this.phoneField, User::getPhone, User::setPhone);
-		this.userBinder.bind(this.introductionField, User::getIntroduction, User::setIntroduction);
+		this.userBinder.forField(this.lastNameField)
+				.withValidator(
+						new StringLengthValidator("A vezetéknévnek legalább 3 karakteresnek kell lennie.", 3, 100))
+				.bind(User::getLastName, User::setLastName);
+		this.userBinder.forField(this.firstNameField)
+				.withValidator(
+						new StringLengthValidator("A keresztnévnek legalább 3 karakteresnek kell lennie.", 3, 100))
+				.bind(User::getFirstName, User::setFirstName);
+		this.userBinder.forField(this.emailField).withValidator(new EmailValidator("Nem helyes email cím."))
+				.bind(User::getEmail, User::setEmail);
+		this.userBinder.forField(this.phoneField)
+				.withValidator(new StringLengthValidator("Helytelen telefonszám", 11, 12))
+				.bind(User::getPhone, User::setPhone);
+		this.userBinder.forField(this.introductionField).bind(User::getIntroduction, User::setIntroduction);
 
 		this.userBinder.setBean(this.user);
 	}

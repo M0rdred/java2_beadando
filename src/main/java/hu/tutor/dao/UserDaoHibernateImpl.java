@@ -114,7 +114,7 @@ public class UserDaoHibernateImpl implements UserDao {
 		Transaction transaction = session.beginTransaction();
 
 		SQLQuery query = session.createSQLQuery(
-				"select ts.subject_id as subject_id from teached_subjects ts where ts.teacher_id = :t_id");
+				"select ts.subject_id as subject_id from teached_subject ts where ts.teacher_id = :t_id");
 		query.addScalar("subject_id", new IntegerType());
 		query.setInteger("t_id", teacherId);
 
@@ -169,7 +169,7 @@ public class UserDaoHibernateImpl implements UserDao {
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session
-				.createSQLQuery("insert into teached_subjects (teacher_id, subject_id) select :t_id, :s_id");
+				.createSQLQuery("insert into teached_subject (teacher_id, subject_id) values (:t_id, :s_id)");
 		query.setInteger("t_id", teacherId);
 		query.setInteger("s_id", subjectId);
 
@@ -185,7 +185,7 @@ public class UserDaoHibernateImpl implements UserDao {
 		Transaction transaction = session.beginTransaction();
 
 		Query query = session
-				.createSQLQuery("delete from teached_subjects where teacher_id = :t_id and subject_id = :s_id");
+				.createSQLQuery("delete from teached_subject where teacher_id = :t_id and subject_id = :s_id");
 		query.setInteger("t_id", teacherId);
 		query.setInteger("s_id", subjectId);
 
@@ -200,7 +200,7 @@ public class UserDaoHibernateImpl implements UserDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Query query = session.createQuery("update User set role = :role, is_teacher = 1 where id = :u_id");
+		Query query = session.createQuery("update User set role = :role where id = :u_id");
 		query.setInteger("u_id", userId);
 		query.setString("role", "teacher");
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import hu.tutor.dao.SubjectDaoImpl;
 import hu.tutor.model.Subject;
+import hu.tutor.model.Teacher;
 
 @Service("subjectServiceImpl")
 public class SubjectServiceImpl implements SubjectService {
@@ -16,17 +17,22 @@ public class SubjectServiceImpl implements SubjectService {
 
 	@Override
 	public Subject getSubjectById(Integer id) {
-		return subjectDao.getSubject(id);
+		return this.subjectDao.getSubject(id);
 	}
 
 	@Override
 	public List<Subject> getAllSubjects() {
-		return subjectDao.getAllSubjects();
+		return this.subjectDao.getAllSubjects();
 	}
 
 	@Override
 	public void saveNewSubject(Subject subject) {
-		subjectDao.saveNewSubject(subject);
+		this.subjectDao.saveNewSubject(subject);
+	}
+
+	@Override
+	public List<Subject> getSubjectsOfTeacher(Teacher teacher) {
+		return this.subjectDao.getSubjectsOfTeacher(teacher);
 	}
 
 }

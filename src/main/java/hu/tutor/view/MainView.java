@@ -18,7 +18,7 @@ public class MainView extends HorizontalLayout implements View {
 
 	private static final long serialVersionUID = -891813713655196146L;
 
-	protected static final String MAIN_VIEW_NAME = "main";
+	public static final String MAIN_VIEW_NAME = "main";
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -35,5 +35,7 @@ public class MainView extends HorizontalLayout implements View {
 
 		this.addComponents(registerLink, loginLink, searchLink);
 		this.setMargin(true);
+		this.addStyleName("tutor-background");
+
 	}
 }
