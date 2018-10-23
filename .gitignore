@@ -6,7 +6,8 @@
 .tern-project
 .metadata
 
-*~sql
+db/*/*.~*
+db/*.~*
 
 target/
 widgetsets
