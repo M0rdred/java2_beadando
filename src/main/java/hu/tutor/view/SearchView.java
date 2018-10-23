@@ -33,6 +33,7 @@ import hu.tutor.model.SearchResult;
 import hu.tutor.model.Subject;
 import hu.tutor.model.User;
 import hu.tutor.service.SearchService;
+import hu.tutor.service.SubjectService;
 
 @SpringView(name = SearchView.SEARCH_VIEW_NAME)
 @Scope("prototype")
@@ -47,6 +48,9 @@ public class SearchView extends VerticalLayout implements View {
 
 	@Autowired
 	private SearchService searchService;
+
+	@Autowired
+	private SubjectService subjectService;
 
 	@Override
 	public void enter(ViewChangeEvent event) {
@@ -85,6 +89,14 @@ public class SearchView extends VerticalLayout implements View {
 		TextField teacherNameField = new TextField("Tanár neve");
 		TextField distanceField = new TextField("Maximum távolság");
 		Button submitButton = new Button("Keresés");
+
+		subjectComboBox.setItems(this.subjectService.getAllSubjects());
+		subjectComboBox.setItemCaptionGenerator(Subject::getName);
+		subjectComboBox.setWidth("100%");
+
+		teacherNameField.setWidth("80%");
+
+		distanceField.setWidth("80%");
 
 		submitButton.addClickListener(e -> {
 			Optional<Subject> optionalSelected = subjectComboBox.getSelectedItem();
@@ -153,9 +165,9 @@ public class SearchView extends VerticalLayout implements View {
 			this.resultGrid.addColumn(SearchResult::getCity).setCaption("Város");
 			this.resultGrid.addColumn(SearchResult::getStreet).setCaption("Utca");
 			this.resultGrid.addColumn(SearchResult::getHouseNumber).setCaption("Házszám");
+			this.resultGrid.addColumn(SearchResult::getFormattedPhoneNumber).setCaption("Telefonszám");
+			this.resultGrid.addColumn(SearchResult::getEmail).setCaption("Email");
 			this.resultGrid.addColumn(SearchResult::getDistance).setCaption("Távolság");
-			this.resultGrid.addColumn(r -> "").setCaption("Telefonszám");
-			this.resultGrid.addColumn(r -> "").setCaption("Email");
 		}
 
 		this.resultGrid.setSizeFull();
