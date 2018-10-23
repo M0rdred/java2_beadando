@@ -35,13 +35,11 @@ public class AccountView extends VerticalLayout implements View {
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 		if (this.user == null) {
 			this.getUI().getNavigator().navigateTo(AccessDeniedView.ACCESS_DENIED_VIEW_NAME);
+			return;
 		}
 
 		Link logoutLink = new Link("Kijelentkezés", new ExternalResource("#!" + LogoutView.LOGOUT_VIEW_NAME));
 		Link searchLink = new Link("Keresés", new ExternalResource("#!" + SearchView.SEARCH_VIEW_NAME));
-
-		// Label label = new Label(user.getFirstName());
-		// addComponent(label);
 
 		TabSheet tabSheet = new TabSheet();
 

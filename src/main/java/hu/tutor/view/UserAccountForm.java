@@ -60,8 +60,13 @@ public class UserAccountForm extends VerticalLayout {
 	}
 
 	private Component getFormLayout() {
-
+		VerticalLayout vertical = new VerticalLayout();
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
+
+		if (this.user == null) {
+			return vertical;
+		}
+
 		this.address = this.user.getAddress();
 
 		FormLayout formLayout = new FormLayout();
@@ -122,7 +127,7 @@ public class UserAccountForm extends VerticalLayout {
 		Panel formPanel = new Panel("Személyes adatok");
 		formPanel.setContent(formLayout);
 
-		VerticalLayout vertical = new VerticalLayout(formPanel, saveButton);
+		vertical.addComponents(formPanel, saveButton);
 
 		this.setSizeFull();
 
