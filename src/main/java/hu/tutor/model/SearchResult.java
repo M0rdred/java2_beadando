@@ -35,12 +35,18 @@ public class SearchResult implements Serializable {
 	private String lastName;
 	@Column(name = "country")
 	private String country;
+	@Column(name = "zip")
+	private Integer zip;
 	@Column(name = "city")
 	private String city;
 	@Column(name = "street")
 	private String street;
 	@Column(name = "house_number")
 	private String houseNumber;
+	@Column(name = "phone_number")
+	private String phoneNumber;
+	@Column(name = "email")
+	private String email;
 	@Column(name = "introduction")
 	private String introduction;
 	@Column(name = "subject_name")
@@ -54,5 +60,9 @@ public class SearchResult implements Serializable {
 
 	public String getFullName() {
 		return this.lastName + " " + this.firstName;
+	}
+
+	public String getFormattedPhoneNumber() {
+		return this.phoneNumber.replaceFirst("(\\d{2})(\\d{3})(\\d+)", "+$1/$2 $3");
 	}
 }

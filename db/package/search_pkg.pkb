@@ -13,18 +13,21 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
   BEGIN
     l_search_for_close := FALSE;
   
-    l_sql := 'SELECT ty_search_result(rownum,
-                        p.first_name,
-                        p.last_name,
-                        a.country,
-                        a.city,
-                        a.street,
-                        a.house_number,
-                        '''',
-                        s.name,
-                        '''',
-                        '''',
-                        '''')
+    l_sql := 'SELECT ty_search_result(id             => rownum,
+                        first_name                   => p.first_name,
+                        last_name                    => p.last_name,
+                        country                      => a.country,
+                        zip                          => a.zip,
+                        city                         => a.city,
+                        street                       => a.street,
+                        house_number                 => a.house_number,
+                        phone_number                 => p.phone,
+                        email                        => p.email,
+                        introduction                 => p.introduction,
+                        subject_name                 => s.name,
+                        subject_description          => s.description,
+                        personal_subject_description => '''',
+                        distance                     => 0)
   FROM person p
   JOIN address a
     ON p.address_id = a.id
