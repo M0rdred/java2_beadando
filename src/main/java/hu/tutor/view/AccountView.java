@@ -23,7 +23,7 @@ public class AccountView extends VerticalLayout implements View {
 	protected static final String ACCOUNT_VIEW_NAME = "account";
 	private User user;
 
-	@Autowired(required = false)
+	@Autowired
 	private UserAccountForm userAccountForm;
 	@Autowired
 	private TeacherAccountForm teacherAccountForm;

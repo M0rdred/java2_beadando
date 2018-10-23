@@ -1,5 +1,6 @@
 CREATE OR REPLACE TYPE ty_search_result AS OBJECT
 (
+  id                           NUMBER,
   first_name                   VARCHAR2(40),
   last_name                    VARCHAR2(40),
   country                      VARCHAR2(100),

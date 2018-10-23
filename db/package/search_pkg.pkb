@@ -1,10 +1,10 @@
--- search_pkg body
 CREATE OR REPLACE PACKAGE BODY search_pkg AS
-  FUNCTION search(p_searcher_id  NUMBER,
-                  p_subject_name VARCHAR2,
-                  p_teacher_name VARCHAR2,
-                  p_max_distance NUMBER) RETURN ty_search_result_table IS
-    l_sql                 VARCHAR(1000);
+  PROCEDURE search(p_searcher_id  IN NUMBER
+                  ,p_subject_name IN VARCHAR2
+                  ,p_teacher_name IN VARCHAR2
+                  ,p_max_distance IN NUMBER
+                  ,p_result_list  OUT SYS_REFCURSOR) IS
+    l_sql                 VARCHAR(4000);
     l_search_temp_table   ty_search_result_table;
     l_search_result_table ty_search_result_table;
     l_search_for_close    BOOLEAN;
@@ -13,40 +13,35 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
   BEGIN
     l_search_for_close := FALSE;
   
-    l_sql := 'select ty_search_result(p.first_name,
+    l_sql := 'SELECT ty_search_result(rownum,
+                        p.first_name,
                         p.last_name,
                         a.country,
                         a.city,
                         a.street,
                         a.house_number,
-                        t.text,
+                        '''',
                         s.name,
-                        sub_trans.text,
-                        tt.text,
-                        0)
-  from person p
-  join address a
-    on p.address_id = a.id
-  join teached_subject ts
-    on p.id = ts.teacher_id
-  join subject s
-    on ts.subject_id = s.id
-  join translation t
-    on p.introduction = t.id
-  join translation sub_trans
-    on s.description = sub_trans.id
-  join translation tt
-    on ts.description = tt.id
- where p.active = ' || chr(39) || 'Y' || chr(39) || '
-   and s.active = ' || chr(39) || 'Y' || chr(39) || '
-   and ts.active = ' || chr(39) || 'Y' || chr(39);
+                        '''',
+                        '''',
+                        '''')
+  FROM person p
+  JOIN address a
+    ON p.address_id = a.id
+  JOIN teached_subject ts
+    ON p.id = ts.teacher_id
+  JOIN subject s
+    ON ts.subject_id = s.id
+ WHERE p.dml_flag <> ' || chr(39) || 'D' || chr(39) || chr(10) ||
+             'AND s.active = ' || chr(39) || 'Y' || chr(39) || chr(10) ||
+             'AND ts.active = ' || chr(39) || 'Y' || chr(39);
   
     -- search for subject
     IF p_subject_name IS NOT NULL
        AND length(TRIM(p_subject_name)) > 0
     THEN
     
-      l_sql := l_sql || ' and lower(s.name) like ' || chr(39) || '%' ||
+      l_sql := l_sql || ' AND lower(s.name) LIKE ' || chr(39) || '%' ||
                lower(p_subject_name) || '%' || chr(39);
     END IF;
   
@@ -55,9 +50,15 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
        AND length(TRIM(p_teacher_name)) > 0
     THEN
     
-      l_sql := l_sql || ' and lower(p.first_name || p.last_name) like ' ||
-               chr(39) || '%' || lower(p_teacher_name) || '%' || chr(39);
+      l_sql := l_sql || ' AND lower(p.first_name || ' || chr(39) || chr(32) ||
+               chr(39) || ' || p.last_name) LIKE ' || chr(39) || '%' ||
+               lower(p_teacher_name) || '%' || chr(39);
     END IF;
+  
+    BEGIN
+      INSERT INTO logs (log_entry) VALUES (l_sql);
+      COMMIT;
+    END;
   
     EXECUTE IMMEDIATE l_sql BULK COLLECT
       INTO l_search_temp_table;
@@ -79,7 +80,8 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
       FOR i IN l_search_temp_table.first .. l_search_temp_table.last
       LOOP
         l_search_for_close := TRUE;
-        l_distance         := distance_pkg.get_distance(l_origin_city, l_search_temp_table(i).city);
+        l_distance         := distance_pkg.get_distance(l_origin_city,
+                                                        l_search_temp_table(i).city);
       
         l_distance := l_distance / 1000;
         IF l_distance <= p_max_distance
@@ -99,7 +101,9 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
       l_search_result_table := l_search_temp_table;
     END IF;
   
-    RETURN l_search_result_table;
+    OPEN p_result_list FOR
+      SELECT *
+        FROM TABLE(CAST(l_search_result_table AS ty_search_result_table));
   END;
 END search_pkg;
 /

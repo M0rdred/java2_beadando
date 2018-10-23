@@ -1,7 +1,17 @@
 package hu.tutor.view;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.ValidationException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.ValueContext;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
@@ -10,16 +20,19 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import hu.tutor.model.SearchResult;
 import hu.tutor.model.Subject;
 import hu.tutor.model.User;
+import hu.tutor.service.SearchService;
 
 @SpringView(name = SearchView.SEARCH_VIEW_NAME)
 @Scope("prototype")
@@ -30,12 +43,16 @@ public class SearchView extends VerticalLayout implements View {
 	public static final String SEARCH_VIEW_NAME = "search";
 
 	private User user;
+	private Grid<SearchResult> resultGrid;
+
+	@Autowired
+	private SearchService searchService;
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
 		HorizontalLayout linkLayout = new HorizontalLayout(this.createMainPageLink());
-		if (this.isAnonymousAccess()) {
+		if (this.isAuthorizedAccess()) {
 			linkLayout.addComponent(this.createAccountLink());
 			linkLayout.addComponent(this.createLogoutLink());
 		}
@@ -69,7 +86,28 @@ public class SearchView extends VerticalLayout implements View {
 		TextField distanceField = new TextField("Maximum távolság");
 		Button submitButton = new Button("Keresés");
 
-		submitButton.addClickListener(e -> Notification.show("Nem implementált"));
+		submitButton.addClickListener(e -> {
+			Optional<Subject> optionalSelected = subjectComboBox.getSelectedItem();
+			Integer userId = this.user != null ? this.user.getId() : null;
+			Integer distance = null;
+
+			try {
+				distance = this.convertDistance(distanceField);
+
+				List<SearchResult> results = this.searchService.doSearch(userId,
+						optionalSelected.isPresent() ? optionalSelected.get().getName() : "",
+						teacherNameField.getValue(), distance);
+
+				if (results == null) {
+					results = new ArrayList<>();
+				}
+
+				this.resultGrid.setItems(results);
+
+			} catch (ValidationException ex) {
+				Notification.show("Nem szám", Type.ERROR_MESSAGE);
+			}
+		});
 
 		HorizontalLayout horizontal = new HorizontalLayout(subjectComboBox, teacherNameField, distanceField);
 		horizontal.setSizeFull();
@@ -86,18 +124,42 @@ public class SearchView extends VerticalLayout implements View {
 		return panel;
 	}
 
+	private Integer convertDistance(TextField distanceField) {
+		String value = distanceField.getValue();
+		if (value == null || value.isEmpty()) {
+			return null;
+		}
+
+		ValidationResult result = new RegexpValidator("Nem szám", "\\d*").apply(value, new ValueContext(distanceField));
+		if (result.isError()) {
+			throw new ValidationException();
+		} else {
+			distanceField.setComponentError(null);
+			return Integer.valueOf(value);
+		}
+	}
+
 	private Component createResultLayout() {
 		Panel panel = new Panel("Találatok");
 		VerticalLayout layout = new VerticalLayout();
 
-		Label publicLabel = new Label("Publikus");
-		Label privateLabel = new Label("Privát");
+		this.resultGrid = new Grid<>();
 
-		layout.addComponent(publicLabel);
-		if (this.isAnonymousAccess()) {
-			layout.addComponent(privateLabel);
+		this.resultGrid.addColumn(SearchResult::getFullName).setCaption("Név");
+		this.resultGrid.addColumn(SearchResult::getIntroduction).setCaption("Bemutatkozás");
+		this.resultGrid.addColumn(SearchResult::getPersonalSubjectDescription).setCaption("Személyes tantárgy leírás");
+
+		if (this.isAuthorizedAccess()) {
+			this.resultGrid.addColumn(SearchResult::getCity).setCaption("Város");
+			this.resultGrid.addColumn(SearchResult::getStreet).setCaption("Utca");
+			this.resultGrid.addColumn(SearchResult::getHouseNumber).setCaption("Házszám");
+			this.resultGrid.addColumn(SearchResult::getDistance).setCaption("Távolság");
+			this.resultGrid.addColumn(r -> "").setCaption("Telefonszám");
+			this.resultGrid.addColumn(r -> "").setCaption("Email");
 		}
 
+		this.resultGrid.setSizeFull();
+		layout.addComponent(this.resultGrid);
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		layout.setSizeFull();
@@ -108,7 +170,7 @@ public class SearchView extends VerticalLayout implements View {
 		return panel;
 	}
 
-	private boolean isAnonymousAccess() {
+	private boolean isAuthorizedAccess() {
 		return this.user != null;
 	}
 
