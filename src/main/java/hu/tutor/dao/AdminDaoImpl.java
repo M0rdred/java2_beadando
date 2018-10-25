@@ -42,9 +42,27 @@ public class AdminDaoImpl implements AdminDao {
 		return teacherList;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Subject> getSubjectsAwaitingValidation() {
-		return null;
+
+		List<Subject> subjectList = new ArrayList<>();
+
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		SQLQuery sqlQuery = session.createSQLQuery("select * from subjects_waiting_validation_vw");
+
+		sqlQuery.addEntity(Subject.class);
+
+		sqlQuery.list().forEach(record -> {
+			subjectList.add((Subject) record);
+		});
+
+		transaction.commit();
+		session.close();
+
+		return subjectList;
 	};
 
 	@Override
