@@ -168,6 +168,13 @@ public class SearchView extends VerticalLayout implements View {
 			this.resultGrid.addColumn(SearchResult::getFormattedPhoneNumber).setCaption("Telefonszám");
 			this.resultGrid.addColumn(SearchResult::getEmail).setCaption("Email");
 			this.resultGrid.addColumn(SearchResult::getDistance).setCaption("Távolság");
+
+			this.resultGrid.setDetailsGenerator(r -> {
+				HorizontalLayout horizontal = new HorizontalLayout();
+				horizontal.setSizeFull();
+
+				return horizontal;
+			});
 		}
 
 		this.resultGrid.setSizeFull();

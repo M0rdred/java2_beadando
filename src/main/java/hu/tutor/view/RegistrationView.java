@@ -27,6 +27,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.model.User;
+import hu.tutor.service.TeacherService;
 import hu.tutor.service.UserService;
 
 @SuppressWarnings({ "serial" })
@@ -40,7 +41,10 @@ public class RegistrationView extends FormLayout implements View {
 	private String defaultWidth = "200px";
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
+
+	@Autowired
+	private TeacherService teacherService;
 
 	@Override
 	public void enter(ViewChangeEvent event) {
@@ -131,7 +135,7 @@ public class RegistrationView extends FormLayout implements View {
 					RegistrationView.this.userService.saveUser(user);
 
 					if (teacherCheckBox.getValue()) {
-						RegistrationView.this.userService.becomeTeacher(user.getId());
+						RegistrationView.this.teacherService.becomeTeacher(user.getId());
 					}
 
 					RegistrationView.this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME);

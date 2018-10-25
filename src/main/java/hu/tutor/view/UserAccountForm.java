@@ -1,7 +1,6 @@
 package hu.tutor.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.data.Binder;
@@ -22,6 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.model.Address;
 import hu.tutor.model.User;
+import hu.tutor.service.TeacherService;
 import hu.tutor.service.UserService;
 import hu.tutor.view.component.PhoneField;
 
@@ -50,8 +50,9 @@ public class UserAccountForm extends VerticalLayout {
 	private TextArea introductionField;
 
 	@Autowired
-	@Qualifier("userServiceImpl")
 	private UserService userService;
+	@Autowired
+	private TeacherService teacherService;
 
 	public void init(User user) {
 		this.user = user;
@@ -120,7 +121,7 @@ public class UserAccountForm extends VerticalLayout {
 		if (!this.user.isTeacher()) {
 			Button btnBecomeTeacher = new Button();
 			btnBecomeTeacher.setCaption("Tanár szeretnék lenni");
-			btnBecomeTeacher.addClickListener(event -> this.userService.becomeTeacher(this.user.getId()));
+			btnBecomeTeacher.addClickListener(event -> this.teacherService.becomeTeacher(this.user.getId()));
 			this.addComponent(btnBecomeTeacher);
 		}
 

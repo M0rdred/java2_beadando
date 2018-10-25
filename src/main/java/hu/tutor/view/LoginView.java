@@ -1,8 +1,6 @@
 package hu.tutor.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.icons.VaadinIcons;
@@ -12,8 +10,6 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -23,7 +19,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.security.AuthService;
-import hu.tutor.service.UserService;
 
 @SpringView(name = LoginView.LOGIN_VIEW_NAME)
 public class LoginView extends VerticalLayout implements View {
@@ -31,20 +26,11 @@ public class LoginView extends VerticalLayout implements View {
 	private static final long serialVersionUID = -9159887005598675973L;
 
 	@Autowired
-	@Qualifier("userServiceImpl")
-	private UserService userService;
-
-	@Autowired
 	private AuthService authService;
 
 	private Label errorLabel;
 
 	protected static final String LOGIN_VIEW_NAME = "login";
-
-	@Autowired
-	private ApplicationContext ctx;
-
-	private Label label;
 
 	@Override
 	public void enter(ViewChangeEvent event) {
@@ -79,32 +65,7 @@ public class LoginView extends VerticalLayout implements View {
 			this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
 		}
 
-		loginButton.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				/*
-				 * FormSender formSender = new FormSender(); formSender.setFormAction(
-				 * VaadinServlet.getCurrent().getServletContext().getContextPath () +
-				 * "/j_spring_security_check"); formSender.setFormMethod(Method.POST);
-				 * formSender.addValue("username", userNameField.getValue());
-				 * formSender.addValue("password", passwordField.getValue());
-				 * formSender.setFormTarget("_top"); formSender.extend(getUI());
-				 * formSender.submit();
-				 */
-
-				this.login(userNameField.getValue(), passwordField.getValue());
-
-			}
-
-			private void login(String userName, String password) {
-				if (LoginView.this.authService.isAuthenticUser(userName, password)) {
-					LoginView.this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
-				} else {
-					Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
-				}
-			}
-		});
+		loginButton.addClickListener(e -> this.login(userNameField.getValue(), passwordField.getValue()));
 
 		loginButton.setClickShortcut(KeyCode.ENTER);
 
@@ -114,5 +75,13 @@ public class LoginView extends VerticalLayout implements View {
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 		this.addStyleName("tutor-background");
 
+	}
+
+	private void login(String userName, String password) {
+		if (LoginView.this.authService.isAuthenticUser(userName, password)) {
+			LoginView.this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
+		} else {
+			Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
+		}
 	}
 }

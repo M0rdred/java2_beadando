@@ -3,7 +3,6 @@ package hu.tutor.view;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.spring.annotation.SpringComponent;
@@ -22,7 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
 import hu.tutor.service.SubjectService;
-import hu.tutor.service.UserService;
+import hu.tutor.service.TeacherService;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
@@ -32,11 +31,8 @@ public class TeacherAccountForm extends VerticalLayout {
 	private Teacher teacher;
 
 	@Autowired
-	@Qualifier("userServiceImpl")
-	private UserService userService;
-
+	private TeacherService teacherService;
 	@Autowired
-	@Qualifier("subjectServiceImpl")
 	private SubjectService subjectService;
 
 	private ComboBox<Subject> lstAllSubjects;
@@ -49,7 +45,7 @@ public class TeacherAccountForm extends VerticalLayout {
 
 	private Component createEndTeachingButton() {
 		Button endTeachingButton = new Button("Oktatás befejezése");
-		endTeachingButton.addClickListener(e -> this.userService.endTeaching(this.teacher.getId()));
+		endTeachingButton.addClickListener(e -> this.teacherService.endTeaching(this.teacher.getId()));
 
 		return endTeachingButton;
 	}
@@ -67,7 +63,7 @@ public class TeacherAccountForm extends VerticalLayout {
 			if (this.teacher.getTeachedSubjects().contains(this.lstAllSubjects.getSelectedItem().get())) {
 				Notification.show("Már tanítod ezt a tantárgyat", Type.ERROR_MESSAGE);
 			} else {
-				this.userService.saveNewSubjectForTeacher(this.teacher.getId(),
+				this.teacherService.saveNewSubjectForTeacher(this.teacher.getId(),
 						this.lstAllSubjects.getSelectedItem().get().getId());
 				this.refreshOwnSubjectsList();
 
@@ -126,7 +122,7 @@ public class TeacherAccountForm extends VerticalLayout {
 		});
 
 		btnDeleteSubject.addClickListener(event -> {
-			this.userService.deleteSubjectFromTeacher(this.teacher.getId(),
+			this.teacherService.deleteSubjectFromTeacher(this.teacher.getId(),
 					this.lstOwnSubjects.getSelectedItem().get().getId());
 			this.refreshOwnSubjectsList();
 			this.lstOwnSubjects.setValue(null);
@@ -192,8 +188,8 @@ public class TeacherAccountForm extends VerticalLayout {
 	}
 
 	private void refreshOwnSubjectsList() {
-		this.teacher.setTeachedSubjects(this.userService.getSubjectsOfTeacher(this.teacher));
-		this.lstOwnSubjects.setItems(this.userService.getSubjectsOfTeacher(this.teacher));
+		this.teacher.setTeachedSubjects(this.teacherService.getSubjectsOfTeacher(this.teacher.getId()));
+		this.lstOwnSubjects.setItems(this.teacherService.getSubjectsOfTeacher(this.teacher.getId()));
 	}
 
 }

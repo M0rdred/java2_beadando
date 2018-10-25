@@ -89,7 +89,7 @@ public class AdminAccountForm extends VerticalLayout {
 		enableButton.setIcon(VaadinIcons.CHECK_SQUARE_O);
 
 		enableButton.addClickListener(e -> {
-			this.adminService.enableTeacher(teacher);
+			this.adminService.enableTeacher(teacher.getId());
 			this.refreshTeacherGrid();
 		});
 
