@@ -20,7 +20,9 @@ import javax.persistence.Table;
 @DiscriminatorValue("teacher")
 @NamedStoredProcedureQueries({
 		@NamedStoredProcedureQuery(name = "endTeaching", procedureName = "teacher_pkg.end_teaching", parameters = {
-				@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class) }) })
+				@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class) }),
+		@NamedStoredProcedureQuery(name = "becomeTeacher", procedureName = "teacher_pkg.become_teacher", parameters = {
+				@StoredProcedureParameter(name = "p_user_id", mode = ParameterMode.IN, type = Integer.class) }) })
 public class Teacher extends User {
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

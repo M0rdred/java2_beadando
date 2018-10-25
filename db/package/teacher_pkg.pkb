@@ -13,7 +13,7 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
 
   PROCEDURE become_teacher(p_user_id IN NUMBER) IS
   BEGIN
-    NULL;
+    UPDATE person p SET p.role = 'teacher' WHERE p.id = p_user_id;
   END;
 
   PROCEDURE end_teaching(p_teacher_id IN NUMBER) IS
