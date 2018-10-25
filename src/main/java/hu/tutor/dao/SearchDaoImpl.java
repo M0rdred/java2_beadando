@@ -28,7 +28,8 @@ public class SearchDaoImpl implements SearchDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		StoredProcedureQuery storedProcedure = this.em.createNamedStoredProcedureQuery("loadSearchResults");
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("loadSearchResults");
 
 		storedProcedure.setParameter("p_searcher_id", userId);
 		storedProcedure.setParameter("p_subject_name", subjectName);

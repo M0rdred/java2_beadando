@@ -18,7 +18,10 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
 
   PROCEDURE end_teaching(p_teacher_id IN NUMBER) IS
   BEGIN
-    NULL;
+    UPDATE person p
+       SET p.role       = 'user'
+          ,p.is_teacher = 0
+     WHERE p.id = p_teacher_id;
   END;
 
   PROCEDURE get_subjects_of_teacher(p_teacher_id   IN NUMBER

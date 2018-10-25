@@ -38,8 +38,18 @@ public class TeacherDaoImpl implements TeacherDao {
 
 	@Override
 	public void endTeaching(Integer teacherId) {
-		// TODO Auto-generated method stub
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
 
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("endTeaching");
+
+		storedProcedure.setParameter("p_teacher_id", teacherId);
+
+		storedProcedure.execute();
+
+		transaction.commit();
+		session.close();
 	}
 
 	@SuppressWarnings("unchecked")
