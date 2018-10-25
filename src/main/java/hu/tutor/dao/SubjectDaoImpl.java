@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.tutor.model.Subject;
-import hu.tutor.model.Teacher;
 import hu.tutor.util.HibernateUtil;
 
 @Repository
@@ -63,32 +63,36 @@ public class SubjectDaoImpl implements SubjectDao {
 	public void saveNewSubject(Subject subject) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
+
 		session.persist(subject);
+
 		transaction.commit();
 		session.close();
 	}
 
 	@Override
-	public List<Subject> getSubjectsOfTeacher(Teacher teacher) {
+	public void modifySubject(Subject subject) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Query query = session.createQuery(
-				"select * from subject s where s.id IN (select * from teached_subject ts where ts.teached_id = :t_id)");
-		query.setInteger("t_id", teacher.getId());
-		return null;
-	}
+		session.merge(subject);
 
-	@Override
-	public void modifySubject(Subject subject) {
-		// TODO Auto-generated method stub
-
+		transaction.commit();
+		session.close();
 	}
 
 	@Override
 	public void deleteSubject(Integer subjectId) {
-		// TODO Auto-generated method stub
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
 
+		SQLQuery sqlQuery = session.createSQLQuery("update Subject set dml_flag = 'D' where id = :subject_id");
+		sqlQuery.setParameter("subject_id", subjectId);
+
+		sqlQuery.executeUpdate();
+
+		transaction.commit();
+		session.close();
 	}
 
 }
