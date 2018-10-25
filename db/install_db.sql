@@ -47,6 +47,7 @@ Prompt Initializing Database
 @./package/search_pkg.pks
 @./package/subject_pkg.pks
 @./package/teached_subject_pkg.pks
+@./package/teacher_pkg.pks
 
 @./package/address_pkg.pkb
 @./package/distance_pkg.pkb
@@ -54,6 +55,7 @@ Prompt Initializing Database
 @./package/search_pkg.pkb
 @./package/subject_pkg.pkb
 @./package/teached_subject_pkg.pkb
+@./package/teacher_pkg.pkb
 
 @./job/refresh_distance_data.sql
 
