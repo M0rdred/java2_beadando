@@ -6,5 +6,6 @@ CREATE OR REPLACE PACKAGE teacher_pkg AS
   PROCEDURE become_teacher(p_user_id IN NUMBER);
   PROCEDURE end_teaching(p_teacher_id IN NUMBER);
   PROCEDURE get_subjects_of_teacher(p_teacher_id   IN NUMBER
-                                   ,p_subject_list OUT ty_subject_l);
+                                   ,p_subject_list OUT SYS_REFCURSOR);
 END teacher_pkg;
+/

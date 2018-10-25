@@ -1,5 +1,6 @@
 package hu.tutor.view;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,8 +189,9 @@ public class TeacherAccountForm extends VerticalLayout {
 	}
 
 	private void refreshOwnSubjectsList() {
-		this.teacher.setTeachedSubjects(this.teacherService.getSubjectsOfTeacher(this.teacher.getId()));
-		this.lstOwnSubjects.setItems(this.teacherService.getSubjectsOfTeacher(this.teacher.getId()));
+		List<Subject> subjectsOfTeacher = this.teacherService.getSubjectsOfTeacher(this.teacher.getId());
+		this.teacher.setTeachedSubjects(subjectsOfTeacher);
+		this.lstOwnSubjects.setItems(subjectsOfTeacher);
 	}
 
 }
