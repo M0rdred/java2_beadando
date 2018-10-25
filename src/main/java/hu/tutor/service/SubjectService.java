@@ -3,7 +3,6 @@ package hu.tutor.service;
 import java.util.List;
 
 import hu.tutor.model.Subject;
-import hu.tutor.model.Teacher;
 
 public interface SubjectService {
 	public Subject getSubjectById(Integer id);
@@ -12,5 +11,8 @@ public interface SubjectService {
 
 	public void saveNewSubject(Subject subject);
 
-	public List<Subject> getSubjectsOfTeacher(Teacher teacher);
+	public void modifySubject(Subject subject);
+
+	public void deleteSubject(Integer subjectId);
+
 }

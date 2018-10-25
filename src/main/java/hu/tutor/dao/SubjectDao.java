@@ -13,4 +13,8 @@ public interface SubjectDao {
 	public void saveNewSubject(Subject subject);
 
 	public List<Subject> getSubjectsOfTeacher(Teacher teacher);
+
+	public void modifySubject(Subject subject);
+
+	public void deleteSubject(Integer subjectId);
 }

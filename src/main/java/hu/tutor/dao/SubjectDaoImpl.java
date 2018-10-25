@@ -79,4 +79,16 @@ public class SubjectDaoImpl implements SubjectDao {
 		return null;
 	}
 
+	@Override
+	public void modifySubject(Subject subject) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteSubject(Integer subjectId) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

@@ -5,34 +5,67 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hu.tutor.dao.SubjectDaoImpl;
+import hu.tutor.dao.SubjectDao;
 import hu.tutor.model.Subject;
-import hu.tutor.model.Teacher;
+import lombok.extern.slf4j.Slf4j;
 
-@Service("subjectServiceImpl")
+@Slf4j
+@Service
 public class SubjectServiceImpl implements SubjectService {
 
 	@Autowired
-	private SubjectDaoImpl subjectDao;
+	private SubjectDao subjectDao;
 
 	@Override
 	public Subject getSubjectById(Integer id) {
-		return this.subjectDao.getSubject(id);
+		try {
+			return this.subjectDao.getSubject(id);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public List<Subject> getAllSubjects() {
-		return this.subjectDao.getAllSubjects();
+		try {
+			return this.subjectDao.getAllSubjects();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public void saveNewSubject(Subject subject) {
-		this.subjectDao.saveNewSubject(subject);
+		try {
+			this.subjectDao.saveNewSubject(subject);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
-	public List<Subject> getSubjectsOfTeacher(Teacher teacher) {
-		return this.subjectDao.getSubjectsOfTeacher(teacher);
+	public void modifySubject(Subject subject) {
+		try {
+			this.subjectDao.modifySubject(subject);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+
+	}
+
+	@Override
+	public void deleteSubject(Integer subjectId) {
+		try {
+			this.subjectDao.deleteSubject(subjectId);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+
 	}
 
 }
