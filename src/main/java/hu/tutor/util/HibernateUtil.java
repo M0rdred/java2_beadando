@@ -1,5 +1,6 @@
 package hu.tutor.util;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.SessionFactory;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HibernateUtil {
 	private SessionFactory sessionFactory;
+	private EntityManager entityManager;
 
 	@Autowired
 	public HibernateUtil(EntityManagerFactory factory) {
@@ -18,9 +20,15 @@ public class HibernateUtil {
 		} else {
 			this.sessionFactory = sessionFactory;
 		}
+
+		this.entityManager = factory.createEntityManager();
 	}
 
 	public SessionFactory getSessionFactory() {
 		return this.sessionFactory;
+	}
+
+	public EntityManager getEntityManager() {
+		return this.entityManager;
 	}
 }
