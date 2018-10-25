@@ -37,6 +37,9 @@ Prompt Initializing Database
 @./type/ty_search_result.tps
 @./type/ty_search_result.tpb
 @./type/ty_search_result_table.tps
+@./type/ty_subject.tps
+@./type/ty_subject.tpb
+@./type/ty_subject_table.tps
 
 @./view/subjects_waiting_validation_vw.sql
 @./view/teachers_waiting_validation_vw.sql
