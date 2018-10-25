@@ -6,4 +6,6 @@
 	<inherits name="org.vaadin.risto.formsender.widgetset.FormSenderWidgetset" />
 
     <inherits name="org.vaadin.inputmask.WidgetSet" />
+
+    <inherits name="com.vaadin.tapio.googlemaps.Widgetset" />
 </module>
