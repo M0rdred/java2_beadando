@@ -41,12 +41,14 @@ Prompt Initializing Database
 @./view/subjects_waiting_validation_vw.sql
 @./view/teachers_waiting_validation_vw.sql
 
+@./package/admin_pkg.pks
 @./package/distance_pkg.pks
 @./package/person_pkg.pks
 @./package/search_pkg.pks
 @./package/teached_subject_pkg.pks
 @./package/teacher_pkg.pks
 
+@./package/admin_pkg.pkb
 @./package/distance_pkg.pkb
 @./package/person_pkg.pkb
 @./package/search_pkg.pkb

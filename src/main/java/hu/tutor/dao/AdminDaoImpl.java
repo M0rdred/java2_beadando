@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
 import hu.tutor.util.HibernateUtil;
 
@@ -42,12 +43,20 @@ public class AdminDaoImpl implements AdminDao {
 	}
 
 	@Override
-	public void enableTeacher(Teacher teacher) {
+	public List<Subject> getSubjectsAwaitingValidation() {
+		return null;
+	};
+
+	@Override
+	public void activatePerson(Integer personId) {};
+
+	@Override
+	public void enableTeacher(Integer teacherId) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		session.createSQLQuery("update person p set p.is_teacher = 1 where p.id = :teacher_id")
-				.setParameter("teacher_id", teacher.getId()).executeUpdate();
+				.setParameter("teacher_id", teacherId).executeUpdate();
 
 		transaction.commit();
 		session.close();
