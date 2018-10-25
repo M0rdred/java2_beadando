@@ -27,6 +27,13 @@ import javax.persistence.Table;
 				parameters = {
 					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
 					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class) 
+					}) ,
+		@NamedStoredProcedureQuery(
+				name = "saveNewSubjectForTeacher", 
+				procedureName = "teacher_pkg.save_new_subject_for_teacher", 
+				parameters = {
+					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class) 
 					}) 
 		})
 //@formatter:on
