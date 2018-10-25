@@ -2,7 +2,6 @@ package hu.tutor.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.StoredProcedureQuery;
 
 import org.hibernate.Session;
@@ -15,9 +14,6 @@ import hu.tutor.util.HibernateUtil;
 
 @Repository
 public class SearchDaoImpl implements SearchDao {
-
-	@Autowired
-	private EntityManager em;
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
