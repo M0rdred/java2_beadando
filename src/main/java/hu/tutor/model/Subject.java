@@ -5,14 +5,31 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
-@NamedStoredProcedureQuery(name = "getSubjectsOfTeacher", procedureName = "teacher_pkg.get_subjects_of_teacher", resultClasses = Subject.class, parameters = {
-		@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
-		@StoredProcedureParameter(name = "p_subject_list", mode = ParameterMode.REF_CURSOR, type = void.class) })
+// @formatter:off
+@NamedStoredProcedureQueries({
+		@NamedStoredProcedureQuery(
+				name = "getSubjectsOfTeacher", 
+				procedureName = "teacher_pkg.get_subjects_of_teacher", 
+				resultClasses = Subject.class, 
+				parameters = {
+					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_subject_list", mode = ParameterMode.REF_CURSOR, type = void.class) 
+					}),
+		@NamedStoredProcedureQuery(
+				name = "deleteSubjectFromTeacher", 
+				procedureName = "teacher_pkg.delete_subject_from_teacher", 
+				parameters = {
+					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class) 
+					}) 
+		})
+//@formatter:on
 @Entity
 @Table(name = "subject")
 public class Subject {

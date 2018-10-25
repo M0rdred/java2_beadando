@@ -8,7 +8,10 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
   PROCEDURE delete_subject_from_teacher(p_teacher_id IN NUMBER
                                        ,p_subject_id IN NUMBER) IS
   BEGIN
-    NULL;
+    UPDATE teached_subject ts
+       SET ts.active = 0
+     WHERE ts.teacher_id = p_teacher_id
+       AND ts.subject_id = p_subject_id;
   END;
 
   PROCEDURE become_teacher(p_user_id IN NUMBER) IS
