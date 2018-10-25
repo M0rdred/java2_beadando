@@ -71,6 +71,7 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
     -- filter for max distance
     IF p_max_distance IS NOT NULL
        AND p_max_distance >= 0
+       AND p_searcher_id IS NOT NULL
     THEN
     
       SELECT a.city
