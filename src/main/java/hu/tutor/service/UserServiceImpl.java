@@ -7,11 +7,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import hu.tutor.dao.UserDaoHibernateImpl;
-import hu.tutor.model.Subject;
-import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
+import lombok.extern.slf4j.Slf4j;
 
-@Service("userServiceImpl")
+@Slf4j
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
@@ -22,64 +22,64 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> listUsers() {
-		return this.userDao.getAllUsers();
+		try {
+			return this.userDao.getAllUsers();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public User getUserById(Integer id) {
-		return this.userDao.findUser(id);
+		try {
+			return this.userDao.findUser(id);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public User saveUser(User user) {
-		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+		try {
+			user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
-		return this.userDao.saveUser(user);
+			return this.userDao.saveUser(user);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public User updateUser(User user) {
-		return this.userDao.updateUser(user);
+		try {
+			return this.userDao.updateUser(user);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public void deleteUser(Integer id) {
-		this.userDao.deleteUser(id);
+		try {
+			this.userDao.deleteUser(id);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 	@Override
 	public User loadUserByUserName(String userName) {
-		return this.userDao.getUserByUserName(userName);
-	}
-
-	@Override
-	public void saveSubjectOfTeacher(Subject subject) {
-		this.userDao.saveSubjectOfTeacher(subject);
-	}
-
-	@Override
-	public void saveNewSubjectForTeacher(Integer teacherId, Integer subjectId) {
-		this.userDao.saveNewSubjectForTeacher(teacherId, subjectId);
-	}
-
-	@Override
-	public void deleteSubjectFromTeacher(Integer teacherId, Integer subjectId) {
-		this.userDao.deleteSubjectFromTeacher(teacherId, subjectId);
-	}
-
-	@Override
-	public void becomeTeacher(Integer userId) {
-		this.userDao.becomeTeacher(userId);
-	}
-
-	@Override
-	public void endTeaching(Integer teacherId) {
-		this.userDao.endTeaching(teacherId);
-	}
-
-	@Override
-	public List<Subject> getSubjectsOfTeacher(Teacher teacher) {
-		return this.userDao.getSubjectsOfTeacher(teacher.getId());
+		try {
+			return this.userDao.getUserByUserName(userName);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 }
