@@ -41,7 +41,6 @@ Prompt Initializing Database
 @./view/subjects_waiting_validation_vw.sql
 @./view/teachers_waiting_validation_vw.sql
 
-@./package/address_pkg.pks
 @./package/distance_pkg.pks
 @./package/person_pkg.pks
 @./package/search_pkg.pks
@@ -49,7 +48,6 @@ Prompt Initializing Database
 @./package/teached_subject_pkg.pks
 @./package/teacher_pkg.pks
 
-@./package/address_pkg.pkb
 @./package/distance_pkg.pkb
 @./package/person_pkg.pkb
 @./package/search_pkg.pkb
