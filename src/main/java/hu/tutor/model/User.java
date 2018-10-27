@@ -17,6 +17,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import lombok.Data;
 
 @Data
@@ -59,9 +61,11 @@ public class User {
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
 
+	@Type(type = "yes_no")
 	@Column(name = "is_admin")
 	private boolean isAdmin;
 
+	@Type(type = "yes_no")
 	@Column(name = "is_teacher")
 	private boolean isTeacher;
 
