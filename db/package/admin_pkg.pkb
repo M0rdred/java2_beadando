@@ -15,9 +15,10 @@ CREATE OR REPLACE PACKAGE BODY admin_pkg AS
   
   END activate_person;
 
-  PROCEDURE enable_teacher(p_teacher_id IN NUMBER) IS
+  PROCEDURE enable_teacher(p_teacher_id IN NUMBER
+                          ,p_enable     IN VARCHAR2) IS
   BEGIN
-    NULL;
+    UPDATE person p SET p.is_teacher = p_enable WHERE p.id = p_teacher_id;
   END enable_teacher;
 
 END admin_pkg;

@@ -20,6 +20,7 @@ import com.vaadin.ui.components.grid.Editor;
 import hu.tutor.model.Teacher;
 import hu.tutor.service.AdminService;
 import hu.tutor.service.UserService;
+import hu.tutor.util.ActiveParameter;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
@@ -89,7 +90,7 @@ public class AdminAccountForm extends VerticalLayout {
 		enableButton.setIcon(VaadinIcons.CHECK_SQUARE_O);
 
 		enableButton.addClickListener(e -> {
-			this.adminService.enableTeacher(teacher.getId());
+			this.adminService.enableTeacher(teacher.getId(), ActiveParameter.Y);
 			this.refreshTeacherGrid();
 		});
 

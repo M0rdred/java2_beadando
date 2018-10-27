@@ -3,6 +3,8 @@ package hu.tutor.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.StoredProcedureQuery;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
+import hu.tutor.util.ActiveParameter;
 import hu.tutor.util.HibernateUtil;
 
 @Repository
@@ -66,15 +69,20 @@ public class AdminDaoImpl implements AdminDao {
 	};
 
 	@Override
-	public void activatePerson(Integer personId) {};
+	public void activatePerson(Integer personId, ActiveParameter active) {};
 
 	@Override
-	public void enableTeacher(Integer teacherId) {
+	public void enableTeacher(Integer teacherId, ActiveParameter enable) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		session.createSQLQuery("update person p set p.is_teacher = 1 where p.id = :teacher_id")
-				.setParameter("teacher_id", teacherId).executeUpdate();
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("enableTeacher");
+
+		storedProcedure.setParameter("p_teacher_id", teacherId);
+		storedProcedure.setParameter("p_enable", enable.name());
+
+		storedProcedure.execute();
 
 		transaction.commit();
 		session.close();

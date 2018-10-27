@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import hu.tutor.dao.AdminDao;
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
+import hu.tutor.util.ActiveParameter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,9 +40,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void activatePerson(Integer personId) {
+	public void activatePerson(Integer personId, ActiveParameter active) {
 		try {
-			this.adminDao.activatePerson(personId);
+			this.adminDao.activatePerson(personId, active);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;
@@ -50,9 +51,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void enableTeacher(Integer teacherId) {
+	public void enableTeacher(Integer teacherId, ActiveParameter enable) {
 		try {
-			this.adminDao.enableTeacher(teacherId);
+			this.adminDao.enableTeacher(teacherId, enable);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;
