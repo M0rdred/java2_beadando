@@ -71,15 +71,15 @@ public class User {
 
 	@Type(type = "yes_no")
 	@Column(name = "is_admin")
-	private Boolean isAdmin;
+	private Boolean isAdmin = false;
 
 	@Type(type = "yes_no")
 	@Column(name = "is_teacher")
-	private Boolean isTeacher;
+	private Boolean isTeacher = false;
 
 	@Type(type = "yes_no")
 	@Column(name = "is_active")
-	private Boolean isActive;
+	private Boolean isActive = false;
 
 	public String getFullName() {
 		return this.lastName + " " + this.firstName;

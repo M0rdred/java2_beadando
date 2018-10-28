@@ -33,11 +33,6 @@ CREATE OR REPLACE PACKAGE BODY person_pkg AS
                                 'The given person is already existing in the database');
       ELSE
       
-        address_pkg.new_address(p_country      => p_ad_country,
-                                p_city         => p_ad_city,
-                                p_street       => p_ad_street,
-                                p_house_number => p_ad_house_number);
-      
         IF p_introduction IS NULL
            OR length(p_introduction) <= 0
         THEN
