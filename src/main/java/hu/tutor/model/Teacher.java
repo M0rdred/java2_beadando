@@ -38,14 +38,7 @@ import javax.persistence.Table;
 				parameters = {
 						@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
 						@StoredProcedureParameter(name = "p_enable", mode = ParameterMode.IN, type = String.class) 
-						}) ,
-		@NamedStoredProcedureQuery(
-				name = "activatePerson", 
-				procedureName = "admin_pkg.activate_person", 
-				parameters = {
-						@StoredProcedureParameter(name = "p_person_id", mode = ParameterMode.IN, type = Integer.class),
-						@StoredProcedureParameter(name = "p_active", mode = ParameterMode.IN, type = String.class) 
-						}) 
+						}) 		
 		})
 //@formatter:on
 public class Teacher extends User {

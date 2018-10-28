@@ -2,7 +2,6 @@ package hu.tutor.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,8 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 import hu.tutor.service.TeacherService;
+import hu.tutor.service.exception.UserBlockedException;
+import hu.tutor.util.ActiveParameter;
 import hu.tutor.util.HibernateUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Repository
 @Transactional
 @SuppressWarnings("unchecked")
@@ -30,8 +33,6 @@ public class UserDaoImpl implements UserDao {
 	public User findUser(Integer id) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		// Criteria criteria = session.createCriteria(User.class);
-		// criteria.add(Restrictions.eq("id", id));
 		Query query = session.createQuery("from User where id = :ID");
 		query.setInteger("ID", id);
 		List<User> users = query.list();
@@ -56,11 +57,12 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
+	public List<User> getAllActiveUsers() {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		Criteria criteria = session.createCriteria(User.class);
-		List<User> users = criteria.list();
+		Query query = session.createQuery("from User where is_active = :active");
+		query.setString("active", ActiveParameter.YES.getValue());
+		List<User> users = query.list();
 		transaction.commit();
 		session.close();
 		return users;
@@ -105,7 +107,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Query query = session.createQuery("from User where user_name = :userName");
+		Query query = session.createQuery("from User where user_name = :userName ");
 		query.setString("userName", userName);
 		List<User> users = query.list();
 		transaction.commit();
@@ -119,6 +121,12 @@ public class UserDaoImpl implements UserDao {
 			return null;
 		} else {
 			User user = users.get(0);
+
+			if (!user.getIsActive()) {
+				log.error("A felhasználó le van tiltva: " + user.getUserName());
+				throw new UserBlockedException("A felhasználó le van tiltva");
+			}
+
 			if (user.getClass().equals(Teacher.class)) {
 				Teacher teacher = (Teacher) user;
 				teacher.setTeachedSubjects(this.teacherService.getSubjectsOfTeacher(teacher.getId()));

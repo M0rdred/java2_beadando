@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> listUsers() {
 		try {
-			return this.userDao.getAllUsers();
+			return this.userDao.getAllActiveUsers();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;

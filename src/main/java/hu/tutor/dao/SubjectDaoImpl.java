@@ -2,7 +2,6 @@ package hu.tutor.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.tutor.model.Subject;
+import hu.tutor.util.ActiveParameter;
 import hu.tutor.util.HibernateUtil;
 
 @Repository
@@ -50,8 +50,9 @@ public class SubjectDaoImpl implements SubjectDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Criteria criteria = session.createCriteria(Subject.class);
-		List<Subject> subjects = criteria.list();
+		Query query = session.createQuery("from Subject where active = :active");
+		query.setString("active", ActiveParameter.YES.getValue());
+		List<Subject> subjects = query.list();
 
 		transaction.commit();
 		session.close();

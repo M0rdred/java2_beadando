@@ -8,8 +8,16 @@ import javax.persistence.Id;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 // @formatter:off
 @NamedStoredProcedureQueries({
@@ -27,21 +35,33 @@ import javax.persistence.Table;
 				parameters = {
 					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
 					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class) 
-					}) ,
+					}),
 		@NamedStoredProcedureQuery(
 				name = "saveNewSubjectForTeacher", 
 				procedureName = "teacher_pkg.save_new_subject_for_teacher", 
 				parameters = {
 					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
 					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class) 
+					}),
+		@NamedStoredProcedureQuery(
+				name = "enableSubject", 
+				procedureName = "admin_pkg.enable_subject", 
+				parameters = {
+					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_enable", mode = ParameterMode.IN, type = String.class) 
 					}) 
 		})
 //@formatter:on
+@Data
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "subject")
 public class Subject {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subject_sequence")
+	@SequenceGenerator(name = "subject_sequence", sequenceName = "subject_sq")
 	@Column(name = "id")
 	private int id;
 
@@ -51,58 +71,8 @@ public class Subject {
 	@Column(name = "description")
 	private String description;
 
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		Subject other = (Subject) obj;
-		if (this.name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!this.name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
+	@Type(type = "yes_no")
+	@Column(name = "active")
+	private boolean active;
 
 }

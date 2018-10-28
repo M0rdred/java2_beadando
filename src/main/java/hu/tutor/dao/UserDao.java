@@ -8,7 +8,7 @@ public interface UserDao {
 
 	public User findUser(Integer id);
 
-	public List<User> getAllUsers();
+	public List<User> getAllActiveUsers();
 
 	public User saveUser(User user);
 

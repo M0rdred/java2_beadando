@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.StoredProcedureQuery;
 
+import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
+import hu.tutor.model.User;
 import hu.tutor.util.ActiveParameter;
 import hu.tutor.util.HibernateUtil;
 
@@ -69,7 +71,21 @@ public class AdminDaoImpl implements AdminDao {
 	};
 
 	@Override
-	public void activatePerson(Integer personId, ActiveParameter active) {};
+	public void activatePerson(Integer personId, ActiveParameter active) {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("activatePerson");
+
+		storedProcedure.setParameter("p_person_id", personId);
+		storedProcedure.setParameter("p_active", active.getValue());
+
+		storedProcedure.execute();
+
+		transaction.commit();
+		session.close();
+	};
 
 	@Override
 	public void enableTeacher(Integer teacherId, ActiveParameter enable) {
@@ -80,12 +96,44 @@ public class AdminDaoImpl implements AdminDao {
 				.createNamedStoredProcedureQuery("enableTeacher");
 
 		storedProcedure.setParameter("p_teacher_id", teacherId);
-		storedProcedure.setParameter("p_enable", enable.name());
+		storedProcedure.setParameter("p_enable", enable.getValue());
 
 		storedProcedure.execute();
 
 		transaction.commit();
 		session.close();
+	}
+
+	@Override
+	public void enableSubject(Integer subjectId, ActiveParameter enable) {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("enableSubject");
+
+		storedProcedure.setParameter("p_subject_id", subjectId);
+		storedProcedure.setParameter("p_enable", enable.getValue());
+
+		storedProcedure.execute();
+
+		transaction.commit();
+		session.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getAllUsers() {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		Criteria criteria = session.createCriteria(User.class);
+
+		List<User> users = criteria.list();
+
+		transaction.commit();
+		session.close();
+
+		return users;
 	}
 
 }
