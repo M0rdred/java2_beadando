@@ -18,7 +18,7 @@ public class AuthService {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
-	public boolean isAuthenticUser(String userName, String password) {
+	public boolean isAuthenticUserCredentials(String userName, String password) {
 		User user = this.userDao.getUserByUserName(userName);
 
 		if (user == null) {
@@ -33,7 +33,14 @@ public class AuthService {
 	}
 
 	public boolean checkIfUserLoggedIn() {
-		return VaadinSession.getCurrent().getAttribute("user") != null;
+		User user = (User) VaadinSession.getCurrent().getAttribute("user");
+
+		if (user == null) {
+			return false;
+		}
+
+		User userByUserName = this.userDao.getUserByUserName(user.getUserName());
+		return userByUserName != null && userByUserName.getIsActive();
 	}
 
 }

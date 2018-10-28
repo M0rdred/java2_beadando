@@ -19,6 +19,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.security.AuthService;
+import hu.tutor.service.exception.UserBlockedException;
 
 @SpringView(name = LoginView.LOGIN_VIEW_NAME)
 public class LoginView extends VerticalLayout implements View {
@@ -78,10 +79,14 @@ public class LoginView extends VerticalLayout implements View {
 	}
 
 	private void login(String userName, String password) {
-		if (LoginView.this.authService.isAuthenticUser(userName, password)) {
-			LoginView.this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
-		} else {
-			Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
+		try {
+			if (LoginView.this.authService.isAuthenticUserCredentials(userName, password)) {
+				LoginView.this.getUI().getNavigator().navigateTo(AccountView.ACCOUNT_VIEW_NAME);
+			} else {
+				Notification.show("Bejelenkezési hiba", "Rossz felhasználónév vagy jelszó", Type.ERROR_MESSAGE);
+			}
+		} catch (UserBlockedException e) {
+			Notification.show("Bejelenkezési hiba", e.getMessage(), Type.ERROR_MESSAGE);
 		}
 	}
 }
