@@ -30,6 +30,7 @@ DROP VIEW subjects_waiting_validation_vw;
 
 DROP TABLE address;
 DROP TABLE address_history;
+DROP TABLE application_parameters;
 DROP TABLE city_distance;
 DROP TABLE language;
 DROP TABLE language_history;
@@ -45,6 +46,8 @@ DROP TABLE translation_history;
 
 DROP TYPE ty_search_result_table;
 DROP TYPE ty_search_result;
+DROP TYPE ty_subject_table;
+DROP TYPE ty_subject;
 
 BEGIN
 dbms_scheduler.drop_job(job_name => 'refresh_distance_data');

@@ -7,7 +7,7 @@ sqlplus.exe $DB_USER/$DB_PASS@$DB_SERVICE << EOF
 set echo off 
 set heading off
 
-@delete_db.sql
+@delete_db.sql;
 commit;
 EOF
 
@@ -16,7 +16,7 @@ sqlplus.exe $DB_USER/$DB_PASS@$DB_SERVICE << EOF2
 set echo off 
 set heading off
 
-@install_db.sql
+@install_db.sql;
 commit;
 EOF2
 
