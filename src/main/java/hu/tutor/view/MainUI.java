@@ -20,7 +20,7 @@ import hu.tutor.view.error.ErrorViewProvider;
 @PreserveOnRefresh
 public class MainUI extends UI {
 
-	public static final String APP_TITLE = "Tutor Search";
+	public static final String APP_TITLE = "Tutor Search Project";
 
 	@Autowired
 	private ViewProvider viewProvider;

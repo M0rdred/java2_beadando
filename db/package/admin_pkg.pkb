@@ -21,5 +21,11 @@ CREATE OR REPLACE PACKAGE BODY admin_pkg AS
     UPDATE person p SET p.is_teacher = p_enable WHERE p.id = p_teacher_id;
   END enable_teacher;
 
+  PROCEDURE enable_subject(p_subject_id IN NUMBER
+                          ,p_enable     IN VARCHAR2) IS
+  BEGIN
+    UPDATE subject s SET s.active = p_enable WHERE s.id = p_subject_id;
+  END enable_subject;
+
 END admin_pkg;
 /

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import hu.tutor.dao.AdminDao;
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
+import hu.tutor.model.User;
 import hu.tutor.util.ActiveParameter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,12 +32,11 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public List<Subject> getSubjectsAwaitingValidation() {
 		try {
-			this.adminDao.getSubjectsAwaitingValidation();
+			return this.adminDao.getSubjectsAwaitingValidation();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;
 		}
-		return null;
 	}
 
 	@Override
@@ -59,6 +59,26 @@ public class AdminServiceImpl implements AdminService {
 			throw e;
 		}
 
+	}
+
+	@Override
+	public void enableSubject(Integer subjectId, ActiveParameter enable) {
+		try {
+			this.adminDao.enableSubject(subjectId, enable);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		try {
+			return this.adminDao.getAllUsers();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 }
