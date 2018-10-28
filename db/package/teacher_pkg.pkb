@@ -72,7 +72,7 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
       JOIN subject s
         ON s.id = t.subject_id
      WHERE t.teacher_id = p_teacher_id
-       AND t.active = 1
+       AND t.active = 'Y'
        AND t.dml_flag <> 'D';
   
     OPEN p_subject_list FOR
