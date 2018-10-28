@@ -1,7 +1,7 @@
 CREATE TABLE TEACHED_SUBJECT (
   subject_id  NUMBER NOT NULL,
   teacher_id  NUMBER NOT NULL,
-  description NUMBER,
+  description VARCHAR2(4000),
   active      VARCHAR2(1) default 'N' NOT NULL,
   mod_user    VARCHAR2(300) NOT NULL,
   created_on  TIMESTAMP(6) NOT NULL,

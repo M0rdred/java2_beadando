@@ -7,7 +7,7 @@ CREATE TABLE PERSON (
   is_teacher   VARCHAR2(1) default 'N',
   is_admin     VARCHAR2(1) default 'N',
   is_active    VARCHAR2(1) default 'N',
-  introduction NUMBER,
+  introduction VARCHAR2(4000),
   role		   VARCHAR2(255),
   user_name	   VARCHAR2(255),
   phone		   VARCHAR2(255),
