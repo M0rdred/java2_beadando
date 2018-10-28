@@ -4,7 +4,7 @@ BEGIN
                             job_action      => 'distance_pkg.update_distances',
                             start_date      => to_date('2018-01-01 00:00:00',
                                                        'yyyy-mm-dd hh24:mi:ss'),
-                            repeat_interval => 'FREQ=DAILY',
+                            repeat_interval => 'FREQ=WEEKLY; BYDAY=SAT',
                             comments        => 'Refreshing old distance data');
 END;
 /
