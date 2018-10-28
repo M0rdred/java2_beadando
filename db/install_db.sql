@@ -6,6 +6,7 @@ Prompt Initializing Database
 @./sequence/subject.seq
 @./sequence/translation.seq
 
+@./table/application_parameters_table.sql
 @./table/address_table.sql
 @./table/address_table_h.sql
 @./table/city_distance_table.sql
