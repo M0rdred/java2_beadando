@@ -15,13 +15,20 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "person")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -30,7 +37,8 @@ import lombok.Data;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_sequence")
+	@SequenceGenerator(name = "person_sequence", sequenceName = "person_sq")
 	@Column(name = "id")
 	private int id;
 
@@ -63,11 +71,15 @@ public class User {
 
 	@Type(type = "yes_no")
 	@Column(name = "is_admin")
-	private boolean isAdmin;
+	private Boolean isAdmin;
 
 	@Type(type = "yes_no")
 	@Column(name = "is_teacher")
-	private boolean isTeacher;
+	private Boolean isTeacher;
+
+	@Type(type = "yes_no")
+	@Column(name = "is_active")
+	private Boolean isActive;
 
 	public String getFullName() {
 		return this.lastName + " " + this.firstName;

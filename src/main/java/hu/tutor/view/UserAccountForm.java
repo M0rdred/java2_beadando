@@ -118,7 +118,7 @@ public class UserAccountForm extends VerticalLayout {
 		formLayout.setSpacing(true);
 		formLayout.setMargin(true);
 
-		if (!this.user.isTeacher()) {
+		if (!this.user.getIsTeacher()) {
 			Button btnBecomeTeacher = new Button();
 			btnBecomeTeacher.setCaption("Tanár szeretnék lenni");
 			btnBecomeTeacher.addClickListener(event -> this.teacherService.becomeTeacher(this.user.getId()));

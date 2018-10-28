@@ -46,13 +46,13 @@ public class AccountView extends VerticalLayout implements View {
 		tabSheet.addTab(this.userAccountForm, "Fiók");
 		this.userAccountForm.init(this.user);
 
-		if (this.user.isTeacher()) {
+		if (this.user.getIsTeacher()) {
 			tabSheet.addTab(this.teacherAccountForm, "Tanár");
 			this.teacherAccountForm.setTeacher((Teacher) this.user);
 			this.teacherAccountForm.init();
 		}
 
-		if (this.user.isAdmin()) {
+		if (this.user.getIsAdmin()) {
 			this.adminAccountForm.init();
 			tabSheet.addTab(this.adminAccountForm, "Adminisztrátor");
 		}
