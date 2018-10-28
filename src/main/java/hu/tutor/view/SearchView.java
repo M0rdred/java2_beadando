@@ -3,10 +3,12 @@ package hu.tutor.view;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.data.ValidationResult;
@@ -16,12 +18,19 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.tapio.googlemaps.GoogleMap;
+import com.vaadin.tapio.googlemaps.client.LatLon;
+import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapMarker;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.ItemClick;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -32,12 +41,22 @@ import com.vaadin.ui.VerticalLayout;
 import hu.tutor.model.SearchResult;
 import hu.tutor.model.Subject;
 import hu.tutor.model.User;
+import hu.tutor.security.AuthService;
+import hu.tutor.service.GoogleMapService;
 import hu.tutor.service.SearchService;
 import hu.tutor.service.SubjectService;
 
 @SpringView(name = SearchView.SEARCH_VIEW_NAME)
 @Scope("prototype")
+@SpringComponent
 public class SearchView extends VerticalLayout implements View {
+
+	@Value("${google.maps.api-key}")
+	private String API_KEY;
+	private static final String MAX_DISTANCE = "Maximum távolság";
+	private static final String TEACHER_NAME = "Tanár neve";
+	private static final String SUBJECT_NAME = "Tantárgy";
+	private static final String FILTERS = "Szűrők:";
 
 	private static final long serialVersionUID = 9132068016374956428L;
 
@@ -45,18 +64,31 @@ public class SearchView extends VerticalLayout implements View {
 
 	private User user;
 	private Grid<SearchResult> resultGrid;
+	private Panel searchPanel;
+	private ComboBox<Subject> subjectComboBox;
+	private TextField teacherNameField;
+	private TextField distanceField;
+	private Label filterLabel;
+	private boolean authorizedAccess;
+	private SearchResult detailsResultItem;
 
 	@Autowired
 	private SearchService searchService;
-
+	@Autowired
+	private AuthService authService;
 	@Autowired
 	private SubjectService subjectService;
+	@Autowired
+	private GoogleMapService googleMapService;
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.user = (User) VaadinSession.getCurrent().getAttribute("user");
+
+		this.authorizedAccess = this.isAuthorizedAccess();
+
 		HorizontalLayout linkLayout = new HorizontalLayout(this.createMainPageLink());
-		if (this.isAuthorizedAccess()) {
+		if (this.authorizedAccess) {
 			linkLayout.addComponent(this.createAccountLink());
 			linkLayout.addComponent(this.createLogoutLink());
 		}
@@ -85,30 +117,32 @@ public class SearchView extends VerticalLayout implements View {
 		Panel panel = new Panel("Keresés");
 		VerticalLayout layout = new VerticalLayout();
 
-		ComboBox<Subject> subjectComboBox = new ComboBox<>("Tantárgy");
-		TextField teacherNameField = new TextField("Tanár neve");
-		TextField distanceField = new TextField("Maximum távolság");
+		this.subjectComboBox = new ComboBox<>(SUBJECT_NAME);
+		this.teacherNameField = new TextField(TEACHER_NAME);
+		this.distanceField = new TextField(MAX_DISTANCE);
 		Button submitButton = new Button("Keresés");
 
-		subjectComboBox.setItems(this.subjectService.getAllSubjects());
-		subjectComboBox.setItemCaptionGenerator(Subject::getName);
-		subjectComboBox.setWidth("100%");
+		this.subjectComboBox.setItems(this.subjectService.getAllSubjects());
+		this.subjectComboBox.setItemCaptionGenerator(Subject::getName);
+		this.subjectComboBox.setWidth("100%");
 
-		teacherNameField.setWidth("80%");
+		this.teacherNameField.setWidth("80%");
 
-		distanceField.setWidth("80%");
+		this.distanceField.setWidth("80%");
 
 		submitButton.addClickListener(e -> {
-			Optional<Subject> optionalSelected = subjectComboBox.getSelectedItem();
+			Optional<Subject> optionalSelected = this.subjectComboBox.getSelectedItem();
 			Integer userId = this.user != null ? this.user.getId() : null;
 			Integer distance = null;
 
 			try {
-				distance = this.convertDistance(distanceField);
+				distance = this.convertDistance(this.distanceField);
+
+				this.filterLabel.setCaption(this.rewriteFilterLabel());
 
 				List<SearchResult> results = this.searchService.doSearch(userId,
 						optionalSelected.isPresent() ? optionalSelected.get().getName() : "",
-						teacherNameField.getValue(), distance);
+						this.teacherNameField.getValue(), distance);
 
 				if (results == null) {
 					results = new ArrayList<>();
@@ -121,7 +155,8 @@ public class SearchView extends VerticalLayout implements View {
 			}
 		});
 
-		HorizontalLayout horizontal = new HorizontalLayout(subjectComboBox, teacherNameField, distanceField);
+		HorizontalLayout horizontal = new HorizontalLayout(this.subjectComboBox, this.teacherNameField,
+				this.distanceField);
 		horizontal.setSizeFull();
 
 		layout.addComponents(horizontal, submitButton);
@@ -134,6 +169,43 @@ public class SearchView extends VerticalLayout implements View {
 		panel.setContent(layout);
 
 		return panel;
+	}
+
+	private String rewriteFilterLabel() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(FILTERS);
+		boolean filterPresent = false;
+
+		Optional<Subject> selectedSubject = this.subjectComboBox.getSelectedItem();
+		if (selectedSubject.isPresent()) {
+			if (filterPresent) {
+				builder.append(",");
+			}
+			builder.append(" ").append(SUBJECT_NAME).append(" = ").append(selectedSubject.get().getName());
+			filterPresent = true;
+		}
+
+		if (!this.teacherNameField.isEmpty()) {
+			if (filterPresent) {
+				builder.append(",");
+			}
+			builder.append(" ").append(TEACHER_NAME).append(" = ").append(this.teacherNameField.getValue());
+			filterPresent = true;
+		}
+
+		if (!this.distanceField.isEmpty()) {
+			if (filterPresent) {
+				builder.append(",");
+			}
+			builder.append(" ").append(MAX_DISTANCE).append(" = ").append(this.distanceField.getValue()).append(" km");
+			filterPresent = true;
+		}
+
+		if (filterPresent) {
+			return builder.toString();
+		} else {
+			return "";
+		}
 	}
 
 	private Integer convertDistance(TextField distanceField) {
@@ -152,8 +224,9 @@ public class SearchView extends VerticalLayout implements View {
 	}
 
 	private Component createResultLayout() {
-		Panel panel = new Panel("Találatok");
+		this.searchPanel = new Panel("Találatok");
 		VerticalLayout layout = new VerticalLayout();
+		this.filterLabel = new Label("");
 
 		this.resultGrid = new Grid<>();
 
@@ -161,7 +234,9 @@ public class SearchView extends VerticalLayout implements View {
 		this.resultGrid.addColumn(SearchResult::getIntroduction).setCaption("Bemutatkozás");
 		this.resultGrid.addColumn(SearchResult::getPersonalSubjectDescription).setCaption("Személyes tantárgy leírás");
 
-		if (this.isAuthorizedAccess()) {
+		this.resultGrid.setSelectionMode(SelectionMode.NONE);
+
+		if (this.authorizedAccess) {
 			this.resultGrid.addColumn(SearchResult::getCity).setCaption("Város");
 			this.resultGrid.addColumn(SearchResult::getStreet).setCaption("Utca");
 			this.resultGrid.addColumn(SearchResult::getHouseNumber).setCaption("Házszám");
@@ -169,28 +244,76 @@ public class SearchView extends VerticalLayout implements View {
 			this.resultGrid.addColumn(SearchResult::getEmail).setCaption("Email");
 			this.resultGrid.addColumn(SearchResult::getDistance).setCaption("Távolság");
 
-			this.resultGrid.setDetailsGenerator(r -> {
-				HorizontalLayout horizontal = new HorizontalLayout();
-				horizontal.setSizeFull();
-
-				return horizontal;
-			});
+			this.resultGrid.setDetailsGenerator(this::getResultGridDetailsGenerator);
 		}
 
+		this.resultGrid.addItemClickListener(this::getResultGridClickListener);
+
 		this.resultGrid.setSizeFull();
-		layout.addComponent(this.resultGrid);
+		layout.addComponents(this.filterLabel, this.resultGrid);
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		layout.setSizeFull();
 
-		panel.setSizeFull();
-		panel.setContent(layout);
+		this.searchPanel.setSizeFull();
+		this.searchPanel.setContent(layout);
 
-		return panel;
+		return this.searchPanel;
+	}
+
+	private Component getResultGridDetailsGenerator(SearchResult result) {
+		HorizontalLayout horizontal = new HorizontalLayout();
+
+		GoogleMap map = new GoogleMap(this.API_KEY, null, "hungarian");
+
+		LatLon resultGeoCode = this.googleMapService.getGeoCode(result.getZip(), result.getCountry(), result.getCity(),
+				result.getStreet(), result.getHouseNumber());
+
+		LatLon userGeoCode = this.googleMapService.getGeoCode(this.user.getAddress());
+
+		map.addMarker(new GoogleMapMarker(result.getFullName(), resultGeoCode, false));
+		map.addMarker(new GoogleMapMarker(this.user.getFullName(), userGeoCode, false));
+
+		LatLon[] bounds = this.googleMapService
+				.getBounds(map.getMarkers().stream().map(GoogleMapMarker::getPosition).collect(Collectors.toList()));
+
+		map.fitToBounds(bounds[0], bounds[1]);
+
+		map.setSizeFull();
+
+		horizontal.addComponent(map);
+		horizontal.setSizeFull();
+
+		return horizontal;
+	}
+
+	private void getResultGridClickListener(ItemClick<SearchResult> result) {
+		Grid<SearchResult> sourceGrid = result.getSource();
+		SearchResult resultItem = result.getItem();
+
+		if (result.getMouseEventDetails().isDoubleClick()) {
+			if (this.detailsResultItem != null) {
+				sourceGrid.setDetailsVisible(this.detailsResultItem, false);
+			}
+
+			if (this.authorizedAccess) {
+				this.detailsResultItem = resultItem;
+				sourceGrid.setDetailsVisible(resultItem, true);
+			} else {
+				Notification.show("Hozzáférés megtagadva",
+						"Nem bejelentkezett felhasználó nem láthatja a részleteket.\nKérjük jelentkezzen be, vagy regisztráljon.",
+						Type.ERROR_MESSAGE);
+			}
+		} else {
+			if (sourceGrid.isDetailsVisible(resultItem)) {
+				sourceGrid.setDetailsVisible(resultItem, false);
+				this.detailsResultItem = null;
+			}
+		}
 	}
 
 	private boolean isAuthorizedAccess() {
-		return this.user != null;
+		return this.authService.checkIfUserLoggedIn();
 	}
 
 }
