@@ -71,6 +71,7 @@ public class SearchView extends VerticalLayout implements View {
 	private Label filterLabel;
 	private boolean authorizedAccess;
 	private SearchResult detailsResultItem;
+	private Button submitButton;
 
 	@Autowired
 	private SearchService searchService;
@@ -120,17 +121,22 @@ public class SearchView extends VerticalLayout implements View {
 		this.subjectComboBox = new ComboBox<>(SUBJECT_NAME);
 		this.teacherNameField = new TextField(TEACHER_NAME);
 		this.distanceField = new TextField(MAX_DISTANCE);
-		Button submitButton = new Button("Keresés");
+		this.submitButton = new Button("Keresés");
 
 		this.subjectComboBox.setItems(this.subjectService.getAllSubjects());
 		this.subjectComboBox.setItemCaptionGenerator(Subject::getName);
+
 		this.subjectComboBox.setWidth("100%");
-
 		this.teacherNameField.setWidth("80%");
-
 		this.distanceField.setWidth("80%");
 
-		submitButton.addClickListener(e -> {
+		this.subjectComboBox.addValueChangeListener(e -> this.validateFilters());
+		this.teacherNameField.addValueChangeListener(e -> this.validateFilters());
+		this.distanceField.addValueChangeListener(e -> this.validateFilters());
+
+		this.submitButton.setEnabled(false);
+
+		this.submitButton.addClickListener(e -> {
 			Optional<Subject> optionalSelected = this.subjectComboBox.getSelectedItem();
 			Integer userId = this.user != null ? this.user.getId() : null;
 			Integer distance = null;
@@ -159,7 +165,7 @@ public class SearchView extends VerticalLayout implements View {
 				this.distanceField);
 		horizontal.setSizeFull();
 
-		layout.addComponents(horizontal, submitButton);
+		layout.addComponents(horizontal, this.submitButton);
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		layout.setSizeFull();
@@ -206,6 +212,11 @@ public class SearchView extends VerticalLayout implements View {
 		} else {
 			return "";
 		}
+	}
+
+	private void validateFilters() {
+		this.submitButton.setEnabled(this.subjectComboBox.getSelectedItem().isPresent()
+				|| !this.teacherNameField.getValue().isEmpty() || !this.distanceField.getValue().isEmpty());
 	}
 
 	private Integer convertDistance(TextField distanceField) {
