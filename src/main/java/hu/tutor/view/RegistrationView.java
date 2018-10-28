@@ -121,7 +121,7 @@ public class RegistrationView extends FormLayout implements View {
 		loginLayout.setSpacing(true);
 		loginLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 		loginLayout.addComponents(this.errorLabel, userNameField, passwordField, passwordAgainField, emailField,
-				firstNameField, lastNameField, birthDateField, teacherCheckBox, registerButton, cancelButton);
+				lastNameField, firstNameField, birthDateField, teacherCheckBox, registerButton, cancelButton);
 		loginLayout.setSpacing(true);
 		loginLayout.setMargin(true);
 
@@ -147,16 +147,12 @@ public class RegistrationView extends FormLayout implements View {
 			}
 
 			private boolean validateData() {
-				if (!passwordField.getValue().equals(passwordAgainField.getValue()) || binder.validate().hasErrors()) {
-					return false;
-				}
-
-				return true;
+				return passwordField.getValue().equals(passwordAgainField.getValue()) && !binder.validate().hasErrors();
 			}
 
 		});
 
-		cancelButton.addClickListener(event1 -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
+		cancelButton.addClickListener(e -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
 
 		this.addComponent(loginLayout);
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
