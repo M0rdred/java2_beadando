@@ -2,9 +2,11 @@ package hu.tutor.view;
 
 import java.time.LocalDate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.Validator;
 import com.vaadin.data.validator.DateRangeValidator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
@@ -12,6 +14,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -58,11 +61,15 @@ public class RegistrationView extends FormLayout implements View {
 		final CheckBox teacherCheckBox = new CheckBox("Tanár: ");
 
 		Binder<User> binder = new Binder<>();
+
 		binder.forField(userNameField).withValidator(
 				new StringLengthValidator("A felhasználói névnek legalább 3 karakteresnek kell lennie.", 3, 100))
 				.bind(User::getUserName, User::setUserName);
 		binder.forField(passwordField)
 				.withValidator(new StringLengthValidator("A jelszó legalább 6 karakteres kell legyen.", 6, 100))
+				.withValidator(
+						Validator.from(v -> StringUtils.equals(passwordField.getValue(), passwordAgainField.getValue()),
+								"A két megadott jelszó nem egyezik meg", ErrorLevel.ERROR))
 				.bind(User::getPassword, User::setPassword);
 		binder.forField(emailField).withValidator(new EmailValidator("Nem helyes email cím.")).bind(User::getEmail,
 				User::setEmail);
