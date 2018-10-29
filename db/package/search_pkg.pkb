@@ -26,8 +26,8 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
                         introduction                 => p.introduction,
                         subject_name                 => s.name,
                         subject_description          => s.description,
-                        personal_subject_description => '''',
-                        distance                     => 0)
+                        personal_subject_description => ts.description,
+                        distance                     => distance_pkg.get_distance(:from, :to))
   FROM person p
   JOIN address a
     ON p.address_id = a.id
@@ -58,10 +58,12 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
                lower(p_teacher_name) || '%' || chr(39);
     END IF;
   
-    BEGIN
-      INSERT INTO logs (log_entry) VALUES (l_sql);
-      COMMIT;
-    END;
+    -- TODO filter for distance
+  
+    IF p_max_distance IS NOT NULL
+    THEN
+      NULL;
+    END IF;
   
     EXECUTE IMMEDIATE l_sql BULK COLLECT
       INTO l_search_temp_table;

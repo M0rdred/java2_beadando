@@ -35,6 +35,9 @@ Prompt Initializing Database
 @./trigger/translation_b.trg
 @./trigger/translation_h.trg
 
+@./type/ty_search_query.tps
+@./type/ty_search_query.tpb
+@./type/tty_search_query_table.tps
 @./type/ty_search_result.tps
 @./type/ty_search_result.tpb
 @./type/ty_search_result_table.tps

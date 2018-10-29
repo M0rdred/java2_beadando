@@ -1,4 +1,4 @@
-package hu.tutor.model;
+package hu.tutor.model.search;
 
 import java.io.Serializable;
 
@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 		@StoredProcedureParameter(name = "p_result_list", mode = ParameterMode.REF_CURSOR, type = void.class) })
 @Entity
 public class SearchResult implements Serializable {
+
 	@Id
 	@Column(name = "id")
 	private Long id;

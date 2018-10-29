@@ -7,17 +7,22 @@ import java.util.stream.Collectors;
 
 import javax.validation.ValidationException;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 
-import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Binder;
+import com.vaadin.data.Converter;
+import com.vaadin.data.Result;
+import com.vaadin.data.Validator;
 import com.vaadin.data.ValueContext;
-import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.tapio.googlemaps.GoogleMap;
@@ -38,9 +43,10 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import hu.tutor.model.SearchResult;
 import hu.tutor.model.Subject;
 import hu.tutor.model.User;
+import hu.tutor.model.search.SearchQuery;
+import hu.tutor.model.search.SearchResult;
 import hu.tutor.security.AuthService;
 import hu.tutor.service.GoogleMapService;
 import hu.tutor.service.SearchService;
@@ -72,6 +78,9 @@ public class SearchView extends VerticalLayout implements View {
 	private boolean authorizedAccess;
 	private SearchResult detailsResultItem;
 	private Button submitButton;
+	private List<Subject> allSubjects;
+
+	private Binder<SearchQuery> queryBinder;
 
 	@Autowired
 	private SearchService searchService;
@@ -95,6 +104,7 @@ public class SearchView extends VerticalLayout implements View {
 		}
 
 		this.addComponents(linkLayout, this.createContent());
+		this.createBinder();
 		this.addStyleName("tutor-background");
 	}
 
@@ -123,7 +133,8 @@ public class SearchView extends VerticalLayout implements View {
 		this.distanceField = new TextField(MAX_DISTANCE);
 		this.submitButton = new Button("Keresés");
 
-		this.subjectComboBox.setItems(this.subjectService.getAllSubjects());
+		this.allSubjects = this.subjectService.getAllSubjects();
+		this.subjectComboBox.setItems(this.allSubjects);
 		this.subjectComboBox.setItemCaptionGenerator(Subject::getName);
 
 		this.subjectComboBox.setWidth("100%");
@@ -137,18 +148,12 @@ public class SearchView extends VerticalLayout implements View {
 		this.submitButton.setEnabled(false);
 
 		this.submitButton.addClickListener(e -> {
-			Optional<Subject> optionalSelected = this.subjectComboBox.getSelectedItem();
 			Integer userId = this.user != null ? this.user.getId() : null;
-			Integer distance = null;
 
 			try {
-				distance = this.convertDistance(this.distanceField);
-
 				this.filterLabel.setCaption(this.rewriteFilterLabel());
 
-				List<SearchResult> results = this.searchService.doSearch(userId,
-						optionalSelected.isPresent() ? optionalSelected.get().getName() : "",
-						this.teacherNameField.getValue(), distance);
+				List<SearchResult> results = this.searchService.doSearch(userId, this.queryBinder.getBean());
 
 				if (results == null) {
 					results = new ArrayList<>();
@@ -217,21 +222,6 @@ public class SearchView extends VerticalLayout implements View {
 	private void validateFilters() {
 		this.submitButton.setEnabled(this.subjectComboBox.getSelectedItem().isPresent()
 				|| !this.teacherNameField.getValue().isEmpty() || !this.distanceField.getValue().isEmpty());
-	}
-
-	private Integer convertDistance(TextField distanceField) {
-		String value = distanceField.getValue();
-		if (value == null || value.isEmpty()) {
-			return null;
-		}
-
-		ValidationResult result = new RegexpValidator("Nem szám", "\\d*").apply(value, new ValueContext(distanceField));
-		if (result.isError()) {
-			throw new ValidationException();
-		} else {
-			distanceField.setComponentError(null);
-			return Integer.valueOf(value);
-		}
 	}
 
 	private Component createResultLayout() {
@@ -321,6 +311,35 @@ public class SearchView extends VerticalLayout implements View {
 				this.detailsResultItem = null;
 			}
 		}
+	}
+
+	private void createBinder() {
+		this.queryBinder = new Binder<>();
+
+		this.queryBinder.forField(this.subjectComboBox).withConverter(new Converter<Subject, String>() {
+
+			private static final long serialVersionUID = -8369613381825007136L;
+
+			@Override
+			public Result<String> convertToModel(Subject value, ValueContext context) {
+				return Result.ok(value.getName());
+			}
+
+			@Override
+			public Subject convertToPresentation(String value, ValueContext context) {
+				return SearchView.this.allSubjects.stream().filter(s -> s.getName().equals(value)).findFirst()
+						.orElse(null);
+			}
+		}).bind(q -> q.getSubjectName(), (q, v) -> q.setSubjectName(v));
+		this.queryBinder.forField(this.teacherNameField).bind(SearchQuery::getTeacherName, SearchQuery::setTeacherName);
+		this.queryBinder.forField(this.distanceField).withNullRepresentation("")
+				.withValidator(Validator.from(v -> v == null || NumberUtils.isDigits(v), "Nem megfelelő szám",
+						ErrorLevel.ERROR))
+				.withConverter(new StringToIntegerConverter(null, "Nem megfelelő szám"))
+				.bind(SearchQuery::getMaxDistance, SearchQuery::setMaxDistance);
+
+		this.queryBinder.setBean(new SearchQuery());
+
 	}
 
 	private boolean isAuthorizedAccess() {
