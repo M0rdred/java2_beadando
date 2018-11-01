@@ -18,9 +18,39 @@ public class SearchServiceImpl implements SearchService {
 	private SearchDao searchDao;
 
 	@Override
+	public void saveSearchQuery(SearchQuery query) {
+		try {
+			this.searchDao.saveSearchQuery(query);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@Override
+	public void deleteSearchQuery(SearchQuery query) {
+		try {
+			this.searchDao.deleteSearchQuery(query);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@Override
 	public List<SearchResult> doSearch(Integer userID, SearchQuery query) {
 		try {
 			return this.searchDao.doSearch(userID, query);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@Override
+	public void saveResultDistance(String cityFrom, String cityTo, Integer distance) {
+		try {
+			this.searchDao.saveResultDistance(cityFrom, cityTo, distance);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;

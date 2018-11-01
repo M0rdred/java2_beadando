@@ -26,7 +26,6 @@ public class SearchDaoImpl implements SearchDao {
 		String subjectName = query.getSubjectName();
 		String teacherName = query.getTeacherName();
 		Integer maxDistance = query.getMaxDistance();
-		System.err.println(subjectName + " " + teacherName + " " + maxDistance);
 
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
@@ -53,6 +52,7 @@ public class SearchDaoImpl implements SearchDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
+		session.update(query);
 		session.persist(query);
 
 		transaction.commit();
@@ -64,7 +64,26 @@ public class SearchDaoImpl implements SearchDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
+		session.update(query);
 		session.delete(query);
+
+		transaction.commit();
+		session.close();
+	}
+
+	@Override
+	public void saveResultDistance(String cityFrom, String cityTo, Integer distance) {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("saveResultDistance");
+
+		storedProcedure.setParameter("p_city_from", cityFrom);
+		storedProcedure.setParameter("p_city_to", cityTo);
+		storedProcedure.setParameter("p_distance", distance);
+
+		storedProcedure.execute();
 
 		transaction.commit();
 		session.close();

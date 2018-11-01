@@ -7,11 +7,20 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
     l_sql                 VARCHAR(4000);
     l_search_temp_table   ty_search_result_table;
     l_search_result_table ty_search_result_table;
-    l_search_for_close    BOOLEAN;
-    l_origin_city         VARCHAR2(100);
+    l_search_for_distance BOOLEAN;
+    l_origin_city         VARCHAR2(255);
     l_distance            NUMBER;
   BEGIN
-    l_search_for_close := FALSE;
+    l_search_for_distance := FALSE;
+  
+    SELECT a.city
+      INTO l_origin_city
+      FROM address a
+     WHERE a.dml_flag <> 'D'
+       AND a.id = (SELECT p.address_id
+                     FROM person p
+                    WHERE p.dml_flag <> 'D'
+                      AND p.id = p_searcher_id);
   
     l_sql := 'SELECT ty_search_result(id             => rownum,
                         first_name                   => p.first_name,
@@ -27,7 +36,7 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
                         subject_name                 => s.name,
                         subject_description          => s.description,
                         personal_subject_description => ts.description,
-                        distance                     => distance_pkg.get_distance(:from, :to))
+                        distance                     => distance_pkg.get_distance(:1, a.city))
   FROM person p
   JOIN address a
     ON p.address_id = a.id
@@ -53,20 +62,16 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
        AND length(TRIM(p_teacher_name)) > 0
     THEN
     
-      l_sql := l_sql || ' AND lower(p.first_name || ' || chr(39) || chr(32) ||
-               chr(39) || ' || p.last_name) LIKE ' || chr(39) || '%' ||
+      l_sql := l_sql || ' AND lower(p.last_name || ' || chr(39) || chr(32) ||
+               chr(39) || ' || p.first_name) LIKE ' || chr(39) || '%' ||
                lower(p_teacher_name) || '%' || chr(39);
     END IF;
   
-    -- TODO filter for distance
-  
-    IF p_max_distance IS NOT NULL
-    THEN
-      NULL;
-    END IF;
+    INSERT INTO logs (log_entry) VALUES (l_sql);
   
     EXECUTE IMMEDIATE l_sql BULK COLLECT
-      INTO l_search_temp_table;
+      INTO l_search_temp_table
+      USING l_origin_city;
   
     l_search_result_table := ty_search_result_table();
   
@@ -85,24 +90,21 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
     
       FOR i IN l_search_temp_table.first .. l_search_temp_table.last
       LOOP
-        l_search_for_close := TRUE;
-        l_distance         := distance_pkg.get_distance(l_origin_city,
-                                                        l_search_temp_table(i).city);
+        l_search_for_distance := TRUE;
+        l_distance            := distance_pkg.get_distance(l_origin_city,
+                                                           l_search_temp_table(i).city);
       
-        l_distance := l_distance / 1000;
         IF l_distance <= p_max_distance
         THEN
           l_search_result_table.extend;
           l_search_result_table(l_search_result_table.count) := l_search_temp_table(i);
-          l_search_result_table(l_search_result_table.count).distance := l_distance ||
-                                                                         ' km';
+          l_search_result_table(l_search_result_table.count).distance := l_distance;
         
         END IF;
       END LOOP;
     END IF;
   
-    IF l_search_result_table.count = 0
-       AND NOT l_search_for_close
+    IF NOT l_search_for_distance
     THEN
       l_search_result_table := l_search_temp_table;
     END IF;

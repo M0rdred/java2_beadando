@@ -8,21 +8,28 @@ import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.model.Address;
 import hu.tutor.model.User;
+import hu.tutor.model.search.SearchQuery;
+import hu.tutor.service.SearchService;
 import hu.tutor.service.TeacherService;
 import hu.tutor.service.UserService;
+import hu.tutor.util.VaadinUtil;
 import hu.tutor.view.component.PhoneField;
 
 @SpringComponent
@@ -48,11 +55,14 @@ public class UserAccountForm extends VerticalLayout {
 	private TextField streetField;
 	private TextField houseNumberField;
 	private TextArea introductionField;
+	private Grid<SearchQuery> queryGrid;
 
 	@Autowired
 	private UserService userService;
 	@Autowired
 	private TeacherService teacherService;
+	@Autowired
+	private SearchService searchService;
 
 	public void init(User user) {
 		this.user = user;
@@ -128,11 +138,51 @@ public class UserAccountForm extends VerticalLayout {
 		Panel formPanel = new Panel("Személyes adatok");
 		formPanel.setContent(formLayout);
 
-		vertical.addComponents(formPanel, saveButton);
+		this.queryGrid = new Grid<>();
+		this.queryGrid.addComponentColumn(this::createExecuteButton).setCaption("Futtatás");
+		this.queryGrid.addComponentColumn(this::createDeleteButton).setCaption("Törlés");
+		this.queryGrid.addColumn(SearchQuery::getSubjectName).setCaption("Tantárgy neve");
+		this.queryGrid.addColumn(SearchQuery::getTeacherName).setCaption("Tanár neve");
+		this.queryGrid.addColumn(SearchQuery::getMaxDistance).setCaption("Maximum távolság");
+
+		this.refreshQueryGrid();
+
+		this.queryGrid.setSizeFull();
+
+		HorizontalLayout queryLayout = new HorizontalLayout(this.queryGrid);
+		queryLayout.setSizeFull();
+		Panel searchQueriesPanel = new Panel("Mentett keresések");
+		searchQueriesPanel.setContent(queryLayout);
+		searchQueriesPanel.setSizeFull();
+		HorizontalLayout horizontal = new HorizontalLayout(formPanel, searchQueriesPanel);
+		horizontal.setSizeFull();
+
+		vertical.addComponents(horizontal, saveButton);
 
 		this.setSizeFull();
 
 		return vertical;
+	}
+
+	private Button createDeleteButton(SearchQuery query) {
+		Button deleteButton = new Button(VaadinIcons.CLOSE_CIRCLE_O);
+		deleteButton.addClickListener(e -> {
+			this.searchService.deleteSearchQuery(query);
+			this.refreshQueryGrid();
+		});
+
+		return deleteButton;
+	}
+
+	private Button createExecuteButton(SearchQuery query) {
+		Button execButton = new Button(VaadinIcons.SEARCH);
+
+		execButton.addClickListener(e -> {
+			UI.getCurrent().getSession().setAttribute(VaadinUtil.VAADIN_SESSION_QUERY_NAME, query);
+			UI.getCurrent().getNavigator().navigateTo(SearchView.SEARCH_VIEW_NAME);
+		});
+
+		return execButton;
 	}
 
 	private void setAddressBinder() {
@@ -182,5 +232,10 @@ public class UserAccountForm extends VerticalLayout {
 		this.userBinder.forField(this.introductionField).bind(User::getIntroduction, User::setIntroduction);
 
 		this.userBinder.setBean(this.user);
+	}
+
+	private void refreshQueryGrid() {
+		this.user = this.userService.getUserById(this.user.getId());
+		this.queryGrid.setItems(this.user.getQueries());
 	}
 }
