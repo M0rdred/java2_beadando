@@ -16,8 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.ParameterMode;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -37,6 +41,17 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("user")
+// @formatter:off
+@NamedStoredProcedureQueries({
+	@NamedStoredProcedureQuery(
+			name = "modifyPassword", 
+			procedureName = "admin_pkg.modify_password", 
+			parameters = {
+					@StoredProcedureParameter(name = "p_user_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_new_password", mode = ParameterMode.IN, type = String.class) 
+					})
+})
+//@formatter:on
 public class User {
 
 	@Id

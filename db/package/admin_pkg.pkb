@@ -27,5 +27,13 @@ CREATE OR REPLACE PACKAGE BODY admin_pkg AS
     UPDATE subject s SET s.active = p_enable WHERE s.id = p_subject_id;
   END enable_subject;
 
+  PROCEDURE modify_password(p_user_id      IN NUMBER
+                           ,p_new_password IN VARCHAR2) IS
+  BEGIN
+  
+    UPDATE person p SET p.password = p_new_password WHERE p.id = p_user_id;
+  
+  END modify_password;
+
 END admin_pkg;
 /
