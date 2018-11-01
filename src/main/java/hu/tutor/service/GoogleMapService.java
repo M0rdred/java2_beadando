@@ -16,4 +16,6 @@ public interface GoogleMapService {
 
 	public LatLon[] getBounds(Collection<LatLon> latlons);
 
+	public Integer getDistanceBetweenCities(String cityFrom, String cityTo);
+
 }
