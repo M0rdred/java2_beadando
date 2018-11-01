@@ -31,7 +31,7 @@ prompt Importing table person...
 set feedback off
 set define off
 insert into person (FIRST_NAME, LAST_NAME, BIRTH_DATE, ADDRESS_ID, IS_TEACHER, IS_ADMIN, IS_ACTIVE, INTRODUCTION, ROLE, USER_NAME, PHONE, EMAIL, PASSWORD)
-values ('Anita', 'Minta', to_date('18-12-1986', 'dd-mm-yyyy'), null, 'N', 'N', 'N', null, 'user', 'mintaanita', null, 'anita@minta.com', '$2a$10$jph99JMvIKxrG3/XJYttBe8oEg162Yj7pV0Flzh27NtDqodXVPyB2');
+values ('Anita', 'Minta', to_date('18-12-1986', 'dd-mm-yyyy'), null, 'N', 'N', 'Y', null, 'teacher', 'mintaanita', null, 'anita@minta.com', '$2a$10$jph99JMvIKxrG3/XJYttBe8oEg162Yj7pV0Flzh27NtDqodXVPyB2');
 
 insert into person (FIRST_NAME, LAST_NAME, BIRTH_DATE, ADDRESS_ID, IS_TEACHER, IS_ADMIN, IS_ACTIVE, INTRODUCTION, ROLE, USER_NAME, PHONE, EMAIL, PASSWORD)
 values ('Béla', 'Minta', to_date('10-10-2002', 'dd-mm-yyyy'), null, 'N', 'N', 'N', null, 'user', 'mintabela', null, 'bela@minta.com', '$2a$10$h58fKOb/iHokoLs4ar5Mv.bfCfWfG9NNfapkpacRF1QNnSkAExorK');
@@ -104,6 +104,10 @@ values ('Zsolt', 'Minta', to_date('17-12-1993', 'dd-mm-yyyy'), null, 'N', 'N', '
 
 insert into person (FIRST_NAME, LAST_NAME, BIRTH_DATE, ADDRESS_ID, IS_TEACHER, IS_ADMIN, IS_ACTIVE, INTRODUCTION, ROLE, USER_NAME, PHONE, EMAIL, PASSWORD)
 values ('Ödön', 'Minta', to_date('19-10-2002', 'dd-mm-yyyy'), null, 'N', 'N', 'N', null, 'user', 'mintaodon', null, 'odon@minta.com', '$2a$10$JMJA2I3yMApkkOFcPh6vXek917BqT0ynrOCfrISqG5nOt4r2g3vD2');
+
+insert into person (ID, FIRST_NAME, LAST_NAME, BIRTH_DATE, ADDRESS_ID, IS_TEACHER, IS_ADMIN, IS_ACTIVE, INTRODUCTION, ROLE, USER_NAME, PHONE, EMAIL, PASSWORD, MOD_USER, CREATED_ON, LAST_MOD, DML_FLAG, VERSION)
+values (125, 'Admin', 'Minta', to_date('28-12-2004', 'dd-mm-yyyy'), null, 'N', 'Y', 'Y', null, 'admin', 'admin', null, 'admin@tutor.hu', '$2a$10$JP62uUAN8fdFyCHsgfCfb.5iy.DNxByE8FOEi7VutkEzYSWPz0QZe', 'TUTOR', '18-OKT.  -30 19.47.54,000000', '18-OKT.  -30 19.47.54,000000', 'I', 1);
+
 
 prompt Done.
 
