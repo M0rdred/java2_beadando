@@ -9,6 +9,7 @@ import hu.tutor.dao.AdminDao;
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
+import hu.tutor.security.AuthService;
 import hu.tutor.util.ActiveParameter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,8 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private AdminDao adminDao;
+	@Autowired
+	private AuthService authService;
 
 	@Override
 	public List<Teacher> getTeachersAwaitingValidation() {
@@ -75,6 +78,18 @@ public class AdminServiceImpl implements AdminService {
 	public List<User> getAllUsers() {
 		try {
 			return this.adminDao.getAllUsers();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@Override
+	public void modifyPassword(Integer userId, String rawPassword) {
+		try {
+			String encodedPassword = this.authService.encodePassword(rawPassword);
+
+			this.adminDao.modifyPassword(userId, encodedPassword);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;

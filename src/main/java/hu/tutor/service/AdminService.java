@@ -19,4 +19,6 @@ public interface AdminService {
 	public void enableSubject(Integer subjectId, ActiveParameter enable);
 
 	public List<User> getAllUsers();
+
+	public void modifyPassword(Integer userId, String rawPassword);
 }

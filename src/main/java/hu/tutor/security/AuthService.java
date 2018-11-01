@@ -43,4 +43,8 @@ public class AuthService {
 		return userByUserName != null && userByUserName.getIsActive();
 	}
 
+	public String encodePassword(String plainTextPass) {
+		return this.passwordEncoder.encode(plainTextPass);
+	}
+
 }

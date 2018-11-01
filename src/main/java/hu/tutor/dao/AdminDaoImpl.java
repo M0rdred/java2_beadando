@@ -136,4 +136,21 @@ public class AdminDaoImpl implements AdminDao {
 		return users;
 	}
 
+	@Override
+	public void modifyPassword(Integer userId, String newPassword) {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("modifyPassword");
+
+		storedProcedure.setParameter("p_user_id", userId);
+		storedProcedure.setParameter("p_new_password", newPassword);
+
+		storedProcedure.execute();
+
+		transaction.commit();
+		session.close();
+	}
+
 }

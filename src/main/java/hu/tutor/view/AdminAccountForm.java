@@ -3,6 +3,7 @@ package hu.tutor.view;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.data.Binder;
@@ -19,6 +20,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.Editor;
 
@@ -29,6 +31,7 @@ import hu.tutor.service.AdminService;
 import hu.tutor.service.SubjectService;
 import hu.tutor.service.UserService;
 import hu.tutor.util.ActiveParameter;
+import hu.tutor.view.component.PasswordChangeWindow;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
@@ -42,6 +45,8 @@ public class AdminAccountForm extends VerticalLayout {
 	private SubjectService subjectService;
 	@Autowired
 	private AdminService adminService;
+	@Autowired
+	private ApplicationContext context;
 
 	private Grid<Teacher> teacherGrid;
 	private Grid<Subject> subjectGrid;
@@ -193,6 +198,7 @@ public class AdminAccountForm extends VerticalLayout {
 
 		this.userGrid.addComponentColumn(this::createEnableUserButton).setSortable(false).setCaption("Aktiválás");
 		this.userGrid.addComponentColumn(this::createDisableUserButton).setSortable(false).setCaption("Deaktiválás");
+		this.userGrid.addComponentColumn(this::createNewPasswordButton).setSortable(false).setCaption("Új jelszó");
 		this.userGrid.addColumn(User::getFullName).setDescriptionGenerator(User::getFullName).setCaption("Név");
 		this.userGrid.addColumn(User::getIntroduction).setDescriptionGenerator(User::getIntroduction, ContentMode.TEXT)
 				.setCaption("Bemutatkozás").setEditorBinding(
@@ -239,13 +245,28 @@ public class AdminAccountForm extends VerticalLayout {
 		return disableButton;
 	}
 
-	private Component createGridCheckbox(User user) {
+	private Button createNewPasswordButton(User user) {
+		Button newPassButton = new Button(VaadinIcons.EDIT);
+
+		newPassButton.addClickListener(e -> this.openNewPasswordWindow(user));
+
+		return newPassButton;
+	}
+
+	private CheckBox createGridCheckbox(User user) {
 		CheckBox checkBox = new CheckBox();
 		checkBox.setReadOnly(true);
 
 		checkBox.setValue(Boolean.TRUE.equals(user.getIsActive()));
 
 		return checkBox;
+	}
+
+	private void openNewPasswordWindow(User user) {
+		PasswordChangeWindow window = this.context.getBean(PasswordChangeWindow.class);
+		window.init(this.adminService, user.getId());
+
+		UI.getCurrent().addWindow(window);
 	}
 
 	private void refreshUserGrid() {
