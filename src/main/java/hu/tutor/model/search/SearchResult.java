@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
@@ -18,12 +19,29 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedStoredProcedureQuery(name = "loadSearchResults", procedureName = "search_pkg.search", resultClasses = SearchResult.class, parameters = {
-		@StoredProcedureParameter(name = "p_searcher_id", mode = ParameterMode.IN, type = Integer.class),
-		@StoredProcedureParameter(name = "p_subject_name", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "p_teacher_name", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "p_max_distance", mode = ParameterMode.IN, type = Integer.class),
-		@StoredProcedureParameter(name = "p_result_list", mode = ParameterMode.REF_CURSOR, type = void.class) })
+// @formatter:off
+@NamedStoredProcedureQueries({
+		@NamedStoredProcedureQuery(
+				name = "loadSearchResults", 
+				procedureName = "search_pkg.search", 
+				resultClasses = SearchResult.class, 
+				parameters = {
+						@StoredProcedureParameter(name = "p_searcher_id", mode = ParameterMode.IN, type = Integer.class),
+						@StoredProcedureParameter(name = "p_subject_name", mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(name = "p_teacher_name", mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(name = "p_max_distance", mode = ParameterMode.IN, type = Integer.class),
+						@StoredProcedureParameter(name = "p_result_list", mode = ParameterMode.REF_CURSOR, type = void.class) 
+					}),
+		@NamedStoredProcedureQuery(
+				name = "saveResultDistance", 
+				procedureName = "distance_pkg.save_result_distance", 
+				parameters = {
+						@StoredProcedureParameter(name = "p_city_from", mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(name = "p_city_to", mode = ParameterMode.IN, type = String.class),
+						@StoredProcedureParameter(name = "p_distance", mode = ParameterMode.IN, type = Integer.class)
+					}) 
+		})
+//@formatter:on
 @Entity
 public class SearchResult implements Serializable {
 
@@ -57,7 +75,7 @@ public class SearchResult implements Serializable {
 	@Column(name = "personal_subject_description")
 	private String personalSubjectDescription;
 	@Column(name = "distance")
-	private String distance;
+	private Integer distance;
 
 	public String getFullName() {
 		return this.lastName + " " + this.firstName;

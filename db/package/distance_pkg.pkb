@@ -100,8 +100,8 @@ CREATE OR REPLACE PACKAGE BODY distance_pkg AS
     RETURN v_distance;
   END;
 
-  FUNCTION get_distance(p_city_from IN VARCHAR2
-                       ,p_city_to   IN VARCHAR2) RETURN NUMBER IS
+  FUNCTION get_distance_http(p_city_from IN VARCHAR2
+                           ,p_city_to   IN VARCHAR2) RETURN NUMBER IS
     v_distance NUMBER;
   BEGIN
   
@@ -149,7 +149,42 @@ CREATE OR REPLACE PACKAGE BODY distance_pkg AS
       END IF;
     END IF;
     RETURN v_distance;
-  END;
+  END get_distance_http;
+
+  FUNCTION get_distance(p_city_from IN VARCHAR2
+                       ,p_city_to   IN VARCHAR2) RETURN NUMBER IS
+    v_distance NUMBER;
+  BEGIN
+  
+    SELECT c.distance
+      INTO v_distance
+      FROM city_distance c
+     WHERE lower(c.city_from) = lower(p_city_from)
+       AND lower(c.city_to) = lower(p_city_to);
+  
+    RETURN v_distance;
+  
+  EXCEPTION
+    WHEN no_data_found THEN
+    
+      BEGIN
+        SELECT c.distance
+          INTO v_distance
+          FROM city_distance c
+         WHERE lower(c.city_from) = lower(p_city_to)
+           AND lower(c.city_to) = lower(p_city_from);
+      
+        RETURN v_distance;
+      
+      EXCEPTION
+        WHEN no_data_found THEN
+          v_distance := -1;
+        
+          RETURN v_distance;
+        
+      END;
+    
+  END get_distance;
 
   PROCEDURE update_distances IS
     v_distance        NUMBER;
@@ -227,6 +262,53 @@ CREATE OR REPLACE PACKAGE BODY distance_pkg AS
     END LOOP;
   
   END;
+
+  PROCEDURE save_result_distance(p_city_from IN VARCHAR2
+                                ,p_city_to   IN VARCHAR2
+                                ,p_distance  IN NUMBER) IS
+    v_rowid VARCHAR2(255);
+  BEGIN
+  
+    BEGIN
+      SELECT d.rowid
+        INTO v_rowid
+        FROM city_distance d
+       WHERE lower(d.city_from) = lower(p_city_from)
+         AND lower(d.city_to) = lower(p_city_to);
+    
+    EXCEPTION
+      WHEN no_data_found THEN
+        BEGIN
+        
+          SELECT d.rowid
+            INTO v_rowid
+            FROM city_distance d
+           WHERE lower(d.city_from) = lower(p_city_to)
+             AND lower(d.city_to) = lower(p_city_from);
+        
+        EXCEPTION
+          WHEN no_data_found THEN
+            v_rowid := NULL;
+        END;
+    END;
+  
+    IF v_rowid IS NOT NULL
+    THEN
+      UPDATE city_distance d SET d.distance = p_distance;
+    ELSE
+      INSERT INTO city_distance
+        (city_from
+        ,city_to
+        ,distance
+        ,last_mod)
+      VALUES
+        (p_city_from
+        ,p_city_to
+        ,p_distance
+        ,SYSDATE);
+    END IF;
+  
+  END save_result_distance;
 
 END distance_pkg;
 /
