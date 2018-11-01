@@ -14,6 +14,8 @@ Prompt Initializing Database
 @./table/language_table_h.sql
 @./table/person_table.sql
 @./table/person_table_h.sql
+@./table/search_query_table.sql
+@./table/search_query_table_h.sql
 @./table/subject_table.sql
 @./table/subject_table_h.sql
 @./table/teached_subject.sql

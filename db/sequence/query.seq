@@ -1,0 +1,2 @@
+CREATE SEQUENCE query_sq START WITH 100;
+/
