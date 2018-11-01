@@ -1,6 +1,7 @@
 package hu.tutor.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,11 +16,13 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import hu.tutor.model.search.SearchQuery;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -80,6 +83,9 @@ public class User {
 	@Type(type = "yes_no")
 	@Column(name = "is_active")
 	private Boolean isActive = false;
+
+	@OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<SearchQuery> queries;
 
 	public String getFullName() {
 		return this.lastName + " " + this.firstName;
