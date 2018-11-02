@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="console-appender" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	
+	<appender name="file-appender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>target/logs/tutor.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>target/logs/archived/tutor.%d{yyyy-MM-dd}.%i.log
+                        </fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>20MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+
+	</appender>
+
+	<appender name="error-file-appender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>target/logs/error.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>target/logs/archived/error.%d{yyyy-MM-dd}.%i.log
+                        </fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>20MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+
+	</appender>
+	
+	<logger name="hu.tutor" level="info"
+		additivity="false">
+		<appender-ref ref="file-appender" />
+		<appender-ref ref="console-appender" />
+	</logger>
+	
+	<logger name="hu.tutor" level="debug"
+		additivity="false">
+		<appender-ref ref="console-appender" />
+	</logger>
+
+	<root level="error">
+		<appender-ref ref="error-file-appender" />
+	</root>
+
+</configuration>
