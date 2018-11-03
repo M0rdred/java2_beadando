@@ -101,7 +101,7 @@ CREATE OR REPLACE PACKAGE BODY distance_pkg AS
   END;
 
   FUNCTION get_distance_http(p_city_from IN VARCHAR2
-                           ,p_city_to   IN VARCHAR2) RETURN NUMBER IS
+                            ,p_city_to   IN VARCHAR2) RETURN NUMBER IS
     v_distance NUMBER;
   BEGIN
   
@@ -155,6 +155,11 @@ CREATE OR REPLACE PACKAGE BODY distance_pkg AS
                        ,p_city_to   IN VARCHAR2) RETURN NUMBER IS
     v_distance NUMBER;
   BEGIN
+  
+    IF p_city_from IS NULL
+    THEN
+      RETURN NULL;
+    END IF;
   
     SELECT c.distance
       INTO v_distance

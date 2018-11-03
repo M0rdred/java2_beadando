@@ -1,41 +1,23 @@
 CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
   PROCEDURE save_new_subject_for_teacher(p_teacher_id IN NUMBER
                                         ,p_subject_id IN NUMBER) IS
-    v_count NUMBER;
   BEGIN
   
-    BEGIN
-      SELECT COUNT(*)
-        INTO v_count
-        FROM teached_subject ts
-       WHERE ts.teacher_id = p_teacher_id
-         AND ts.subject_id = p_subject_id;
-    
-    EXCEPTION
-      WHEN no_data_found THEN
-        v_count := 0;
-    END;
+    INSERT INTO teached_subject
+      (subject_id
+      ,teacher_id
+      ,active)
+    VALUES
+      (p_subject_id
+      ,p_teacher_id
+      ,1);
   
-    IF v_count = 1
-    THEN
-      UPDATE teached_subject ts SET ts.active = 1;
-    ELSE
-      INSERT INTO teached_subject
-        (subject_id
-        ,teacher_id
-        ,active)
-      VALUES
-        (p_subject_id
-        ,p_teacher_id
-        ,1);
-    END IF;
   END save_new_subject_for_teacher;
 
   PROCEDURE delete_subject_from_teacher(p_teacher_id IN NUMBER
                                        ,p_subject_id IN NUMBER) IS
   BEGIN
-    UPDATE teached_subject ts
-       SET ts.active = 0
+    DELETE teached_subject ts
      WHERE ts.teacher_id = p_teacher_id
        AND ts.subject_id = p_subject_id;
   END delete_subject_from_teacher;
@@ -49,7 +31,7 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
   BEGIN
     UPDATE person p
        SET p.role       = 'user'
-          ,p.is_teacher = 0
+          ,p.is_teacher = 'N'
      WHERE p.id = p_teacher_id;
   END end_teaching;
 
@@ -72,8 +54,7 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
       JOIN subject s
         ON s.id = t.subject_id
      WHERE t.teacher_id = p_teacher_id
-       AND t.active = 'Y'
-       AND t.dml_flag <> 'D';
+       AND t.active = 'Y';
   
     OPEN p_subject_list FOR
       SELECT * FROM TABLE(CAST(v_subject_list AS ty_subject_table));
