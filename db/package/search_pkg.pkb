@@ -13,14 +13,21 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
   BEGIN
     l_search_for_distance := FALSE;
   
-    SELECT a.city
-      INTO l_origin_city
-      FROM address a
-     WHERE a.dml_flag <> 'D'
-       AND a.id = (SELECT p.address_id
-                     FROM person p
-                    WHERE p.dml_flag <> 'D'
-                      AND p.id = p_searcher_id);
+    BEGIN
+      SELECT a.city
+        INTO l_origin_city
+        FROM address a
+       WHERE a.dml_flag <> 'D'
+         AND a.id = (SELECT p.address_id
+                       FROM person p
+                      WHERE p.dml_flag <> 'D'
+                        AND p.id = p_searcher_id);
+    
+    EXCEPTION
+      WHEN no_data_found THEN
+        l_origin_city := NULL;
+      
+    END;
   
     l_sql := 'SELECT ty_search_result(id             => rownum,
                         first_name                   => p.first_name,
@@ -53,8 +60,10 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
        AND length(TRIM(p_subject_name)) > 0
     THEN
     
-      l_sql := l_sql || ' AND lower(s.name) LIKE ' || chr(39) || '%' ||
-               lower(p_subject_name) || '%' || chr(39);
+      l_sql := l_sql || ' AND lower(s.name) LIKE ' || chr(39) || ':2' ||
+               chr(39);
+    ELSE
+      l_sql := l_sql || 'AND ((1 = 1) OR :2 IS NULL) ';
     END IF;
   
     -- search for teacher
@@ -63,15 +72,19 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
     THEN
     
       l_sql := l_sql || ' AND lower(p.last_name || ' || chr(39) || chr(32) ||
-               chr(39) || ' || p.first_name) LIKE ' || chr(39) || '%' ||
-               lower(p_teacher_name) || '%' || chr(39);
+               chr(39) || ' || p.first_name) LIKE ' || ':3';
+    ELSE
+      l_sql := l_sql || 'AND ((1 = 1) OR :3 IS NULL) ';
     END IF;
   
-    INSERT INTO logs (log_entry) VALUES (l_sql);
+    BEGIN
+      INSERT INTO logs (log_entry) VALUES (l_sql);
+      COMMIT;
+    END;
   
     EXECUTE IMMEDIATE l_sql BULK COLLECT
       INTO l_search_temp_table
-      USING l_origin_city;
+      USING l_origin_city, '%' || lower(p_subject_name) || '%', '%' || lower(p_teacher_name) || '%';
   
     l_search_result_table := ty_search_result_table();
   
