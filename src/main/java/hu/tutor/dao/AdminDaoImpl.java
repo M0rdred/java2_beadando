@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 import hu.tutor.util.ActiveParameter;
@@ -146,6 +147,47 @@ public class AdminDaoImpl implements AdminDao {
 
 		storedProcedure.setParameter("p_user_id", userId);
 		storedProcedure.setParameter("p_new_password", newPassword);
+
+		storedProcedure.execute();
+
+		transaction.commit();
+		session.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TeachedSubject> listTeachedSubjects() {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("listTeachedSubjects");
+
+		long nanoTime = System.nanoTime();
+		System.err.println("nanotime: " + nanoTime);
+
+		storedProcedure.setParameter("p_time", nanoTime);
+
+		storedProcedure.execute();
+		List<TeachedSubject> resultList = storedProcedure.getResultList();
+
+		transaction.commit();
+		session.close();
+
+		return resultList;
+	}
+
+	@Override
+	public void activateTeachedSubject(Integer subjectId, Integer teacherId, ActiveParameter active) {
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("activateTeachedSubject");
+
+		storedProcedure.setParameter("p_subject_id", subjectId);
+		storedProcedure.setParameter("p_teacher_id", teacherId);
+		storedProcedure.setParameter("p_active", active.getValue());
 
 		storedProcedure.execute();
 

@@ -1,11 +1,14 @@
 package hu.tutor.view;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
@@ -16,7 +19,6 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DescriptionGenerator;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
@@ -25,6 +27,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.Editor;
 
 import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 import hu.tutor.service.AdminService;
@@ -51,6 +54,7 @@ public class AdminAccountForm extends VerticalLayout {
 	private Grid<Teacher> teacherGrid;
 	private Grid<Subject> subjectGrid;
 	private Grid<User> userGrid;
+	private Grid<TeachedSubject> teachedSubjectsGrid;
 
 	public void init() {
 		this.addComponent(this.getViewLayout());
@@ -208,7 +212,7 @@ public class AdminAccountForm extends VerticalLayout {
 		this.userGrid.addColumn(User::getFullAddress).setDescriptionGenerator(User::getFullAddress).setCaption("Cím");
 		this.userGrid.addColumn(User::getPhone).setDescriptionGenerator(User::getPhone).setCaption("Telefonszám");
 		this.userGrid.addColumn(User::getEmail).setDescriptionGenerator(User::getEmail).setCaption("Email cím");
-		this.userGrid.addComponentColumn(this::createGridCheckbox)
+		this.userGrid.addComponentColumn(u -> this.createGridCheckbox(u.getIsActive()))
 				.setDescriptionGenerator((DescriptionGenerator<User>) u -> u.getIsActive() ? "Aktív" : "Inaktív")
 				.setSortable(false).setCaption("Aktív");
 
@@ -253,11 +257,11 @@ public class AdminAccountForm extends VerticalLayout {
 		return newPassButton;
 	}
 
-	private CheckBox createGridCheckbox(User user) {
+	private CheckBox createGridCheckbox(Boolean active) {
 		CheckBox checkBox = new CheckBox();
 		checkBox.setReadOnly(true);
 
-		checkBox.setValue(Boolean.TRUE.equals(user.getIsActive()));
+		checkBox.setValue(Boolean.TRUE.equals(active));
 
 		return checkBox;
 	}
@@ -274,7 +278,74 @@ public class AdminAccountForm extends VerticalLayout {
 	}
 
 	private Component createAllSubjectsLayout() {
-		return new HorizontalLayout();
+		this.teachedSubjectsGrid = new Grid<>();
+
+		this.teachedSubjectsGrid.addComponentColumn(this::createEnableSubjectButton).setSortable(false)
+				.setCaption("Aktiválás");
+		this.teachedSubjectsGrid.addComponentColumn(this::createDisableSubjectButton).setSortable(false)
+				.setCaption("Deaktiválás");
+		this.teachedSubjectsGrid.addColumn(TeachedSubject::getSubjectName)
+				.setDescriptionGenerator(TeachedSubject::getSubjectName).setCaption("Tantárgy neve");
+		this.teachedSubjectsGrid.addColumn(TeachedSubject::getSubjectDescription)
+				.setDescriptionGenerator(TeachedSubject::getSubjectDescription).setCaption("Tantárgy leírása");
+		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeacherName)
+				.setDescriptionGenerator(TeachedSubject::getTeacherName).setCaption("Tanár neve");
+		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeachedIntroduction)
+				.setDescriptionGenerator(TeachedSubject::getTeachedIntroduction).setCaption("Tanár bemutatkozása");
+		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeachedSubjectDescription)
+				.setDescriptionGenerator(TeachedSubject::getTeachedSubjectDescription).setCaption("Tanár leírása");
+		this.teachedSubjectsGrid.addComponentColumn(s -> this.createGridCheckbox(s.getActive()))
+				.setDescriptionGenerator(
+						(DescriptionGenerator<TeachedSubject>) s -> s.getActive() ? "Aktív" : "Inaktív")
+				.setSortable(false).setCaption("Aktív");
+		this.teachedSubjectsGrid.setSizeFull();
+
+		this.refreshTeachedSubjectsGrid();
+
+		return this.teachedSubjectsGrid;
+	}
+
+	private Button createEnableSubjectButton(TeachedSubject subject) {
+		Button enableButton = new Button();
+		enableButton.setIcon(VaadinIcons.CHECK_SQUARE_O);
+
+		enableButton.addClickListener(e -> {
+			this.adminService.activateTeachedSubject(subject.getSubjectId(), subject.getTeacherId(),
+					ActiveParameter.YES);
+			this.refreshTeachedSubjectsGrid();
+		});
+
+		enableButton.setEnabled(!subject.getActive());
+		return enableButton;
+	}
+
+	private Button createDisableSubjectButton(TeachedSubject subject) {
+		Button disableButton = new Button();
+		disableButton.setIcon(VaadinIcons.CLOSE_CIRCLE_O);
+
+		disableButton.addClickListener(e -> {
+			this.adminService.activateTeachedSubject(subject.getSubjectId(), subject.getTeacherId(),
+					ActiveParameter.NO);
+			this.refreshTeachedSubjectsGrid();
+		});
+
+		disableButton.setEnabled(subject.getActive());
+		return disableButton;
+	}
+
+	private void refreshTeachedSubjectsGrid() {
+		List<TeachedSubject> teachedSubjects = this.adminService.listTeachedSubjects();
+
+		// TODO remove try, it's only for debug
+		try {
+			System.err.println(
+					new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(teachedSubjects));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		this.teachedSubjectsGrid.setItems(teachedSubjects);
 	}
 
 }

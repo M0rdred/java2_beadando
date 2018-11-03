@@ -3,6 +3,7 @@ package hu.tutor.service;
 import java.util.List;
 
 import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 import hu.tutor.util.ActiveParameter;
@@ -21,4 +22,8 @@ public interface AdminService {
 	public List<User> getAllUsers();
 
 	public void modifyPassword(Integer userId, String rawPassword);
+
+	public List<TeachedSubject> listTeachedSubjects();
+
+	public void activateTeachedSubject(Integer subjectId, Integer teacherId, ActiveParameter active);
 }

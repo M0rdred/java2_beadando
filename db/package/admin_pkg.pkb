@@ -35,5 +35,47 @@ CREATE OR REPLACE PACKAGE BODY admin_pkg AS
   
   END modify_password;
 
+  PROCEDURE get_all_teached_subjects(p_time             IN NUMBER
+                                    ,p_teached_subjects OUT SYS_REFCURSOR) IS
+    v_results ty_teached_subject_table;
+  BEGIN
+  
+    dbms_output.put_line(p_time);
+  
+    SELECT ty_teached_subject(id                          => rownum,
+                              subject_id                  => ts.subject_id,
+                              teacher_id                  => ts.teacher_id,
+                              subject_name                => s.name,
+                              subject_description         => s.description,
+                              teacher_name                => p.last_name || ' ' ||
+                                                             p.first_name,
+                              teacher_introduction        => p.introduction,
+                              teacher_subject_description => ts.description,
+                              active                      => ts.active)
+      BULK COLLECT
+      INTO v_results
+      FROM teached_subject ts
+      JOIN subject s
+        ON s.id = ts.subject_id
+      JOIN person p
+        ON p.id = ts.teacher_id;
+  
+    OPEN p_teached_subjects FOR
+      SELECT * FROM TABLE(CAST(v_results AS ty_teached_subject_table));
+  
+  END get_all_teached_subjects;
+
+  PROCEDURE activate_teached_subject(p_subject_id IN NUMBER
+                                    ,p_teacher_id IN NUMBER
+                                    ,p_active     IN VARCHAR2) IS
+  BEGIN
+  
+    UPDATE teached_subject t
+       SET t.active = p_active
+     WHERE t.subject_id = p_subject_id
+       AND t.teacher_id = p_teacher_id;
+  
+  END activate_teached_subject;
+
 END admin_pkg;
 /
