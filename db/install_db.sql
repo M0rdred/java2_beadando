@@ -3,6 +3,7 @@ Prompt Initializing Database
 @./sequence/address.seq
 @./sequence/language.seq
 @./sequence/person.seq
+@./sequence/query.seq
 @./sequence/subject.seq
 @./sequence/translation.seq
 
@@ -32,6 +33,8 @@ Prompt Initializing Database
 @./trigger/person_h.trg
 @./trigger/subject_b.trg
 @./trigger/subject_h.trg
+@./trigger/search_query_b.trg
+@./trigger/search_query_h.trg
 @./trigger/teached_subject_b.trg
 @./trigger/teached_subject_h.trg
 @./trigger/translation_b.trg
@@ -39,7 +42,7 @@ Prompt Initializing Database
 
 @./type/ty_search_query.tps
 @./type/ty_search_query.tpb
-@./type/tty_search_query_table.tps
+@./type/ty_search_query_table.tps
 @./type/ty_search_result.tps
 @./type/ty_search_result.tpb
 @./type/ty_search_result_table.tps
