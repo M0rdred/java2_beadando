@@ -13,7 +13,6 @@ import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
@@ -23,7 +22,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -38,8 +36,6 @@ import hu.tutor.service.UserService;
 public class RegistrationView extends FormLayout implements View {
 
 	protected static final String REGISTER_VIEW_NAME = "registration";
-
-	private Label errorLabel;
 
 	private String defaultWidth = "200px";
 
@@ -114,21 +110,10 @@ public class RegistrationView extends FormLayout implements View {
 		birthDateField.setWidth(this.defaultWidth);
 		birthDateField.setRequiredIndicatorVisible(true);
 
-		this.errorLabel = new Label(
-				String.format("<div style='color:red;'>%s</div>", "Hibás felhasználónév vagy jelszó"),
-				ContentMode.HTML);
-		this.errorLabel.setVisible(false);
-		this.errorLabel.setSizeUndefined();
-
-		// Binder<User> userBinder = new Binder<>();
-		// userBinder.bind(firstNameField, User::setFirstName,
-		// User::getFirstName);
-
 		VerticalLayout loginLayout = new VerticalLayout();
-		loginLayout.setSpacing(true);
 		loginLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-		loginLayout.addComponents(this.errorLabel, userNameField, passwordField, passwordAgainField, emailField,
-				lastNameField, firstNameField, birthDateField, teacherCheckBox, registerButton, cancelButton);
+		loginLayout.addComponents(userNameField, passwordField, passwordAgainField, emailField, lastNameField,
+				firstNameField, birthDateField, teacherCheckBox, registerButton, cancelButton);
 		loginLayout.setSpacing(true);
 		loginLayout.setMargin(true);
 
@@ -164,10 +149,6 @@ public class RegistrationView extends FormLayout implements View {
 		this.addComponent(loginLayout);
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 		this.addStyleName("tutor-background");
-	}
-
-	public void setVisibleErrorLabel(boolean b) {
-		this.errorLabel.setVisible(b);
 	}
 
 }
