@@ -1,0 +1,28 @@
+@import "../valo/valo";
+
+.tutortheme {
+  @include valo;
+
+  .tutor-background {
+    background-image: url(pic/tutor_icon_512.png);
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  v-slot-tutor-menuline {
+    visibility: visible !important;
+  }
+
+  .tutor-menuline {
+    background-color: #55beeb;
+    width: 100%;
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    visibility: visible !important;
+
+    .v-link a {
+      color: white;
+    }
+  }
+}
