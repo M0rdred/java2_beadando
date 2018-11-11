@@ -1,4 +1,7 @@
 @import "../valo/valo";
+@import "view-background";
+@import "button";
+@import "colors";
 
 .tutortheme {
   @include valo;
@@ -9,12 +12,12 @@
     background-repeat: no-repeat;
   }
 
-  v-slot-tutor-menuline {
+  .v-slot-tutor-menuline {
     visibility: visible !important;
   }
 
   .tutor-menuline {
-    background-color: #55beeb;
+    background-color: $middle-blue;
     width: 100%;
     border-radius: 5px;
     padding-left: 5px;
@@ -22,7 +25,33 @@
     visibility: visible !important;
 
     .v-link a {
-      color: white;
+      color: $dark-blue;
+      font-weight: bold;
+      font-size: 18px;
     }
+  }
+
+  .tutor-main-view {
+    @include view-background($light-blue);
+  }
+
+  .tutor-registration-view {
+    @include view-background($light-blue);
+
+    .v-required-field-indicator {
+      color: $dark-blue;
+    }
+
+    .h3 {
+      font-weight: bold;
+    }
+  }
+
+  .tutor-theme-button {
+    @include colored-button($dark-blue, white);
+  }
+
+  .tutor-bordered-button {
+    @include colored-button(white, $dark-blue);
   }
 }

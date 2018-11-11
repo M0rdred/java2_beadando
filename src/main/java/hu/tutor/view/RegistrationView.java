@@ -22,6 +22,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -143,11 +145,24 @@ public class RegistrationView extends FormLayout implements View {
 			}
 
 		});
+		registerButton.addStyleName("tutor-theme-button");
 
 		cancelButton.addClickListener(e -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
+		cancelButton.addStyleName("tutor-bordered-button");
 
-		this.addComponent(loginLayout);
+		Label titleLabel = new Label("Regisztráció");
+		titleLabel.addStyleName("h3");
+		HorizontalLayout titleLayout = new HorizontalLayout(titleLabel);
+		titleLayout.addStyleName("tutor-menuline");
+		titleLayout.setHeight("60%");
+		titleLayout.setSizeFull();
+		titleLayout.setComponentAlignment(titleLabel, Alignment.TOP_LEFT);
+
+		this.addComponents(titleLayout, loginLayout);
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		this.setMargin(true);
+		this.setSizeFull();
+		this.addStyleName("tutor-registration-view");
 	}
 
 }

@@ -23,8 +23,6 @@ public class MainView extends VerticalLayout implements View {
 		Link loginLink = new Link("Bejelentkezés", new ExternalResource("#!" + LoginView.LOGIN_VIEW_NAME));
 		Link searchLink = new Link("Keresés", new ExternalResource("#!" + SearchView.SEARCH_VIEW_NAME));
 
-		registerLink.addStyleName("white");
-
 		Label welcomeLabel = new Label("Üdvözöljük a magánoktatók apróhirdetési weboldalán!");
 		welcomeLabel.addStyleName("h1");
 
@@ -41,7 +39,7 @@ public class MainView extends VerticalLayout implements View {
 
 		this.addComponents(horizontal, welcomeLabel, backgroundLayout);
 		this.setExpandRatio(backgroundLayout, 1F);
-		this.addStyleName("tutor-main");
+		this.addStyleName("tutor-main-view");
 		this.getComponent(0).setHeight("30px");
 
 		this.setSizeFull();
