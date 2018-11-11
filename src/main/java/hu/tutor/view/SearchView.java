@@ -110,7 +110,6 @@ public class SearchView extends VerticalLayout implements View {
 		this.addComponents(linkLayout, this.createContent());
 		this.createBinder();
 		this.executeQuery();
-		this.addStyleName("tutor-background");
 	}
 
 	private void executeQuery() {

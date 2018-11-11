@@ -23,13 +23,30 @@ public class MainView extends VerticalLayout implements View {
 		Link loginLink = new Link("Bejelentkezés", new ExternalResource("#!" + LoginView.LOGIN_VIEW_NAME));
 		Link searchLink = new Link("Keresés", new ExternalResource("#!" + SearchView.SEARCH_VIEW_NAME));
 
+		registerLink.addStyleName("white");
+
 		Label welcomeLabel = new Label("Üdvözöljük a magánoktatók apróhirdetési weboldalán!");
 		welcomeLabel.addStyleName("h1");
 
-		this.addComponents(new HorizontalLayout(registerLink, loginLink, searchLink), welcomeLabel);
+		HorizontalLayout horizontal = new HorizontalLayout(registerLink, loginLink, searchLink);
+		horizontal.addStyleName("tutor-menuline");
+		horizontal.setComponentAlignment(registerLink, Alignment.MIDDLE_CENTER);
+		horizontal.setComponentAlignment(loginLink, Alignment.MIDDLE_CENTER);
+		horizontal.setComponentAlignment(searchLink, Alignment.MIDDLE_CENTER);
+		horizontal.setSizeFull();
+
+		HorizontalLayout backgroundLayout = new HorizontalLayout();
+		backgroundLayout.addStyleName("tutor-background");
+		backgroundLayout.setSizeFull();
+
+		this.addComponents(horizontal, welcomeLabel, backgroundLayout);
+		this.setExpandRatio(backgroundLayout, 1F);
+		this.addStyleName("tutor-main");
+		this.getComponent(0).setHeight("30px");
+
+		this.setSizeFull();
+
 		this.setComponentAlignment(welcomeLabel, Alignment.MIDDLE_CENTER);
-		this.setMargin(true);
-		this.addStyleName("tutor-background");
 
 	}
 }

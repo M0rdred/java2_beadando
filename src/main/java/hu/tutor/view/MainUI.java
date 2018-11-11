@@ -3,6 +3,7 @@ package hu.tutor.view;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.ViewProvider;
@@ -18,6 +19,7 @@ import hu.tutor.view.error.ErrorViewProvider;
 @Widgetset("hu.tutor.view.TutorWidgetSet")
 @Title(MainUI.APP_TITLE)
 @PreserveOnRefresh
+@Theme("tutortheme")
 public class MainUI extends UI {
 
 	public static final String APP_TITLE = "Tutor Search Project";

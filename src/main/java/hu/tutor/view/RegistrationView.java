@@ -148,7 +148,6 @@ public class RegistrationView extends FormLayout implements View {
 
 		this.addComponent(loginLayout);
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
-		this.addStyleName("tutor-background");
 	}
 
 }
