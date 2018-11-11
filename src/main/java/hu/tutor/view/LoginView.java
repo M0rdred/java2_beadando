@@ -42,6 +42,9 @@ public class LoginView extends VerticalLayout implements View {
 		Button loginButton = new Button("Belépés");
 		Button cancelButton = new Button("Mégse");
 
+		loginButton.addStyleName("tutor-theme-button");
+		cancelButton.addStyleName("tutor-bordered-button");
+
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);
 		userNameField.focus();
@@ -73,6 +76,8 @@ public class LoginView extends VerticalLayout implements View {
 		cancelButton.addClickListener(e -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
 
 		this.addComponent(loginLayout);
+		this.addStyleName("tutor-login-view");
+		this.setSizeFull();
 		this.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 
 	}

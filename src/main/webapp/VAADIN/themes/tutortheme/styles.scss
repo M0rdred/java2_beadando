@@ -47,10 +47,12 @@
     }
   }
 
+  .tutor-login-view {
+    @include view-background($light-blue);
+  }
   .tutor-theme-button {
     @include colored-button($dark-blue, white);
   }
-
   .tutor-bordered-button {
     @include colored-button(white, $dark-blue);
   }
