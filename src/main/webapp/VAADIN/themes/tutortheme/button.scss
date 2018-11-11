@@ -1,0 +1,5 @@
+@mixin colored-button($primary-color, $secondary-color) {
+  background: $primary-color;
+  border-color: $secondary-color;
+  color: $secondary-color;
+}
