@@ -1,14 +1,11 @@
 package hu.tutor.view;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
@@ -334,18 +331,7 @@ public class AdminAccountForm extends VerticalLayout {
 	}
 
 	private void refreshTeachedSubjectsGrid() {
-		List<TeachedSubject> teachedSubjects = this.adminService.listTeachedSubjects();
-
-		// TODO remove try, it's only for debug
-		try {
-			System.err.println(
-					new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(teachedSubjects));
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		this.teachedSubjectsGrid.setItems(teachedSubjects);
+		this.teachedSubjectsGrid.setItems(this.adminService.listTeachedSubjects());
 	}
 
 }

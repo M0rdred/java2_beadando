@@ -57,8 +57,12 @@ public class AccountView extends VerticalLayout implements View {
 			tabSheet.addTab(this.adminAccountForm, "Adminisztrátor");
 		}
 
-		this.addComponents(new HorizontalLayout(logoutLink, searchLink));
+		HorizontalLayout horizontal = new HorizontalLayout(logoutLink, searchLink);
+		horizontal.addStyleName("tutor-menuline");
+
+		this.addComponents(horizontal);
 		this.addComponent(tabSheet);
+		this.addStyleName("tutor-account-view");
 
 	}
 

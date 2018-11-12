@@ -164,7 +164,6 @@ public class AdminDaoImpl implements AdminDao {
 				.createNamedStoredProcedureQuery("listTeachedSubjects");
 
 		long nanoTime = System.nanoTime();
-		System.err.println("nanotime: " + nanoTime);
 
 		storedProcedure.setParameter("p_time", nanoTime);
 

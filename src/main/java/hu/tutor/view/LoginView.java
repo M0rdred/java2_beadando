@@ -20,6 +20,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.security.AuthService;
 import hu.tutor.service.exception.UserBlockedException;
+import hu.tutor.util.VaadinUtil;
 
 @SpringView(name = LoginView.LOGIN_VIEW_NAME)
 public class LoginView extends VerticalLayout implements View {
@@ -42,8 +43,8 @@ public class LoginView extends VerticalLayout implements View {
 		Button loginButton = new Button("Belépés");
 		Button cancelButton = new Button("Mégse");
 
-		loginButton.addStyleName("tutor-theme-button");
-		cancelButton.addStyleName("tutor-bordered-button");
+		loginButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
+		cancelButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		userNameField.setWidth("200px");
 		userNameField.setIcon(VaadinIcons.USER);

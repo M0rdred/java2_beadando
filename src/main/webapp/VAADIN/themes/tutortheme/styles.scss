@@ -50,10 +50,32 @@
   .tutor-login-view {
     @include view-background($light-blue);
   }
+
   .tutor-theme-button {
     @include colored-button($dark-blue, white);
   }
+
   .tutor-bordered-button {
     @include colored-button(white, $dark-blue);
+  }
+
+  .v-panel {
+    border: 1px solid $dark-blue;
+
+    .v-panel-caption {
+      border: 1px solid $dark-blue;
+      background: $dark-blue;
+      color: white;
+    }
+  }
+
+  .tutor-account-view {
+    @include view-background($light-blue);
+
+    .v-grid-header .v-grid-cell {
+      border: 1px solid $dark-blue;
+      background: $dark-blue;
+      color: white;
+    }
   }
 }

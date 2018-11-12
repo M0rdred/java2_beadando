@@ -32,6 +32,7 @@ import com.vaadin.ui.VerticalLayout;
 import hu.tutor.model.User;
 import hu.tutor.service.TeacherService;
 import hu.tutor.service.UserService;
+import hu.tutor.util.VaadinUtil;
 
 @SuppressWarnings({ "serial" })
 @SpringView(name = RegistrationView.REGISTER_VIEW_NAME)
@@ -145,10 +146,10 @@ public class RegistrationView extends FormLayout implements View {
 			}
 
 		});
-		registerButton.addStyleName("tutor-theme-button");
+		registerButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		cancelButton.addClickListener(e -> this.getUI().getNavigator().navigateTo(MainView.MAIN_VIEW_NAME));
-		cancelButton.addStyleName("tutor-bordered-button");
+		cancelButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		Label titleLabel = new Label("Regisztráció");
 		titleLabel.addStyleName("h3");

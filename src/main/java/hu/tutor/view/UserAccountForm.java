@@ -112,6 +112,7 @@ public class UserAccountForm extends VerticalLayout {
 				Notification.show("Adatok sikeresen mentve");
 			}
 		});
+		saveButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		formLayout.addComponent(this.userNameField);
 		formLayout.addComponent(this.lastNameField);
@@ -132,6 +133,7 @@ public class UserAccountForm extends VerticalLayout {
 			Button btnBecomeTeacher = new Button();
 			btnBecomeTeacher.setCaption("Tanár szeretnék lenni");
 			btnBecomeTeacher.addClickListener(event -> this.teacherService.becomeTeacher(this.user.getId()));
+			btnBecomeTeacher.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 			this.addComponent(btnBecomeTeacher);
 		}
 
@@ -152,6 +154,7 @@ public class UserAccountForm extends VerticalLayout {
 		HorizontalLayout queryLayout = new HorizontalLayout(this.queryGrid);
 		queryLayout.setSizeFull();
 		Panel searchQueriesPanel = new Panel("Mentett keresések");
+		searchQueriesPanel.addStyleName("saved-queries-panel");
 		searchQueriesPanel.setContent(queryLayout);
 		searchQueriesPanel.setSizeFull();
 		HorizontalLayout horizontal = new HorizontalLayout(formPanel, searchQueriesPanel);
@@ -170,6 +173,7 @@ public class UserAccountForm extends VerticalLayout {
 			this.searchService.deleteSearchQuery(query);
 			this.refreshQueryGrid();
 		});
+		deleteButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		return deleteButton;
 	}
@@ -181,6 +185,7 @@ public class UserAccountForm extends VerticalLayout {
 			UI.getCurrent().getSession().setAttribute(VaadinUtil.VAADIN_SESSION_QUERY_NAME, query);
 			UI.getCurrent().getNavigator().navigateTo(SearchView.SEARCH_VIEW_NAME);
 		});
+		execButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		return execButton;
 	}
