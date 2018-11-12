@@ -78,4 +78,27 @@
       color: white;
     }
   }
+
+  .v-filterselect {
+    border: 1px solid $dark-blue;
+    background: $dark-blue;
+    color: white;
+
+    .v-filterselect-button {
+      background: #324a5e;
+      color: white;
+      margin-right: -1px;
+      margin-top: -1px;
+      margin-bottom: -1px;
+
+      &:hover {
+        color: $middle-blue;
+      }
+    }
+
+    .gwt-MenuItem-selected {
+      @include linear-gradient(to bottom, #bcdbfa 2%, $middle-blue 98%);
+      color: #353535;
+    }
+  }
 }

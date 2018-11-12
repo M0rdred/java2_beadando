@@ -23,6 +23,7 @@ import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
 import hu.tutor.service.SubjectService;
 import hu.tutor.service.TeacherService;
+import hu.tutor.util.VaadinUtil;
 
 @SpringComponent
 @Scope(scopeName = "prototype")
@@ -47,6 +48,7 @@ public class TeacherAccountForm extends VerticalLayout {
 	private Component createEndTeachingButton() {
 		Button endTeachingButton = new Button("Oktatás befejezése");
 		endTeachingButton.addClickListener(e -> this.teacherService.endTeaching(this.teacher.getId()));
+		endTeachingButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		return endTeachingButton;
 	}
@@ -71,6 +73,7 @@ public class TeacherAccountForm extends VerticalLayout {
 				Notification.show("Tantárgy tanítása megkezdve");
 			}
 		});
+		btnTeachSubject.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		this.lstAllSubjects.setItemCaptionGenerator(Subject::getName);
 		this.lstAllSubjects
@@ -96,10 +99,12 @@ public class TeacherAccountForm extends VerticalLayout {
 		Button btnModifyOwnSubject = new Button();
 		btnModifyOwnSubject.setCaption("Leírás mentése");
 		btnModifyOwnSubject.setEnabled(false);
+		btnModifyOwnSubject.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		Button btnDeleteSubject = new Button();
 		btnDeleteSubject.setCaption("Tárgy tanításának befejezése");
 		btnDeleteSubject.setEnabled(false);
+		btnDeleteSubject.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		this.refreshOwnSubjectsList();
 		this.lstOwnSubjects.setItemCaptionGenerator(Subject::getName);
@@ -166,10 +171,12 @@ public class TeacherAccountForm extends VerticalLayout {
 			this.refreshAllSubjectsList();
 			Notification.show("Új tantárgy sikeresen regisztrálva");
 		});
+		btnSaveNewSubject.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		FormLayout formLayout = new FormLayout();
 
 		formLayout.setSpacing(true);
+		formLayout.setMargin(true);
 
 		formLayout.addComponent(txtNewSubjectName);
 		formLayout.addComponent(txtNewSubjectDescription);
