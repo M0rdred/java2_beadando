@@ -31,6 +31,7 @@ import hu.tutor.service.AdminService;
 import hu.tutor.service.SubjectService;
 import hu.tutor.service.UserService;
 import hu.tutor.util.ActiveParameter;
+import hu.tutor.util.VaadinUtil;
 import hu.tutor.view.component.PasswordChangeWindow;
 
 @SpringComponent
@@ -55,6 +56,7 @@ public class AdminAccountForm extends VerticalLayout {
 
 	public void init() {
 		this.addComponent(this.getViewLayout());
+		this.setSizeFull();
 	}
 
 	private Component getViewLayout() {
@@ -87,7 +89,8 @@ public class AdminAccountForm extends VerticalLayout {
 
 		Binder<Teacher> editorBinder = teacherEditor.getBinder();
 
-		this.teacherGrid.addComponentColumn(this::createEnableTeacherButton).setCaption("Aktiválás");
+		this.teacherGrid.addComponentColumn(this::createEnableTeacherButton).setStyleGenerator(b -> "v-align-center")
+				.setCaption("Aktiválás");
 		this.teacherGrid.addColumn(Teacher::getFullName).setDescriptionGenerator(Teacher::getFullName)
 				.setCaption("Név");
 		this.teacherGrid.addColumn(Teacher::getIntroduction).setDescriptionGenerator(Teacher::getIntroduction)
@@ -121,6 +124,7 @@ public class AdminAccountForm extends VerticalLayout {
 			this.adminService.enableTeacher(teacher.getId(), ActiveParameter.YES);
 			this.refreshTeacherGrid();
 		});
+		enableButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		return enableButton;
 	}
@@ -146,7 +150,8 @@ public class AdminAccountForm extends VerticalLayout {
 
 		Binder<Subject> editorBinder = subjectEditor.getBinder();
 
-		this.subjectGrid.addComponentColumn(this::createEnableSubjectButton).setCaption("Aktiválás").setWidth(100);
+		this.subjectGrid.addComponentColumn(this::createEnableSubjectButton).setStyleGenerator(b -> "v-align-center")
+				.setCaption("Aktiválás").setWidth(100);
 		this.subjectGrid.addColumn(Subject::getName).setDescriptionGenerator(Subject::getName).setCaption("Név")
 				.setId("name");
 		this.subjectGrid.addColumn(Subject::getDescription).setDescriptionGenerator(Subject::getDescription)
@@ -172,6 +177,7 @@ public class AdminAccountForm extends VerticalLayout {
 			this.adminService.enableSubject(subject.getId(), ActiveParameter.YES);
 			this.refreshSubjectGrid();
 		});
+		enableButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		return enableButton;
 	}
@@ -197,9 +203,12 @@ public class AdminAccountForm extends VerticalLayout {
 
 		Binder<User> editorBinder = userEditor.getBinder();
 
-		this.userGrid.addComponentColumn(this::createEnableUserButton).setSortable(false).setCaption("Aktiválás");
-		this.userGrid.addComponentColumn(this::createDisableUserButton).setSortable(false).setCaption("Deaktiválás");
-		this.userGrid.addComponentColumn(this::createNewPasswordButton).setSortable(false).setCaption("Új jelszó");
+		this.userGrid.addComponentColumn(this::createEnableUserButton).setStyleGenerator(b -> "v-align-center")
+				.setSortable(false).setCaption("Aktiválás");
+		this.userGrid.addComponentColumn(this::createDisableUserButton).setStyleGenerator(b -> "v-align-center")
+				.setSortable(false).setCaption("Deaktiválás");
+		this.userGrid.addComponentColumn(this::createNewPasswordButton).setStyleGenerator(b -> "v-align-center")
+				.setSortable(false).setCaption("Új jelszó");
 		this.userGrid.addColumn(User::getFullName).setDescriptionGenerator(User::getFullName).setCaption("Név");
 		this.userGrid.addColumn(User::getIntroduction).setDescriptionGenerator(User::getIntroduction, ContentMode.TEXT)
 				.setCaption("Bemutatkozás").setEditorBinding(
@@ -211,7 +220,7 @@ public class AdminAccountForm extends VerticalLayout {
 		this.userGrid.addColumn(User::getEmail).setDescriptionGenerator(User::getEmail).setCaption("Email cím");
 		this.userGrid.addComponentColumn(u -> this.createGridCheckbox(u.getIsActive()))
 				.setDescriptionGenerator((DescriptionGenerator<User>) u -> u.getIsActive() ? "Aktív" : "Inaktív")
-				.setSortable(false).setCaption("Aktív");
+				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Aktív");
 
 		this.userGrid.setSizeFull();
 
@@ -228,6 +237,7 @@ public class AdminAccountForm extends VerticalLayout {
 			this.adminService.activatePerson(user.getId(), ActiveParameter.YES);
 			this.refreshUserGrid();
 		});
+		enableButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		enableButton.setEnabled(!user.getIsActive());
 		return enableButton;
@@ -241,6 +251,7 @@ public class AdminAccountForm extends VerticalLayout {
 			this.adminService.activatePerson(user.getId(), ActiveParameter.NO);
 			this.refreshUserGrid();
 		});
+		disableButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		disableButton.setEnabled(user.getIsActive());
 		return disableButton;
@@ -250,6 +261,7 @@ public class AdminAccountForm extends VerticalLayout {
 		Button newPassButton = new Button(VaadinIcons.EDIT);
 
 		newPassButton.addClickListener(e -> this.openNewPasswordWindow(user));
+		newPassButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		return newPassButton;
 	}
@@ -277,10 +289,10 @@ public class AdminAccountForm extends VerticalLayout {
 	private Component createAllSubjectsLayout() {
 		this.teachedSubjectsGrid = new Grid<>();
 
-		this.teachedSubjectsGrid.addComponentColumn(this::createEnableSubjectButton).setSortable(false)
-				.setCaption("Aktiválás");
-		this.teachedSubjectsGrid.addComponentColumn(this::createDisableSubjectButton).setSortable(false)
-				.setCaption("Deaktiválás");
+		this.teachedSubjectsGrid.addComponentColumn(this::createEnableSubjectButton)
+				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Aktiválás");
+		this.teachedSubjectsGrid.addComponentColumn(this::createDisableSubjectButton)
+				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Deaktiválás");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getSubjectName)
 				.setDescriptionGenerator(TeachedSubject::getSubjectName).setCaption("Tantárgy neve");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getSubjectDescription)
@@ -294,7 +306,7 @@ public class AdminAccountForm extends VerticalLayout {
 		this.teachedSubjectsGrid.addComponentColumn(s -> this.createGridCheckbox(s.getActive()))
 				.setDescriptionGenerator(
 						(DescriptionGenerator<TeachedSubject>) s -> s.getActive() ? "Aktív" : "Inaktív")
-				.setSortable(false).setCaption("Aktív");
+				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Aktív");
 		this.teachedSubjectsGrid.setSizeFull();
 
 		this.refreshTeachedSubjectsGrid();
@@ -311,6 +323,7 @@ public class AdminAccountForm extends VerticalLayout {
 					ActiveParameter.YES);
 			this.refreshTeachedSubjectsGrid();
 		});
+		enableButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		enableButton.setEnabled(!subject.getActive());
 		return enableButton;
@@ -325,6 +338,7 @@ public class AdminAccountForm extends VerticalLayout {
 					ActiveParameter.NO);
 			this.refreshTeachedSubjectsGrid();
 		});
+		disableButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		disableButton.setEnabled(subject.getActive());
 		return disableButton;
