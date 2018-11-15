@@ -75,12 +75,36 @@
 
   .tutor-account-view {
     @include view-background($light-blue);
+  }
 
-    .v-grid-header .v-grid-cell {
-      border: 1px solid $dark-blue;
-      background: $dark-blue;
-      color: white;
+  .v-accordion {
+    .v-accordion-item {
+      .v-accordion-item-caption {
+        background-color: #99a5af;
+        border-color: #99a5af;
+
+        .v-caption {
+          color: white;
+        }
+      }
     }
+
+    .v-accordion-item-open {
+      .v-accordion-item-caption {
+        background-color: $middle-blue;
+        border-color: $middle-blue;
+
+        .v-caption {
+          color: black;
+        }
+      }
+    }
+  }
+
+  .v-grid-header .v-grid-cell {
+    border: 1px solid $dark-blue;
+    background: $dark-blue;
+    color: white;
   }
 
   .v-filterselect {
