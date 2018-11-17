@@ -60,8 +60,7 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
        AND length(TRIM(p_subject_name)) > 0
     THEN
     
-      l_sql := l_sql || ' AND lower(s.name) LIKE ' || chr(39) || ':2' ||
-               chr(39);
+      l_sql := l_sql || ' AND lower(s.name) LIKE ' || ':2';
     ELSE
       l_sql := l_sql || 'AND ((1 = 1) OR :2 IS NULL) ';
     END IF;
@@ -78,7 +77,12 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
     END IF;
   
     BEGIN
-      INSERT INTO logs (log_entry) VALUES (l_sql);
+      INSERT INTO logs
+        (log_entry)
+      VALUES
+        ('inputs: ' || p_searcher_id || ',' || p_max_distance || ', ' ||
+         l_origin_city || ', ' || p_subject_name || ', ' || p_teacher_name);
+      INSERT INTO logs (log_entry) VALUES ('SQL: ' || l_sql);
       COMMIT;
     END;
   
@@ -90,7 +94,7 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
   
     -- filter for max distance
     IF p_max_distance IS NOT NULL
-       AND p_max_distance >= 0
+       AND p_max_distance > 0
        AND p_searcher_id IS NOT NULL
     THEN
     
