@@ -106,6 +106,7 @@ public class SearchView extends VerticalLayout implements View {
 			linkLayout.addComponent(this.createAccountLink());
 			linkLayout.addComponent(this.createLogoutLink());
 		}
+		linkLayout.addStyleName("tutor-menuline");
 
 		this.addComponents(linkLayout, this.createContent());
 		this.createBinder();
@@ -132,6 +133,7 @@ public class SearchView extends VerticalLayout implements View {
 	}
 
 	private Component createContent() {
+		this.addStyleName("tutor-search-view");
 		return new VerticalLayout(this.createSearchLayout(), this.createResultLayout());
 	}
 
@@ -185,6 +187,7 @@ public class SearchView extends VerticalLayout implements View {
 				Notification.show("Legalább egy feltétel megadása kötelező", Type.WARNING_MESSAGE);
 			}
 		});
+		this.submitButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
 		HorizontalLayout horizontal = new HorizontalLayout(this.subjectComboBox, this.teacherNameField);
 		if (this.authorizedAccess) {
@@ -323,6 +326,8 @@ public class SearchView extends VerticalLayout implements View {
 
 			this.searchService.saveSearchQuery(query);
 		});
+		this.saveSearchButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
+
 		if (!this.authorizedAccess) {
 			this.saveSearchButton.setVisible(false);
 		}
