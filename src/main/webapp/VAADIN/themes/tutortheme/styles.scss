@@ -6,6 +6,10 @@
 .tutortheme {
   @include valo;
 
+  .v-ui {
+    background-color: $light-blue;
+  }
+
   .tutor-background {
     background-image: url(pic/tutor_icon_512.png);
     background-position: center;
