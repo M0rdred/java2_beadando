@@ -11,8 +11,6 @@ Prompt Initializing Database
 @./table/address_table.sql
 @./table/address_table_h.sql
 @./table/city_distance_table.sql
-@./table/language_table.sql
-@./table/language_table_h.sql
 @./table/person_table.sql
 @./table/person_table_h.sql
 @./table/search_query_table.sql
@@ -22,13 +20,9 @@ Prompt Initializing Database
 @./table/teached_subject.sql
 @./table/teached_subject_h.sql
 @./table/temp_table.sql
-@./table/translation_table.sql
-@./table/translation_table_h.sql
 
 @./trigger/address_b.trg
 @./trigger/address_h.trg
-@./trigger/language_b.trg
-@./trigger/language_h.trg
 @./trigger/person_b.trg
 @./trigger/person_h.trg
 @./trigger/subject_b.trg
@@ -37,8 +31,6 @@ Prompt Initializing Database
 @./trigger/search_query_h.trg
 @./trigger/teached_subject_b.trg
 @./trigger/teached_subject_h.trg
-@./trigger/translation_b.trg
-@./trigger/translation_h.trg
 
 @./type/ty_search_query.tps
 @./type/ty_search_query.tpb

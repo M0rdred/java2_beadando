@@ -110,14 +110,3 @@ values (125, 'Admin', 'Minta', to_date('28-12-2004', 'dd-mm-yyyy'), null, 'N', '
 
 
 prompt Done.
-
-
-
-INSERT INTO LANGUAGE
-  (id,
-   code,
-   NAME)
-VALUES
-  (language_sq.nextval,
-   'hu',
-   'magyar');
