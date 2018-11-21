@@ -57,7 +57,7 @@ public class RegistrationView extends FormLayout implements View {
 		final TextField firstNameField = new TextField("Keresztnév: ");
 		final TextField lastNameField = new TextField("Vezetéknév: ");
 		final DateField birthDateField = new DateField("Születési idő");
-		final CheckBox teacherCheckBox = new CheckBox("Tanár: ");
+		final CheckBox teacherCheckBox = new CheckBox("Tanár");
 
 		Binder<User> binder = new Binder<>();
 
