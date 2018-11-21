@@ -1,5 +1,5 @@
 CREATE TABLE PERSON (
-  id           NUMBER NOT NULL,
+  id           NUMBER NOT NULL PRIMARY KEY,
   first_name   VARCHAR2(40) NOT NULL,
   last_name    VARCHAR2(40) NOT NULL,
   birth_date   DATE NOT NULL,

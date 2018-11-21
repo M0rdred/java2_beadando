@@ -1,5 +1,5 @@
 CREATE TABLE SUBJECT (
-  id          NUMBER NOT NULL,
+  id          NUMBER NOT NULL PRIMARY KEY,
   name        VARCHAR2(100) NOT NULL,
   description VARCHAR2(4000) NOT NULL,
   active      VARCHAR2(1) default 'N' NOT NULL,

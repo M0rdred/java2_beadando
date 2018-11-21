@@ -8,8 +8,7 @@ CREATE OR REPLACE PACKAGE BODY person_pkg AS
                       ,p_ad_street       VARCHAR2
                       ,p_ad_house_number VARCHAR2
                       ,p_introduction    VARCHAR2) IS
-    l_count    NUMBER;
-    v_intro_id NUMBER := -1;
+    l_count NUMBER;
   BEGIN
     IF p_first_name IS NOT NULL
        AND p_last_name IS NOT NULL
@@ -33,26 +32,6 @@ CREATE OR REPLACE PACKAGE BODY person_pkg AS
                                 'The given person is already existing in the database');
       ELSE
       
-        IF p_introduction IS NULL
-           OR length(p_introduction) <= 0
-        THEN
-          INSERT INTO translation
-            (LANGUAGE
-            ,text)
-          VALUES
-            (100
-            ,' ');
-        ELSE
-          INSERT INTO translation
-            (LANGUAGE
-            ,text)
-          VALUES
-            (100
-            ,p_introduction);
-        END IF;
-      
-        v_intro_id := translation_sq.currval;
-      
         INSERT INTO person
           (first_name
           ,last_name
@@ -64,7 +43,7 @@ CREATE OR REPLACE PACKAGE BODY person_pkg AS
           ,p_last_name
           ,p_birth_date
           ,address_sq.currval
-          ,v_intro_id);
+          ,p_introduction);
       END IF;
     
     ELSE
@@ -99,9 +78,9 @@ CREATE OR REPLACE PACKAGE BODY person_pkg AS
     IF p_id IS NOT NULL
        AND p_introduction IS NOT NULL
     THEN
-      UPDATE translation t
-         SET t.text = p_introduction
-       WHERE t.id = (SELECT p.introduction FROM person p WHERE p.id = p_id);
+      UPDATE person p
+         SET p.introduction = p_introduction
+       WHERE p.id = p_id;
     ELSE
       raise_application_error(-20001, 'One or more parameters are empty');
     END IF;

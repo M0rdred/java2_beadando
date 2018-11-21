@@ -1,2 +1,0 @@
-CREATE SEQUENCE translation_sq START WITH 100;
-/

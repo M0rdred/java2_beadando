@@ -1,2 +1,0 @@
-CREATE SEQUENCE language_sq START WITH 100;
-/

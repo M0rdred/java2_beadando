@@ -1,5 +1,5 @@
 CREATE TABLE search_query (
-		ID 			 NUMBER,
+		ID 			 NUMBER NOT NULL PRIMARY KEY,
 		subject_name VARCHAR2(255),
 		teacher_name VARCHAR2(255),
 		max_distance VARCHAR2(255),

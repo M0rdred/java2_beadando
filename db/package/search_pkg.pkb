@@ -76,16 +76,6 @@ CREATE OR REPLACE PACKAGE BODY search_pkg AS
       l_sql := l_sql || 'AND ((1 = 1) OR :3 IS NULL) ';
     END IF;
   
-    BEGIN
-      INSERT INTO logs
-        (log_entry)
-      VALUES
-        ('inputs: ' || p_searcher_id || ',' || p_max_distance || ', ' ||
-         l_origin_city || ', ' || p_subject_name || ', ' || p_teacher_name);
-      INSERT INTO logs (log_entry) VALUES ('SQL: ' || l_sql);
-      COMMIT;
-    END;
-  
     EXECUTE IMMEDIATE l_sql BULK COLLECT
       INTO l_search_temp_table
       USING l_origin_city, '%' || lower(p_subject_name) || '%', '%' || lower(p_teacher_name) || '%';
