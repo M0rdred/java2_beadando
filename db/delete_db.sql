@@ -15,11 +15,9 @@ DROP SEQUENCE subject_sq;
 DROP SEQUENCE query_sq;
 
 DROP PACKAGE admin_pkg;
-DROP PACKAGE address_pkg;
 DROP PACKAGE distance_pkg;
 DROP PACKAGE person_pkg;
 DROP PACKAGE search_pkg;
-DROP PACKAGE subject_pkg;
 DROP PACKAGE teacher_pkg;
 DROP PACKAGE teached_subject_pkg;
 
