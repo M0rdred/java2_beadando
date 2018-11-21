@@ -1,11 +1,9 @@
 Prompt Initializing Database
 
 @./sequence/address.seq
-@./sequence/language.seq
 @./sequence/person.seq
 @./sequence/query.seq
 @./sequence/subject.seq
-@./sequence/translation.seq
 
 @./table/application_parameters_table.sql
 @./table/address_table.sql
@@ -20,6 +18,10 @@ Prompt Initializing Database
 @./table/teached_subject.sql
 @./table/teached_subject_h.sql
 @./table/temp_table.sql
+
+@./alter/alter_person_table.sql
+@./alter/alter_search_query_table.sql
+@./alter/alter_teached_subject_table.sql
 
 @./trigger/address_b.trg
 @./trigger/address_h.trg
@@ -41,6 +43,9 @@ Prompt Initializing Database
 @./type/ty_subject.tps
 @./type/ty_subject.tpb
 @./type/ty_subject_table.tps
+@./type/ty_teached_subject.tps
+@./type/ty_teached_subject.tpb
+@./type/ty_teached_subject_table.tps
 
 @./view/subjects_waiting_validation_vw.sql
 @./view/teachers_waiting_validation_vw.sql
