@@ -11,7 +11,7 @@
 	
 	<appender name="file-appender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>target/logs/tutor.log</file>
+		<file>logs/tutor.log</file>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
 				%d{yyyy-MM-dd HH:mm:ss} - %msg%n
@@ -19,7 +19,7 @@
 		</encoder>
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>target/logs/archived/tutor.%d{yyyy-MM-dd}.%i.log
+			<fileNamePattern>logs/archived/tutor.%d{yyyy-MM-dd}.%i.log
                         </fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -31,7 +31,7 @@
 
 	<appender name="error-file-appender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>target/logs/error.log</file>
+		<file>logs/error.log</file>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
 				%d{yyyy-MM-dd HH:mm:ss} - %msg%n
@@ -39,7 +39,7 @@
 		</encoder>
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>target/logs/archived/error.%d{yyyy-MM-dd}.%i.log
+			<fileNamePattern>logs/archived/error.%d{yyyy-MM-dd}.%i.log
                         </fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
