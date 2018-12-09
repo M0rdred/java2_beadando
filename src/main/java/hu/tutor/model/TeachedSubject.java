@@ -41,6 +41,22 @@ import lombok.NoArgsConstructor;
 					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class),
 					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
 					@StoredProcedureParameter(name = "p_active", mode = ParameterMode.IN, type = String.class)
+			}),
+	@NamedStoredProcedureQuery(
+			name = "modifySubjectDescription",
+			procedureName = "teached_subject_pkg.modify_subject_description",
+			parameters = {
+					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_description", mode = ParameterMode.IN, type = String.class)
+			}),
+	@NamedStoredProcedureQuery(
+			name = "getSubjectDescription",
+			procedureName = "teached_subject_pkg.get_subject_description",
+			parameters = {
+					@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
+					@StoredProcedureParameter(name = "p_description", mode = ParameterMode.OUT, type = String.class)
 			})
 })
 //@formatter:on

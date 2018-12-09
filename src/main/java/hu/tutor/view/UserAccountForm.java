@@ -170,7 +170,9 @@ public class UserAccountForm extends VerticalLayout {
 	private Button createDeleteButton(SearchQuery query) {
 		Button deleteButton = new Button(VaadinIcons.CLOSE_CIRCLE_O);
 		deleteButton.addClickListener(e -> {
-			this.searchService.deleteSearchQuery(query);
+			this.user.removeSeachQuery(query);
+			this.userService.updateUser(this.user);
+
 			this.refreshQueryGrid();
 		});
 		deleteButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);

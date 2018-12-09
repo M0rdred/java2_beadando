@@ -52,7 +52,6 @@ public class SearchDaoImpl implements SearchDao {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		session.update(query);
 		session.persist(query);
 
 		transaction.commit();

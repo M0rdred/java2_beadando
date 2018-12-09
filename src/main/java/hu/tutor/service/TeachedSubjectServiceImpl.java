@@ -43,4 +43,14 @@ public class TeachedSubjectServiceImpl implements TeachedSubjectService {
 		}
 	}
 
+	@Override
+	public String getSubjectDescription(Integer subjectId, Integer teacherId) {
+		try {
+			return this.teachedSubjectDao.getSubjectDescription(teacherId, subjectId);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+
 }

@@ -69,5 +69,19 @@ CREATE OR REPLACE PACKAGE BODY teached_subject_pkg AS
       raise_application_error(-20001, 'One or more parameters are empty');
     END IF;
   END;
+
+  PROCEDURE get_subject_description(p_subject_id  NUMBER
+                                   ,p_teacher_id  NUMBER
+                                   ,p_description OUT VARCHAR2) IS
+  BEGIN
+  
+    SELECT t.description
+      INTO p_description
+      FROM teached_subject t
+     WHERE t.subject_id = p_subject_id
+       AND t.teacher_id = p_teacher_id;
+  
+  END;
+
 END teached_subject_pkg;
 /

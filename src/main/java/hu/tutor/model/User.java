@@ -1,7 +1,8 @@
 package hu.tutor.model;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -100,7 +101,29 @@ public class User {
 	private Boolean isActive = false;
 
 	@OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.ALL)
-	private List<SearchQuery> queries;
+	private Set<SearchQuery> queries;
+
+	public Set<SearchQuery> getSearchQueries() {
+		return Collections.unmodifiableSet(this.queries);
+	}
+
+	public void addSearchQuery(SearchQuery query) {
+		if (this.queries.contains(query)) {
+			return;
+		} else {
+			query.setOwner(this);
+			this.queries.add(query);
+		}
+	}
+
+	public void removeSeachQuery(SearchQuery query) {
+		if (!this.queries.contains(query)) {
+			return;
+		}
+
+		this.queries.remove(query);
+		query.setOwner(null);
+	}
 
 	public String getFullName() {
 		return this.lastName + " " + this.firstName;

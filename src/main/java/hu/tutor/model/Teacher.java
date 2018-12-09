@@ -15,6 +15,9 @@ import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "person")
 @DiscriminatorValue("teacher")
@@ -43,16 +46,10 @@ import javax.persistence.Table;
 //@formatter:on
 public class Teacher extends User {
 
+	@Getter
+	@Setter
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "teached_subject", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	private List<Subject> teachedSubjects;
-
-	public List<Subject> getTeachedSubjects() {
-		return this.teachedSubjects;
-	}
-
-	public void setTeachedSubjects(List<Subject> teachedSubjects) {
-		this.teachedSubjects = teachedSubjects;
-	}
 
 }

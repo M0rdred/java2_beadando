@@ -31,7 +31,7 @@ prompt Importing table person...
 set feedback off
 set define off
 insert into person (FIRST_NAME, LAST_NAME, BIRTH_DATE, ADDRESS_ID, IS_TEACHER, IS_ADMIN, IS_ACTIVE, INTRODUCTION, ROLE, USER_NAME, PHONE, EMAIL, PASSWORD)
-values ('Anita', 'Minta', to_date('18-12-1986', 'dd-mm-yyyy'), null, 'N', 'N', 'Y', null, 'teacher', 'mintaanita', null, 'anita@minta.com', '$2a$10$jph99JMvIKxrG3/XJYttBe8oEg162Yj7pV0Flzh27NtDqodXVPyB2');
+values ('Anita', 'Minta', to_date('18-12-1986', 'dd-mm-yyyy'), null, 'Y', 'N', 'Y', null, 'teacher', 'mintaanita', null, 'anita@minta.com', '$2a$10$jph99JMvIKxrG3/XJYttBe8oEg162Yj7pV0Flzh27NtDqodXVPyB2');
 
 insert into person (FIRST_NAME, LAST_NAME, BIRTH_DATE, ADDRESS_ID, IS_TEACHER, IS_ADMIN, IS_ACTIVE, INTRODUCTION, ROLE, USER_NAME, PHONE, EMAIL, PASSWORD)
 values ('Béla', 'Minta', to_date('10-10-2002', 'dd-mm-yyyy'), null, 'N', 'N', 'N', null, 'user', 'mintabela', null, 'bela@minta.com', '$2a$10$h58fKOb/iHokoLs4ar5Mv.bfCfWfG9NNfapkpacRF1QNnSkAExorK');

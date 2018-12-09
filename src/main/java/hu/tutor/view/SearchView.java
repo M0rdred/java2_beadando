@@ -51,6 +51,7 @@ import hu.tutor.security.AuthService;
 import hu.tutor.service.GoogleMapService;
 import hu.tutor.service.SearchService;
 import hu.tutor.service.SubjectService;
+import hu.tutor.service.UserService;
 import hu.tutor.util.VaadinUtil;
 
 @SpringView(name = SearchView.SEARCH_VIEW_NAME)
@@ -87,6 +88,8 @@ public class SearchView extends VerticalLayout implements View {
 
 	@Autowired
 	private SearchService searchService;
+	@Autowired
+	private UserService userService;
 	@Autowired
 	private AuthService authService;
 	@Autowired
@@ -146,7 +149,7 @@ public class SearchView extends VerticalLayout implements View {
 		this.distanceField = new TextField(MAX_DISTANCE);
 		this.submitButton = new Button("Keresés");
 
-		this.allSubjects = this.subjectService.getAllSubjects();
+		this.allSubjects = this.subjectService.getAllSubjects(true);
 		this.subjectComboBox.setItems(this.allSubjects);
 		this.subjectComboBox.setItemCaptionGenerator(Subject::getName);
 
@@ -322,9 +325,10 @@ public class SearchView extends VerticalLayout implements View {
 
 		this.saveSearchButton.addClickListener(e -> {
 			SearchQuery query = this.queryBinder.getBean();
-			query.setOwner(this.user);
+			this.user.addSearchQuery(query);
 
-			this.searchService.saveSearchQuery(query);
+			this.userService.updateUser(this.user);
+			this.saveSearchButton.setEnabled(false);
 		});
 		this.saveSearchButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 

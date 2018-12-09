@@ -7,7 +7,7 @@ import hu.tutor.model.Subject;
 public interface SubjectService {
 	public Subject getSubjectById(Integer id);
 
-	public List<Subject> getAllSubjects();
+	public List<Subject> getAllSubjects(boolean onlyActive);
 
 	public void saveNewSubject(Subject subject);
 

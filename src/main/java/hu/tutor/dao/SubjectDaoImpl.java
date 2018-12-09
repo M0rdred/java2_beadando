@@ -46,12 +46,18 @@ public class SubjectDaoImpl implements SubjectDao {
 	}
 
 	@Override
-	public List<Subject> getAllSubjects() {
+	public List<Subject> getAllSubjects(boolean onlyActive) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Query query = session.createQuery("from Subject where active = :active");
-		query.setString("active", ActiveParameter.YES.getValue());
+		Query query;
+		if (onlyActive) {
+			query = session.createQuery("from Subject where active = :active");
+			query.setString("active", ActiveParameter.YES.getValue());
+		} else {
+			query = session.createQuery("from Subject");
+		}
+
 		List<Subject> subjects = query.list();
 
 		transaction.commit();

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(of = { "subjectName", "teacherName", "maxDistance", "owner.id" })
 @Entity
 @Table(name = "search_query")
 public class SearchQuery implements Serializable {
@@ -29,7 +29,6 @@ public class SearchQuery implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "query_sequence")
 	@SequenceGenerator(name = "query_sequence", sequenceName = "query_sq")
-	@EqualsAndHashCode.Include
 	@Column(name = "id")
 	private Integer id;
 	@Column(name = "subject_name")

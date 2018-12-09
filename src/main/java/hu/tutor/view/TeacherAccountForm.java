@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Button;
@@ -22,6 +23,7 @@ import com.vaadin.ui.VerticalLayout;
 import hu.tutor.model.Subject;
 import hu.tutor.model.Teacher;
 import hu.tutor.service.SubjectService;
+import hu.tutor.service.TeachedSubjectService;
 import hu.tutor.service.TeacherService;
 import hu.tutor.util.VaadinUtil;
 
@@ -36,6 +38,8 @@ public class TeacherAccountForm extends VerticalLayout {
 	private TeacherService teacherService;
 	@Autowired
 	private SubjectService subjectService;
+	@Autowired
+	private TeachedSubjectService teachedSubjectService;
 
 	private ComboBox<Subject> lstAllSubjects;
 	private ComboBox<Subject> lstOwnSubjects;
@@ -58,6 +62,7 @@ public class TeacherAccountForm extends VerticalLayout {
 		Panel allSubjectsPanel = new Panel("Új tárgy felvétele");
 
 		this.lstAllSubjects = new ComboBox<>();
+		this.lstAllSubjects.setEmptySelectionAllowed(false);
 
 		Button btnTeachSubject = new Button();
 		btnTeachSubject.setCaption("Tárgy tanítása");
@@ -72,6 +77,8 @@ public class TeacherAccountForm extends VerticalLayout {
 
 				Notification.show("Tantárgy tanítása megkezdve");
 			}
+
+			this.lstAllSubjects.setSelectedItem(null);
 		});
 		btnTeachSubject.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
@@ -108,10 +115,13 @@ public class TeacherAccountForm extends VerticalLayout {
 
 		this.refreshOwnSubjectsList();
 		this.lstOwnSubjects.setItemCaptionGenerator(Subject::getName);
+		this.lstOwnSubjects.setEmptySelectionAllowed(false);
 		this.lstOwnSubjects.addSelectionListener(event -> {
 			Optional<Subject> optionalSelectedSubject = event.getSelectedItem();
 			if (optionalSelectedSubject.isPresent()) {
 				txtDescriptionArea.setValue(optionalSelectedSubject.get().getDescription());
+				txtOwnDescriptionArea.setValue(this.teachedSubjectService
+						.getSubjectDescription(optionalSelectedSubject.get().getId(), this.teacher.getId()));
 			} else {
 				txtDescriptionArea.setValue("");
 			}
@@ -124,7 +134,8 @@ public class TeacherAccountForm extends VerticalLayout {
 		txtOwnDescriptionArea.addValueChangeListener(event -> btnModifyOwnSubject.setEnabled(true));
 
 		btnModifyOwnSubject.addClickListener(event -> {
-			// TODO saját tantárgy leírása
+			this.teachedSubjectService.modifySubjectDescription(this.teacher.getId(),
+					this.lstOwnSubjects.getSelectedItem().get().getId(), txtOwnDescriptionArea.getValue());
 		});
 
 		btnDeleteSubject.addClickListener(event -> {
@@ -166,10 +177,15 @@ public class TeacherAccountForm extends VerticalLayout {
 			Subject subject = new Subject();
 			subject.setName(txtNewSubjectName.getValue());
 			subject.setDescription(txtNewSubjectDescription.getValue());
-			this.subjectService.saveNewSubject(subject);
 
-			this.refreshAllSubjectsList();
-			Notification.show("Új tantárgy sikeresen regisztrálva");
+			try {
+				this.subjectService.saveNewSubject(subject);
+
+				this.refreshAllSubjectsList();
+				Notification.show("Új tantárgy sikeresen regisztrálva");
+			} catch (DataIntegrityViolationException ex) {
+				Notification.show("Már létezik ilyen nevű tantárgy a rendszerben", Type.WARNING_MESSAGE);
+			}
 		});
 		btnSaveNewSubject.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
 
@@ -192,7 +208,7 @@ public class TeacherAccountForm extends VerticalLayout {
 	}
 
 	private void refreshAllSubjectsList() {
-		this.lstAllSubjects.setItems(this.subjectService.getAllSubjects());
+		this.lstAllSubjects.setItems(this.subjectService.getAllSubjects(false));
 	}
 
 	private void refreshOwnSubjectsList() {

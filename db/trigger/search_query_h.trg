@@ -9,7 +9,7 @@ BEGIN
       ,subject_name
       ,teacher_name
       ,max_distance
-      ,owner
+      ,owner_id
       ,mod_user
       ,created_on
       ,last_mod
@@ -20,7 +20,7 @@ BEGIN
       ,:old.subject_name
       ,:old.teacher_name
       ,:old.max_distance
-      ,:old.owner
+      ,:old.owner_id
       ,USER
       ,:old.created_on
       ,SYSDATE
@@ -32,7 +32,7 @@ BEGIN
       ,subject_name
       ,teacher_name
       ,max_distance
-      ,owner
+      ,owner_id
       ,mod_user
       ,created_on
       ,last_mod
@@ -43,7 +43,7 @@ BEGIN
       ,:new.subject_name
       ,:new.teacher_name
       ,:new.max_distance
-      ,:new.owner
+      ,:new.owner_id
       ,:new.mod_user
       ,:new.created_on
       ,:new.last_mod

@@ -27,9 +27,9 @@ public class SubjectServiceImpl implements SubjectService {
 	}
 
 	@Override
-	public List<Subject> getAllSubjects() {
+	public List<Subject> getAllSubjects(boolean onlyActive) {
 		try {
-			return this.subjectDao.getAllSubjects();
+			return this.subjectDao.getAllSubjects(onlyActive);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;
