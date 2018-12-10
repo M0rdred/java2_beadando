@@ -7,5 +7,5 @@ public interface TeachedSubjectDao {
 
 	public void modifySubjectDescription(Integer teacherId, Integer subjectId, String description);
 
-	public String getSubjectDescription(Integer teacherId, Integer subjectId);
+	public String getSubjectDescription(Integer subjectId, Integer teacherId);
 }

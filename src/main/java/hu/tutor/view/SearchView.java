@@ -211,7 +211,7 @@ public class SearchView extends VerticalLayout implements View {
 	}
 
 	private void checkDistances(List<SearchResult> results) {
-		if (this.authorizedAccess) {
+		if (this.authorizedAccess && this.user.getAddress() != null) {
 			results.stream().filter(r -> r.getDistance() < 0).collect(Collectors.toList()).forEach(r -> {
 				Integer distance = this.googleMapService.getDistanceBetweenCities(this.user.getAddress().getCity(),
 						r.getCity());
@@ -298,8 +298,8 @@ public class SearchView extends VerticalLayout implements View {
 					.setDescriptionGenerator(SearchResult::getFormattedPhoneNumber).setCaption("Telefonszám");
 			this.resultGrid.addColumn(SearchResult::getEmail).setDescriptionGenerator(SearchResult::getEmail)
 					.setCaption("Email");
-			this.resultGrid.addColumn(r -> r.getDistance() / 1000 + " km")
-					.setDescriptionGenerator(r -> r.getDistance() / 1000 + " km").setCaption("Távolság");
+			this.resultGrid.addColumn(r -> r.getDistance() != null ? r.getDistance() / 1000 + " km" : "N/A")
+					.setCaption("Távolság");
 
 			this.resultGrid.setDetailsGenerator(this::getResultGridDetailsGenerator);
 		}

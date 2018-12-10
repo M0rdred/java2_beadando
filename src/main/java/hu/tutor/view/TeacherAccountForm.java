@@ -120,8 +120,14 @@ public class TeacherAccountForm extends VerticalLayout {
 			Optional<Subject> optionalSelectedSubject = event.getSelectedItem();
 			if (optionalSelectedSubject.isPresent()) {
 				txtDescriptionArea.setValue(optionalSelectedSubject.get().getDescription());
-				txtOwnDescriptionArea.setValue(this.teachedSubjectService
-						.getSubjectDescription(optionalSelectedSubject.get().getId(), this.teacher.getId()));
+				String subjectDescription = this.teachedSubjectService
+						.getSubjectDescription(optionalSelectedSubject.get().getId(), this.teacher.getId());
+
+				if (subjectDescription == null) {
+					subjectDescription = "";
+				}
+
+				txtOwnDescriptionArea.setValue(subjectDescription);
 			} else {
 				txtDescriptionArea.setValue("");
 			}

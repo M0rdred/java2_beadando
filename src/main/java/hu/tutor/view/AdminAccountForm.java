@@ -299,8 +299,8 @@ public class AdminAccountForm extends VerticalLayout {
 				.setDescriptionGenerator(TeachedSubject::getSubjectDescription).setCaption("Tantárgy leírása");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeacherName)
 				.setDescriptionGenerator(TeachedSubject::getTeacherName).setCaption("Tanár neve");
-		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeachedIntroduction)
-				.setDescriptionGenerator(TeachedSubject::getTeachedIntroduction).setCaption("Tanár bemutatkozása");
+		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeacherIntroduction)
+				.setDescriptionGenerator(TeachedSubject::getTeacherIntroduction).setCaption("Tanár bemutatkozása");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeachedSubjectDescription)
 				.setDescriptionGenerator(TeachedSubject::getTeachedSubjectDescription).setCaption("Tanár leírása");
 		this.teachedSubjectsGrid.addComponentColumn(s -> this.createGridCheckbox(s.getActive()))

@@ -128,7 +128,7 @@ public class GoogleMapServiceImpl implements GoogleMapService {
 
 	@Override
 	public LatLon getGeoCode(Address address) {
-		return this.getGeoCode(address.getFullAddress());
+		return address == null ? null : this.getGeoCode(address.getFullAddress());
 	}
 
 	@Override

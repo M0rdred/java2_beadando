@@ -46,18 +46,18 @@ public class TeachedSubjectDaoImpl implements TeachedSubjectDao {
 	}
 
 	@Override
-	public String getSubjectDescription(Integer teacherId, Integer subjectId) {
+	public String getSubjectDescription(Integer subjectId, Integer teacherId) {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 
 		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
 				.createNamedStoredProcedureQuery("getSubjectDescription");
 
-		storedProcedure.setParameter("p_teacher_id", teacherId);
 		storedProcedure.setParameter("p_subject_id", subjectId);
+		storedProcedure.setParameter("p_teacher_id", teacherId);
 
 		storedProcedure.execute();
-		String description = storedProcedure.getOutputParameterValue("p_description").toString();
+		String description = (String) storedProcedure.getOutputParameterValue("p_description");
 
 		transaction.commit();
 		session.close();

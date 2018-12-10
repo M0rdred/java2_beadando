@@ -77,7 +77,7 @@ public class TeachedSubject {
 	@Column(name = "teacher_name")
 	private String teacherName;
 	@Column(name = "teacher_introduction")
-	private String teachedIntroduction;
+	private String teacherIntroduction;
 	@Column(name = "teacher_subject_description")
 	private String teachedSubjectDescription;
 	@Type(type = "yes_no")
