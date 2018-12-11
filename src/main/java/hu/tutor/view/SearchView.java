@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import javax.validation.ValidationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -239,7 +240,7 @@ public class SearchView extends VerticalLayout implements View {
 		String teacherName = bean.getTeacherName();
 		Integer maxDistance = bean.getMaxDistance();
 
-		if (subjectName != null) {
+		if (!StringUtils.isEmpty(subjectName)) {
 			if (filterPresent) {
 				builder.append(",");
 			}
@@ -247,7 +248,7 @@ public class SearchView extends VerticalLayout implements View {
 			filterPresent = true;
 		}
 
-		if (teacherName != null) {
+		if (!StringUtils.isEmpty(teacherName)) {
 			if (filterPresent) {
 				builder.append(",");
 			}
@@ -255,7 +256,7 @@ public class SearchView extends VerticalLayout implements View {
 			filterPresent = true;
 		}
 
-		if (maxDistance != null) {
+		if (maxDistance != null && maxDistance > 0) {
 			if (filterPresent) {
 				builder.append(",");
 			}
