@@ -1,7 +1,9 @@
 package hu.tutor.dao;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.StoredProcedureQuery;
 
@@ -124,12 +126,12 @@ public class AdminDaoImpl implements AdminDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> getAllUsers() {
+	public Set<User> getAllUsers() {
 		Session session = this.hibernateUtil.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		Criteria criteria = session.createCriteria(User.class);
 
-		List<User> users = criteria.list();
+		Set<User> users = new HashSet<>(criteria.list());
 
 		transaction.commit();
 		session.close();

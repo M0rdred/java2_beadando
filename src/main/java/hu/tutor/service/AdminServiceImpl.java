@@ -1,6 +1,7 @@
 package hu.tutor.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,7 +77,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
+	public Set<User> getAllUsers() {
 		try {
 			return this.adminDao.getAllUsers();
 		} catch (Exception e) {

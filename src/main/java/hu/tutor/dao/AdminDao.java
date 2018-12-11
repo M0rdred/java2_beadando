@@ -1,6 +1,7 @@
 package hu.tutor.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import hu.tutor.model.Subject;
 import hu.tutor.model.TeachedSubject;
@@ -19,7 +20,7 @@ public interface AdminDao {
 
 	public void enableSubject(Integer subjectId, ActiveParameter enable);
 
-	public List<User> getAllUsers();
+	public Set<User> getAllUsers();
 
 	public void modifyPassword(Integer userId, String newPassword);
 
