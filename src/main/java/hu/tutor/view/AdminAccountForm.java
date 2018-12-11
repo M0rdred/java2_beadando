@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.provider.GridSortOrderBuilder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -16,6 +17,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DescriptionGenerator;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
@@ -84,6 +86,7 @@ public class AdminAccountForm extends VerticalLayout {
 		teacherEditor.setCancelCaption("Mégse");
 		teacherEditor.addSaveListener(e -> {
 			this.userService.updateUser(e.getBean());
+			this.refreshTeacherGrid();
 			Notification.show("Sikeres mentés", Type.HUMANIZED_MESSAGE);
 		});
 
@@ -91,8 +94,8 @@ public class AdminAccountForm extends VerticalLayout {
 
 		this.teacherGrid.addComponentColumn(this::createEnableTeacherButton).setStyleGenerator(b -> "v-align-center")
 				.setCaption("Aktiválás");
-		this.teacherGrid.addColumn(Teacher::getFullName).setDescriptionGenerator(Teacher::getFullName)
-				.setCaption("Név");
+		Column<Teacher, String> nameColumn = this.teacherGrid.addColumn(Teacher::getFullName)
+				.setDescriptionGenerator(Teacher::getFullName).setCaption("Név");
 		this.teacherGrid.addColumn(Teacher::getIntroduction).setDescriptionGenerator(Teacher::getIntroduction)
 				.setCaption("Bemutatkozás").setEditorBinding(
 						editorBinder.bind(introductionEditorField, Teacher::getIntroduction, Teacher::setIntroduction));
@@ -104,16 +107,20 @@ public class AdminAccountForm extends VerticalLayout {
 				.setCaption("Telefonszám");
 		this.teacherGrid.addColumn(Teacher::getEmail).setDescriptionGenerator(Teacher::getEmail)
 				.setCaption("Email cím");
-		this.teacherGrid.addColumn(Teacher::getTeachedSubjects)
-				.setDescriptionGenerator(
-						t -> t.getTeachedSubjects().stream().map(Subject::getName).collect(Collectors.joining(", ")))
+		this.teacherGrid.addColumn(this::concatSubjectNames).setDescriptionGenerator(this::concatSubjectNames)
 				.setCaption("Oktatott tárgyak");
+
+		this.teacherGrid.setSortOrder(new GridSortOrderBuilder<Teacher>().thenAsc(nameColumn).build());
 
 		this.teacherGrid.setSizeFull();
 
 		this.refreshTeacherGrid();
 
 		return this.teacherGrid;
+	}
+
+	private String concatSubjectNames(Teacher teacher) {
+		return teacher.getTeachedSubjects().stream().map(Subject::getName).collect(Collectors.joining(", "));
 	}
 
 	private Button createEnableTeacherButton(Teacher teacher) {
@@ -145,6 +152,7 @@ public class AdminAccountForm extends VerticalLayout {
 		subjectEditor.setCancelCaption("Mégse");
 		subjectEditor.addSaveListener(e -> {
 			this.subjectService.modifySubject(e.getBean());
+			this.refreshSubjectGrid();
 			Notification.show("Sikeres mentés", Type.HUMANIZED_MESSAGE);
 		});
 
@@ -163,6 +171,9 @@ public class AdminAccountForm extends VerticalLayout {
 		this.subjectGrid.setSizeFull();
 		this.subjectGrid.getColumn("name").setExpandRatio(1);
 		this.subjectGrid.getColumn("desc").setExpandRatio(2);
+
+		this.subjectGrid
+				.setSortOrder(new GridSortOrderBuilder<Subject>().thenAsc(this.subjectGrid.getColumn("name")).build());
 
 		this.refreshSubjectGrid();
 
@@ -197,7 +208,9 @@ public class AdminAccountForm extends VerticalLayout {
 		userEditor.setSaveCaption("Mentés");
 		userEditor.setCancelCaption("Mégse");
 		userEditor.addSaveListener(e -> {
-			this.userService.updateUser(e.getBean());
+			User user = e.getBean();
+			this.userService.updateUser(user);
+			this.refreshUserGrid();
 			Notification.show("Sikeres mentés", Type.HUMANIZED_MESSAGE);
 		});
 
@@ -209,7 +222,8 @@ public class AdminAccountForm extends VerticalLayout {
 				.setSortable(false).setCaption("Deaktiválás");
 		this.userGrid.addComponentColumn(this::createNewPasswordButton).setStyleGenerator(b -> "v-align-center")
 				.setSortable(false).setCaption("Új jelszó");
-		this.userGrid.addColumn(User::getFullName).setDescriptionGenerator(User::getFullName).setCaption("Név");
+		Column<User, String> nameColumn = this.userGrid.addColumn(User::getFullName)
+				.setDescriptionGenerator(User::getFullName).setCaption("Név");
 		this.userGrid.addColumn(User::getIntroduction).setDescriptionGenerator(User::getIntroduction, ContentMode.TEXT)
 				.setCaption("Bemutatkozás").setEditorBinding(
 						editorBinder.bind(introductionEditorField, User::getIntroduction, User::setIntroduction));
@@ -221,6 +235,8 @@ public class AdminAccountForm extends VerticalLayout {
 		this.userGrid.addComponentColumn(u -> this.createGridCheckbox(u.getIsActive()))
 				.setDescriptionGenerator((DescriptionGenerator<User>) u -> u.getIsActive() ? "Aktív" : "Inaktív")
 				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Aktív");
+
+		this.userGrid.setSortOrder(new GridSortOrderBuilder<User>().thenAsc(nameColumn).build());
 
 		this.userGrid.setSizeFull();
 
@@ -293,12 +309,14 @@ public class AdminAccountForm extends VerticalLayout {
 				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Aktiválás");
 		this.teachedSubjectsGrid.addComponentColumn(this::createDisableSubjectButton)
 				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Deaktiválás");
-		this.teachedSubjectsGrid.addColumn(TeachedSubject::getSubjectName)
-				.setDescriptionGenerator(TeachedSubject::getSubjectName).setCaption("Tantárgy neve");
+		Column<TeachedSubject, String> subjectNameColumn = this.teachedSubjectsGrid
+				.addColumn(TeachedSubject::getSubjectName).setDescriptionGenerator(TeachedSubject::getSubjectName)
+				.setCaption("Tantárgy neve");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getSubjectDescription)
 				.setDescriptionGenerator(TeachedSubject::getSubjectDescription).setCaption("Tantárgy leírása");
-		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeacherName)
-				.setDescriptionGenerator(TeachedSubject::getTeacherName).setCaption("Tanár neve");
+		Column<TeachedSubject, String> teacherNameColumn = this.teachedSubjectsGrid
+				.addColumn(TeachedSubject::getTeacherName).setDescriptionGenerator(TeachedSubject::getTeacherName)
+				.setCaption("Tanár neve");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeacherIntroduction)
 				.setDescriptionGenerator(TeachedSubject::getTeacherIntroduction).setCaption("Tanár bemutatkozása");
 		this.teachedSubjectsGrid.addColumn(TeachedSubject::getTeachedSubjectDescription)
@@ -307,6 +325,10 @@ public class AdminAccountForm extends VerticalLayout {
 				.setDescriptionGenerator(
 						(DescriptionGenerator<TeachedSubject>) s -> s.getActive() ? "Aktív" : "Inaktív")
 				.setStyleGenerator(b -> "v-align-center").setSortable(false).setCaption("Aktív");
+
+		this.teachedSubjectsGrid.setSortOrder(new GridSortOrderBuilder<TeachedSubject>().thenAsc(subjectNameColumn)
+				.thenAsc(teacherNameColumn).build());
+
 		this.teachedSubjectsGrid.setSizeFull();
 
 		this.refreshTeachedSubjectsGrid();
