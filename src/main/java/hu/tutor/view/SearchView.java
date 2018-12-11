@@ -278,6 +278,8 @@ public class SearchView extends VerticalLayout implements View {
 
 		this.resultGrid = new Grid<>();
 
+		this.resultGrid.addColumn(SearchResult::getSubjectName).setDescriptionGenerator(SearchResult::getSubjectName)
+				.setCaption("Tantárgy");
 		this.resultGrid.addColumn(SearchResult::getFullName).setDescriptionGenerator(SearchResult::getFullName)
 				.setCaption("Név");
 		this.resultGrid.addColumn(SearchResult::getIntroduction).setDescriptionGenerator(SearchResult::getIntroduction)
