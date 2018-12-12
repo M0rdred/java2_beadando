@@ -3,6 +3,7 @@ package hu.tutor.view;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +22,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 import hu.tutor.model.Teacher;
 import hu.tutor.service.SubjectService;
 import hu.tutor.service.TeachedSubjectService;
@@ -42,7 +44,7 @@ public class TeacherAccountForm extends VerticalLayout {
 	private TeachedSubjectService teachedSubjectService;
 
 	private ComboBox<Subject> lstAllSubjects;
-	private ComboBox<Subject> lstOwnSubjects;
+	private ComboBox<TeachedSubject> lstOwnSubjects;
 
 	public void init() {
 		this.addComponents(this.createEndTeachingButton(), this.createAllSubjectsPanel(), this.createOwnSubjectsPanel(),
@@ -68,10 +70,12 @@ public class TeacherAccountForm extends VerticalLayout {
 		btnTeachSubject.setCaption("Tárgy tanítása");
 		btnTeachSubject.setEnabled(false);
 		btnTeachSubject.addClickListener(event -> {
-			if (this.teacher.getTeachedSubjects().contains(this.lstAllSubjects.getSelectedItem().get())) {
+			if (this.teacher.getTeachedSubjects().stream().filter(
+					s -> StringUtils.equals(s.getSubjectName(), this.lstAllSubjects.getSelectedItem().get().getName()))
+					.findFirst().isPresent()) {
 				Notification.show("Már tanítod ezt a tantárgyat", Type.ERROR_MESSAGE);
 			} else {
-				this.teacherService.saveNewSubjectForTeacher(this.teacher.getId(),
+				this.teachedSubjectService.pickUpSubject(this.teacher.getId(),
 						this.lstAllSubjects.getSelectedItem().get().getId());
 				this.refreshOwnSubjectsList();
 
@@ -114,14 +118,14 @@ public class TeacherAccountForm extends VerticalLayout {
 		btnDeleteSubject.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		this.refreshOwnSubjectsList();
-		this.lstOwnSubjects.setItemCaptionGenerator(Subject::getName);
+		this.lstOwnSubjects.setItemCaptionGenerator(TeachedSubject::getSubjectName);
 		this.lstOwnSubjects.setEmptySelectionAllowed(false);
 		this.lstOwnSubjects.addSelectionListener(event -> {
-			Optional<Subject> optionalSelectedSubject = event.getSelectedItem();
+			Optional<TeachedSubject> optionalSelectedSubject = event.getSelectedItem();
 			if (optionalSelectedSubject.isPresent()) {
-				txtDescriptionArea.setValue(optionalSelectedSubject.get().getDescription());
+				txtDescriptionArea.setValue(optionalSelectedSubject.get().getSubjectDescription());
 				String subjectDescription = this.teachedSubjectService
-						.getSubjectDescription(optionalSelectedSubject.get().getId(), this.teacher.getId());
+						.getSubjectDescription(optionalSelectedSubject.get().getSubjectId(), this.teacher.getId());
 
 				if (subjectDescription == null) {
 					subjectDescription = "";
@@ -141,12 +145,12 @@ public class TeacherAccountForm extends VerticalLayout {
 
 		btnModifyOwnSubject.addClickListener(event -> {
 			this.teachedSubjectService.modifySubjectDescription(this.teacher.getId(),
-					this.lstOwnSubjects.getSelectedItem().get().getId(), txtOwnDescriptionArea.getValue());
+					this.lstOwnSubjects.getSelectedItem().get().getSubjectId(), txtOwnDescriptionArea.getValue());
 		});
 
 		btnDeleteSubject.addClickListener(event -> {
 			this.teacherService.deleteSubjectFromTeacher(this.teacher.getId(),
-					this.lstOwnSubjects.getSelectedItem().get().getId());
+					this.lstOwnSubjects.getSelectedItem().get().getSubjectId());
 			this.refreshOwnSubjectsList();
 			this.lstOwnSubjects.setValue(null);
 
@@ -218,7 +222,7 @@ public class TeacherAccountForm extends VerticalLayout {
 	}
 
 	private void refreshOwnSubjectsList() {
-		List<Subject> subjectsOfTeacher = this.teacherService.getSubjectsOfTeacher(this.teacher.getId());
+		List<TeachedSubject> subjectsOfTeacher = this.teacherService.getSubjectsOfTeacher(this.teacher.getId());
 		this.teacher.setTeachedSubjects(subjectsOfTeacher);
 		this.lstOwnSubjects.setItems(subjectsOfTeacher);
 	}

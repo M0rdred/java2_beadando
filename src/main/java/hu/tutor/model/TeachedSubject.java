@@ -6,7 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
-import javax.persistence.QueryHint;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
@@ -24,16 +23,20 @@ import lombok.NoArgsConstructor;
 // @formatter:off
 @NamedStoredProcedureQueries({
 	@NamedStoredProcedureQuery(
-			name = "listTeachedSubjects",
-			procedureName = "admin_pkg.get_all_teached_subjects",
+			name = "getSubjectsOfTeacher", 
+			procedureName = "teacher_pkg.get_subjects_of_teacher", 
 			resultClasses = TeachedSubject.class, 
 			parameters = {
-					@StoredProcedureParameter(name = "p_time", mode = ParameterMode.IN, type = Long.class),
-					@StoredProcedureParameter(name = "p_teached_subjects", mode = ParameterMode.REF_CURSOR,	type = void.class)
-			},
-			hints = {
-					@QueryHint(name = "org.hibernate.cacheable", value = "false")
-			}),
+				@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class),
+				@StoredProcedureParameter(name = "p_subject_list", mode = ParameterMode.REF_CURSOR, type = void.class) 
+				}),
+	@NamedStoredProcedureQuery(
+			name = "pickUpSubject", 
+			procedureName = "teached_subject_pkg.pick_up_subject", 
+			parameters = {
+				@StoredProcedureParameter(name = "p_subject_id", mode = ParameterMode.IN, type = Integer.class),
+				@StoredProcedureParameter(name = "p_teacher_id", mode = ParameterMode.IN, type = Integer.class)
+				}),
 	@NamedStoredProcedureQuery(
 			name = "activateTeachedSubject",
 			procedureName = "admin_pkg.activate_teached_subject",

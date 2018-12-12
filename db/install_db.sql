@@ -4,6 +4,7 @@ Prompt Initializing Database
 @./sequence/person.seq
 @./sequence/query.seq
 @./sequence/subject.seq
+@./sequence/teached_subject.seq
 
 @./table/application_parameters_table.sql
 @./table/address_table.sql

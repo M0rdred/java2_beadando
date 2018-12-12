@@ -2,7 +2,7 @@ package hu.tutor.service;
 
 import java.util.List;
 
-import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 
 public interface TeacherService {
 
@@ -14,5 +14,5 @@ public interface TeacherService {
 
 	public void endTeaching(Integer teacherId);
 
-	public List<Subject> getSubjectsOfTeacher(Integer teacherId);
+	public List<TeachedSubject> getSubjectsOfTeacher(Integer teacherId);
 }

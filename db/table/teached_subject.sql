@@ -1,4 +1,5 @@
 CREATE TABLE TEACHED_SUBJECT (
+  id		  NUMBER NOT NULL PRIMARY KEY,
   subject_id  NUMBER NOT NULL,
   teacher_id  NUMBER NOT NULL,
   description VARCHAR2(4000),

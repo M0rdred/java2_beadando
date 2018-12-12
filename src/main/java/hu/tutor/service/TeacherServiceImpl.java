@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hu.tutor.dao.TeacherDao;
-import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -57,7 +57,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public List<Subject> getSubjectsOfTeacher(Integer teacherId) {
+	public List<TeachedSubject> getSubjectsOfTeacher(Integer teacherId) {
 		try {
 			return this.teacherDao.getSubjectsOfTeacher(teacherId);
 		} catch (Exception e) {

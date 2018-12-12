@@ -120,7 +120,8 @@ public class AdminAccountForm extends VerticalLayout {
 	}
 
 	private String concatSubjectNames(Teacher teacher) {
-		return teacher.getTeachedSubjects().stream().map(Subject::getName).collect(Collectors.joining(", "));
+		return teacher.getTeachedSubjects().stream().map(TeachedSubject::getSubjectName)
+				.collect(Collectors.joining(", "));
 	}
 
 	private Button createEnableTeacherButton(Teacher teacher) {

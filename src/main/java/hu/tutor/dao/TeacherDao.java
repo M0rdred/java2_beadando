@@ -2,7 +2,7 @@ package hu.tutor.dao;
 
 import java.util.List;
 
-import hu.tutor.model.Subject;
+import hu.tutor.model.TeachedSubject;
 
 public interface TeacherDao {
 	public void saveNewSubjectForTeacher(Integer teacherId, Integer subjectId);
@@ -13,5 +13,5 @@ public interface TeacherDao {
 
 	public void endTeaching(Integer teacherId);
 
-	public List<Subject> getSubjectsOfTeacher(Integer teacherId);
+	public List<TeachedSubject> getSubjectsOfTeacher(Integer teacherId);
 }

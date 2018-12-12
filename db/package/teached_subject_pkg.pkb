@@ -1,13 +1,11 @@
 -- teached_subject_pkg body
 CREATE OR REPLACE PACKAGE BODY teached_subject_pkg AS
   PROCEDURE pick_up_subject(p_subject_id  NUMBER
-                           ,p_teacher_id  NUMBER
-                           ,p_description VARCHAR2) IS
+                           ,p_teacher_id  NUMBER) IS
     l_count NUMBER;
   BEGIN
     IF p_subject_id IS NOT NULL
        AND p_teacher_id IS NOT NULL
-       AND p_description IS NOT NULL
     THEN
     
       SELECT COUNT(*)
@@ -24,12 +22,10 @@ CREATE OR REPLACE PACKAGE BODY teached_subject_pkg AS
       
         INSERT INTO teached_subject
           (subject_id
-          ,teacher_id
-          ,description)
+          ,teacher_id)
         VALUES
           (p_subject_id
-          ,p_teacher_id
-          ,p_description);
+          ,p_teacher_id);
       END IF;
     ELSE
       raise_application_error(-20001, 'One or more parameters are empty');

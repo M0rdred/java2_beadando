@@ -13,6 +13,7 @@ DROP SEQUENCE address_sq;
 DROP SEQUENCE person_sq;
 DROP SEQUENCE subject_sq;
 DROP SEQUENCE query_sq;
+DROP SEQUENCE teached_subject_sq;
 
 DROP PACKAGE admin_pkg;
 DROP PACKAGE distance_pkg;

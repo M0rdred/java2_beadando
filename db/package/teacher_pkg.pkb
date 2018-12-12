@@ -37,17 +37,18 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
 
   PROCEDURE get_subjects_of_teacher(p_teacher_id   IN NUMBER
                                    ,p_subject_list OUT SYS_REFCURSOR) IS
-    v_subject_list ty_subject_table;
+    v_subject_list ty_teached_subject_table;
   BEGIN
-    SELECT ty_subject(id          => s.id,
-                      NAME        => s.name,
-                      description => s.description,
-                      active      => s.active,
-                      mod_user    => s.mod_user,
-                      created_on  => s.created_on,
-                      last_mod    => s.last_mod,
-                      dml_flag    => s.dml_flag,
-                      version     => s.version)
+    SELECT ty_teached_subject(id                          => t.id,
+                              subject_id                  => t.subject_id,
+                              teacher_id                  => t.teacher_id,
+                              subject_name                => s.name,
+                              subject_description         => s.description,
+                              teacher_name                => p.last_name || ' ' ||
+                                                             p.first_name,
+                              teacher_introduction        => p.introduction,
+                              teacher_subject_description => t.description,
+                              active                      => t.active)
       BULK COLLECT
       INTO v_subject_list
       FROM teached_subject t
@@ -59,7 +60,8 @@ CREATE OR REPLACE PACKAGE BODY teacher_pkg AS
        AND p.is_teacher = 'Y';
   
     OPEN p_subject_list FOR
-      SELECT * FROM TABLE(CAST(v_subject_list AS ty_subject_table));
+      SELECT *
+        FROM TABLE(CAST(v_subject_list AS ty_teached_subject_table));
   END get_subjects_of_teacher;
 
 END teacher_pkg;

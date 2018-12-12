@@ -17,8 +17,19 @@ public class TeachedSubjectDaoImpl implements TeachedSubjectDao {
 
 	@Override
 	public void pickUpSubject(Integer teacherId, Integer subjectId) {
-		// TODO Auto-generated method stub
+		Session session = this.hibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
 
+		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
+				.createNamedStoredProcedureQuery("pickUpSubject");
+
+		storedProcedure.setParameter("p_teacher_id", teacherId);
+		storedProcedure.setParameter("p_subject_id", subjectId);
+
+		storedProcedure.execute();
+
+		transaction.commit();
+		session.close();
 	}
 
 	@Override
