@@ -1,11 +1,16 @@
 package hu.tutor.dao;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.StoredProcedureQuery;
+import javax.sql.DataSource;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -20,12 +25,18 @@ import hu.tutor.model.Teacher;
 import hu.tutor.model.User;
 import hu.tutor.util.ActiveParameter;
 import hu.tutor.util.HibernateUtil;
+import lombok.extern.slf4j.Slf4j;
+import oracle.jdbc.OracleTypes;
 
+@Slf4j
 @Repository
 public class AdminDaoImpl implements AdminDao {
 
 	@Autowired
 	private HibernateUtil hibernateUtil;
+
+	@Autowired
+	private DataSource dataSource;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -156,26 +167,37 @@ public class AdminDaoImpl implements AdminDao {
 		session.close();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<TeachedSubject> listTeachedSubjects() {
-		Session session = this.hibernateUtil.getSessionFactory().openSession();
-		Transaction transaction = session.beginTransaction();
+		List<TeachedSubject> teachedSubjects = new ArrayList<>();
 
-		StoredProcedureQuery storedProcedure = this.hibernateUtil.getEntityManager()
-				.createNamedStoredProcedureQuery("listTeachedSubjects");
+		try (Connection connection = this.dataSource.getConnection();
+				CallableStatement prepareCall = connection
+						.prepareCall("call admin_pkg.get_all_teached_subjects(:cur)")) {
+			prepareCall.registerOutParameter("cur", OracleTypes.CURSOR);
+			prepareCall.execute();
 
-		long nanoTime = System.nanoTime();
+			try (ResultSet resultSet = (ResultSet) prepareCall.getObject("cur")) {
+				while (resultSet.next()) {
+					TeachedSubject teachedSubject = new TeachedSubject();
+					teachedSubject.setId(resultSet.getInt("id"));
+					teachedSubject.setSubjectId(resultSet.getInt("subject_id"));
+					teachedSubject.setTeacherId(resultSet.getInt("teacher_id"));
+					teachedSubject.setSubjectName(resultSet.getString("subject_name"));
+					teachedSubject.setSubjectDescription(resultSet.getString("subject_description"));
+					teachedSubject.setTeacherName(resultSet.getString("teacher_name"));
+					teachedSubject.setTeacherIntroduction(resultSet.getString("teacher_introduction"));
+					teachedSubject.setTeachedSubjectDescription(resultSet.getString("teacher_subject_description"));
+					teachedSubject.setActive(resultSet.getBoolean("active"));
 
-		storedProcedure.setParameter("p_time", nanoTime);
+					teachedSubjects.add(teachedSubject);
+				}
+			}
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+		}
 
-		storedProcedure.execute();
-		List<TeachedSubject> resultList = storedProcedure.getResultList();
-
-		transaction.commit();
-		session.close();
-
-		return resultList;
+		return teachedSubjects;
 	}
 
 	@Override

@@ -35,14 +35,11 @@ CREATE OR REPLACE PACKAGE BODY admin_pkg AS
   
   END modify_password;
 
-  PROCEDURE get_all_teached_subjects(p_time             IN NUMBER
-                                    ,p_teached_subjects OUT SYS_REFCURSOR) IS
+  PROCEDURE get_all_teached_subjects(p_teached_subjects OUT SYS_REFCURSOR) IS
     v_results ty_teached_subject_table;
   BEGIN
   
-    dbms_output.put_line(p_time);
-  
-    SELECT ty_teached_subject(id                          => rownum,
+    SELECT ty_teached_subject(id                          => ts.id,
                               subject_id                  => ts.subject_id,
                               teacher_id                  => ts.teacher_id,
                               subject_name                => s.name,
