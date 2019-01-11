@@ -8,6 +8,8 @@
 
 db/*/*.~*
 db/*.~*
+*.log
+*.css
 
 target/
 widgetsets
