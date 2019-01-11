@@ -14,6 +14,7 @@ import com.vaadin.ui.Window;
 
 import hu.tutor.model.User;
 import hu.tutor.service.AdminService;
+import hu.tutor.util.VaadinUtil;
 
 @SpringComponent
 public class PasswordChangeWindow extends Window {
@@ -39,15 +40,20 @@ public class PasswordChangeWindow extends Window {
 		this.setModal(true);
 
 		this.setWidth("20%");
-		this.setHeight("20%");
+		this.setHeight("25%");
+
+		this.addStyleName("password-window");
 
 		VerticalLayout vertical = new VerticalLayout();
 		this.newPassTextfield = new TextField("Új jelszó");
 		this.newPassTextfield.focus();
-		this.newPassTextfield.setSizeFull();
+		this.newPassTextfield.setWidth("100%");
 
 		Button savePassButton = new Button("Mentés");
 		Button cancelButton = new Button("Mégse");
+
+		savePassButton.addStyleName(VaadinUtil.THEME_BUTTON_STYLE);
+		cancelButton.addStyleName(VaadinUtil.BORDERED_BUTTON_STYLE);
 
 		savePassButton.addClickListener(e -> {
 			this.adminService.modifyPassword(this.userId, this.passBinder.getBean().getPassword());

@@ -157,4 +157,14 @@
       border-bottom-color: $dark-blue;
     }
   }
+
+  .password-window {
+    .v-window-outerheader {
+      background-color: $dark-blue;
+      
+      .v-window-header {
+        color: white;
+      }
+    }
+  }
 }
