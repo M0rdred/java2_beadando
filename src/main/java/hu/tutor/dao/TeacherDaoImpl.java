@@ -9,9 +9,6 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import hu.tutor.model.TeachedSubject;
 import hu.tutor.util.HibernateUtil;
 
@@ -100,13 +97,6 @@ public class TeacherDaoImpl implements TeacherDao {
 
 		storedProcedure.execute();
 		List<TeachedSubject> subjectList = storedProcedure.getResultList();
-		// TODO remove try, it's only for debug
-		try {
-			System.err.println(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(subjectList));
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		transaction.commit();
 		session.close();

@@ -3,5 +3,5 @@ CREATE TABLE CITY_DISTANCE (
   city_to   VARCHAR2(100) NOT NULL,
   distance  NUMBER NOT NULL,
   last_mod  TIMESTAMP(2) NOT NULL
-);
+)
 /

@@ -9,5 +9,5 @@ CREATE TABLE search_query (
 		last_mod     TIMESTAMP(6) NOT NULL,
 		dml_flag     VARCHAR2(1) NOT NULL,
 		version      NUMBER NOT NULL
-);
+)
 /

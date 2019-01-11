@@ -2,5 +2,5 @@ CREATE TABLE PERSON_HISTORY
        AS (
    SELECT * FROM PERSON 
    WHERE 1 = 2
-);
+)
 /

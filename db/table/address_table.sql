@@ -10,5 +10,5 @@ CREATE TABLE address (
   last_mod     TIMESTAMP(6) NOT NULL,
   dml_flag     VARCHAR2(1) NOT NULL,
   version      NUMBER NOT NULL
-);
+)
 /
