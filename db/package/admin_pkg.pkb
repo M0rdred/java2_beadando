@@ -36,29 +36,23 @@ CREATE OR REPLACE PACKAGE BODY admin_pkg AS
   END modify_password;
 
   PROCEDURE get_all_teached_subjects(p_teached_subjects OUT SYS_REFCURSOR) IS
-    v_results ty_teached_subject_table;
   BEGIN
   
-    SELECT ty_teached_subject(id                          => ts.id,
-                              subject_id                  => ts.subject_id,
-                              teacher_id                  => ts.teacher_id,
-                              subject_name                => s.name,
-                              subject_description         => s.description,
-                              teacher_name                => p.last_name || ' ' ||
-                                                             p.first_name,
-                              teacher_introduction        => p.introduction,
-                              teacher_subject_description => ts.description,
-                              active                      => ts.active)
-      BULK COLLECT
-      INTO v_results
-      FROM teached_subject ts
-      JOIN subject s
-        ON s.id = ts.subject_id
-      JOIN person p
-        ON p.id = ts.teacher_id;
-  
     OPEN p_teached_subjects FOR
-      SELECT * FROM TABLE(CAST(v_results AS ty_teached_subject_table));
+      SELECT ts.id
+            ,ts.subject_id
+            ,ts.teacher_id
+            ,s.name AS subject_name
+            ,s.description AS subject_description
+            ,p.last_name || ' ' || p.first_name AS teacher_name
+            ,p.introduction AS teacher_introduction
+            ,ts.description AS teacher_subject_description
+            ,ts.active
+        FROM teached_subject ts
+        JOIN subject s
+          ON s.id = ts.subject_id
+        JOIN person p
+          ON p.id = ts.teacher_id;
   
   END get_all_teached_subjects;
 

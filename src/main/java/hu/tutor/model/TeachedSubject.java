@@ -23,6 +23,13 @@ import lombok.NoArgsConstructor;
 // @formatter:off
 @NamedStoredProcedureQueries({
 	@NamedStoredProcedureQuery(
+			name = "listTeachedSubjects",
+			procedureName = "admin_pkg.get_all_teached_subjects",
+			resultClasses = TeachedSubject.class, 
+			parameters = {
+					@StoredProcedureParameter(name = "p_teached_subjects", mode = ParameterMode.REF_CURSOR,	type = void.class)
+			}),
+	@NamedStoredProcedureQuery(
 			name = "getSubjectsOfTeacher", 
 			procedureName = "teacher_pkg.get_subjects_of_teacher", 
 			resultClasses = TeachedSubject.class, 
